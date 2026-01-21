@@ -1,0 +1,23 @@
+.input-final {
+    align-items: center;
+    border: 0px solid;
+    border-radius: 25px;
+    box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+}
+
+.input-principal {
+    color: var(--color-base-2);
+    background-color: white;
+    width: 90%;
+    border-radius: 0px 25px 25px 0px;
+    height: 2rem;
+    padding: 2%;
+}
+
+.icono-input-login {
+    background-color: var(--color-base-2);
+    width: 8%;
+    height: 2rem;
+    padding: 2%;
+    border-radius: 25px 0px 0px 25px;
+}

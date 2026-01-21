@@ -1,0 +1,59 @@
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1e1e1e;
+    color: white;
+    padding: 9px 0rem;
+    font-family: 'Segoe UI', sans-serif;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-right: 40px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+}
+
+.topbar-right {
+    display: flex;
+    gap: 15px;
+    margin-right: 1rem;
+}
+
+.topbar-btn {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.topbar-btn:hover {
+    color: var(--color-base);
+    border-color: var(--color-base);
+}
+
+.logout {
+    background-color: #e63946;
+    border-color: #e63946;
+}
+
+.logout:hover {
+    background-color: #c5303a;
+    color: #fff;
+}

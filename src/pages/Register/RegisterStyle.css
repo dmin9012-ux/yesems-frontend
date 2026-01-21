@@ -1,0 +1,127 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #00003f, #02025f);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-card {
+    background: #ffffff;
+    padding: 35px 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    width: 360px;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.register-logo {
+    width: 140px;
+    margin-bottom: 15px;
+}
+
+.register-card h2 {
+    margin: 10px 0 5px;
+    color: #00003f;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.register-card input {
+    width: 100%;
+    padding: 13px;
+    margin: 10px 0;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: border 0.3s;
+}
+
+.register-card input:focus {
+    border-color: #fcb424;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 13px;
+    margin-top: 18px;
+    background: #fcb424;
+    color: #00003f;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-register:hover {
+    background: #e6a91e;
+}
+
+.btn-register:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.footer-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.link {
+    color: #00003f;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+
+/* PASSWORD CON OJO */
+
+.password-group {
+    position: relative;
+}
+
+.password-group input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.password-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.password-eye:hover {
+    opacity: 1;
+}

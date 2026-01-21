@@ -1,0 +1,165 @@
+/* Contenedor principal */
+
+.principal-container {
+    min-height: 100vh;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e0e3e6);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+
+/* Título principal */
+
+.principal-title {
+    font-size: 3rem;
+    color: #1f2937;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: color 0.3s ease;
+}
+
+.principal-title:hover {
+    color: #2563eb;
+}
+
+
+/* Subtítulo */
+
+.principal-subtitle {
+    font-size: 1.4rem;
+    color: #4b5563;
+    margin-bottom: 40px;
+    max-width: 800px;
+    line-height: 1.6;
+}
+
+
+/* Grid de cursos */
+
+.cursos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 10px;
+}
+
+
+/* Card individual */
+
+.curso-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.curso-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Imagen de la card */
+
+.curso-card img {
+    width: 100%;
+    height: 220px;
+    /* más grande que antes */
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.curso-card:hover img {
+    transform: scale(1.05);
+}
+
+
+/* Contenido de la card */
+
+.curso-card h3 {
+    font-size: 1.6rem;
+    margin: 15px;
+    color: #1f2937;
+}
+
+.curso-card p {
+    font-size: 1rem;
+    margin: 0 15px 15px 15px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+
+/* Botones de acción */
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px 20px 15px;
+}
+
+.card-actions button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.card-actions button:hover {
+    background: #1d4ed8;
+    transform: scale(1.05);
+}
+
+
+/* Animación de entrada de las cards */
+
+.curso-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsivo */
+
+@media (max-width: 768px) {
+    .principal-title {
+        font-size: 2.4rem;
+    }
+    .principal-subtitle {
+        font-size: 1.2rem;
+    }
+    .curso-card img {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .curso-card img {
+        height: 160px;
+    }
+}

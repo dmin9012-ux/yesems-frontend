@@ -1,0 +1,271 @@
+/* ===============================
+   FUENTES Y CONTENEDOR PRINCIPAL
+=============================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fa;
+    color: #1e1e2f;
+}
+
+.crear-curso-container,
+.editar-curso-container {
+    max-width: 1200px;
+    margin: 80px auto 40px;
+    padding: 30px;
+}
+
+
+/* ===============================
+   TITULOS PRINCIPALES
+=============================== */
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    background: linear-gradient(90deg, #1e88e5, #43a047);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+/* ===============================
+   CARDS (NIVELES, LECCIONES, MATERIALES)
+=============================== */
+
+.card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 18px;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ===============================
+   LABELS E INPUTS
+=============================== */
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: #555;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    transition: all 0.2s;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #43a047;
+    box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.2);
+}
+
+
+/* ===============================
+   INLINE ROW (OBJETIVOS, REQUISITOS)
+=============================== */
+
+.inline-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.inline-row input {
+    flex: 1;
+}
+
+
+/* ===============================
+   BOTONES
+=============================== */
+
+button {
+    margin-top: 10px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+
+/* BOTONES PRINCIPALES */
+
+.btn-guardar {
+    width: 100%;
+    background: linear-gradient(90deg, #1e88e5, #43a047);
+    color: white;
+    font-size: 16px;
+    padding: 16px;
+    margin-top: 25px;
+    box-shadow: 0 6px 12px rgba(30, 136, 229, 0.3);
+}
+
+.btn-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(30, 136, 229, 0.35);
+}
+
+
+/* BOTONES SECUNDARIOS (ELIMINAR) */
+
+button.delete-btn {
+    background: #e53935;
+    color: white;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+}
+
+button.delete-btn:hover {
+    background: #c62828;
+}
+
+
+/* BOTONES SECUNDARIOS (AGREGAR) */
+
+button.add-btn {
+    background: #fbc02d;
+    color: white;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+
+button.add-btn:hover {
+    background: #f9a825;
+}
+
+
+/* ===============================
+   LECCIONES
+=============================== */
+
+.leccion-card {
+    background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+    border-radius: 16px;
+    padding: 22px;
+    margin: 22px 0;
+    border-left: 6px solid #1e88e5;
+    transition: all 0.3s;
+}
+
+.leccion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===============================
+   MATERIALES
+=============================== */
+
+.material-card,
+.material-item {
+    background: #fff3e0;
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto;
+    gap: 12px;
+    align-items: center;
+    border-left: 6px solid #43a047;
+    transition: all 0.3s;
+}
+
+.material-card:hover {
+    background: #ffe0b2;
+}
+
+
+/* ===============================
+   PREGUNTAS DE EXAMEN
+=============================== */
+
+.pregunta-card {
+    background: linear-gradient(120deg, #fff8e1, #ffe0b2);
+    border-radius: 14px;
+    padding: 18px;
+    margin: 18px 0;
+    border-left: 6px solid #fbc02d;
+    transition: all 0.3s;
+}
+
+.pregunta-card h5 {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #f57c00;
+}
+
+.opciones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opcion-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.opcion-item input[type="text"] {
+    flex: 1;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+
+/* BOTÓN AGREGAR OPCIÓN */
+
+button.add-option {
+    background: #ffb300;
+    color: white;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+
+button.add-option:hover {
+    background: #ffa000;
+}
+
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+
+@media (max-width: 768px) {
+    .crear-curso-container,
+    .editar-curso-container {
+        padding: 20px;
+    }
+    .material-card,
+    .material-item {
+        grid-template-columns: 1fr auto;
+    }
+}

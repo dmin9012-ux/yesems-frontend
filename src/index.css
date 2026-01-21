@@ -1,0 +1,302 @@
+:root {
+    --color-base: #199490;
+    --color-base-2: rgb(32, 40, 45);
+    --color-base-3: #19949030;
+    --color-listo: rgb(0, 128, 83);
+    --color-pendiente: rgb(255, 77, 0);
+    --color-borde: rgb(32, 33, 34);
+    --color-fondo: linear-gradient(90deg, rgba(232, 255, 255, 1) 0%, rgba(217, 255, 235, 1) 50%, rgba(255, 255, 212, 1) 100%);
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    text-decoration: none;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
+body,
+html,
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+ol {
+    margin-left: 2rem;
+}
+
+@keyframes hero-gradient-animation {
+    0% {
+        --x-0: 20%;
+        --c-0: hsla(32, 0%, 60%, 1);
+        --y-0: 0%;
+        --s-start-0: 3.1210986267166043%;
+        --s-end-0: 40%;
+        --y-1: 0%;
+        --x-1: 80%;
+        --s-start-1: 3.1210986267166043%;
+        --s-end-1: 40%;
+        --c-1: hsla(219, 77%, 74%, 0.35);
+        --x-2: 100%;
+        --c-2: hsla(267, 77%, 74%, 0.35);
+        --y-2: 0%;
+        --s-start-2: 3%;
+        --s-end-2: 40%;
+        --x-3: 100%;
+        --c-3: hsla(180, 77%, 74%, 0.53);
+        --y-3: 0%;
+        --s-start-3: 3%;
+        --s-end-3: 40%;
+    }
+    100% {
+        --x-0: 78%;
+        --c-0: hsla(32, 0%, 60%, 1);
+        --y-0: 60%;
+        --s-start-0: 0;
+        --s-end-0: 79;
+        --y-1: 9%;
+        --x-1: 54%;
+        --s-start-1: 0;
+        --s-end-1: 79;
+        --c-1: hsla(219, 77%, 74%, 0.35);
+        --x-2: 32%;
+        --c-2: hsla(267, 77%, 74%, 0.35);
+        --y-2: 56%;
+        --s-start-2: 0;
+        --s-end-2: 79;
+        --x-3: 7%;
+        --c-3: hsla(180, 77%, 74%, 0.53);
+        --y-3: 43%;
+        --s-start-3: 0;
+        --s-end-3: 79;
+    }
+}
+
+@property --x-0 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 20%
+}
+
+@property --c-0 {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: hsla(32, 0%, 60%, 1)
+}
+
+@property --y-0 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%
+}
+
+@property --s-start-0 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 3.1210986267166043%
+}
+
+@property --s-end-0 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 40%
+}
+
+@property --y-1 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%
+}
+
+@property --x-1 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 80%
+}
+
+@property --s-start-1 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 3.1210986267166043%
+}
+
+@property --s-end-1 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 40%
+}
+
+@property --c-1 {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: hsla(219, 77%, 74%, 0.35)
+}
+
+@property --x-2 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%
+}
+
+@property --c-2 {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: hsla(267, 77%, 74%, 0.35)
+}
+
+@property --y-2 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%
+}
+
+@property --s-start-2 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 3%
+}
+
+@property --s-end-2 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 40%
+}
+
+@property --x-3 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%
+}
+
+@property --c-3 {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: hsla(180, 77%, 74%, 0.53)
+}
+
+@property --y-3 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%
+}
+
+@property --s-start-3 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 3%
+}
+
+@property --s-end-3 {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 40%
+}
+
+.fondo-animado {
+    --x-0: 20%;
+    --c-0: hsla(32, 0%, 60%, 1);
+    --y-0: 0%;
+    --y-1: 0%;
+    --x-1: 80%;
+    --c-1: hsla(219, 77%, 74%, 0.35);
+    --x-2: 100%;
+    --c-2: hsla(267, 77%, 74%, 0.35);
+    --y-2: 0%;
+    --x-3: 100%;
+    --c-3: hsla(180, 77%, 74%, 0.53);
+    --y-3: 0%;
+    ;
+    background-color: hsla(1, 0%, 100%, 1);
+    background-image: radial-gradient(circle at var(--x-0) var(--y-0), var(--c-0) var(--s-start-0), transparent var(--s-end-0)), radial-gradient(circle at var(--x-1) var(--y-1), var(--c-1) var(--s-start-1), transparent var(--s-end-1)), radial-gradient(circle at var(--x-2) var(--y-2), var(--c-2) var(--s-start-2), transparent var(--s-end-2)), radial-gradient(circle at var(--x-3) var(--y-3), var(--c-3) var(--s-start-3), transparent var(--s-end-3));
+    animation: hero-gradient-animation 100s linear infinite normal;
+    background-blend-mode: normal, normal, normal, normal;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.flex-row-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+    text-align: center;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-center {
+    justify-content: center;
+}
+
+.felx-btwn {
+    justify-content: space-between;
+}
+
+.felx-around {
+    justify-content: space-around;
+}
+
+.flex-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-stretch {
+    align-items: stretch;
+}
+
+.sombra {
+    box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+}
+
+.cuerpo-base {
+    background-color: whitesmoke;
+    border-radius: 15px;
+    width: 95%;
+    height: 95%;
+    box-sizing: border-box;
+    box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+}
+
+.boton-n1 {
+    background-color: var(--color-base-2);
+    color: aliceblue;
+    border-radius: 20rem;
+    border: 1px solid var(--color-borde);
+    padding: 0.7rem 3rem;
+}
+
+.boton-n1:hover {
+    background-color: aliceblue;
+    color: var(--color-base-2);
+    border: 1px solid var(--color-base-2);
+}
+
+.boton-n2 {
+    background-color: aliceblue;
+    color: var(--color-base-2);
+    border: 1px solid var(--color-base-2);
+    border-radius: 20rem;
+    padding: 0.7rem 3rem;
+}
+
+.boton-n2:hover {
+    background-color: var(--color-base-2);
+    color: aliceblue;
+    border: 1px solid var(--color-borde);
+}

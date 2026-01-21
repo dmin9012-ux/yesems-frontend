@@ -1,0 +1,108 @@
+.perfil-page {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+
+/* SIDEBAR */
+
+.perfil-sidebar {
+    width: 260px;
+    background: white;
+    padding: 70px 20px;
+    border-right: 1px solid #ddd;
+    text-align: center;
+}
+
+.perfil-sidebar h3 {
+    margin-top: 20px;
+}
+
+.perfil-sidebar p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.perfil-sidebar button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+/* Avatar */
+
+.perfil-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e88e5, #42a5f5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0 auto 15px;
+}
+
+
+/* MAIN */
+
+.perfil-main {
+    flex: 1;
+    padding: 45px;
+}
+
+.curso-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.curso-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-bar {
+    background: #e0e0e0;
+    height: 8px;
+    border-radius: 6px;
+    margin: 8px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #1e88e5;
+    border-radius: 6px;
+}
+
+.curso-card.completado .progress-fill {
+    background: #4caf50;
+}
+
+.curso-card.no-iniciado .progress-fill {
+    background: #bbb;
+}
+
+
+/* Botón continuar curso */
+
+.btn-continuar {
+    margin-top: 12px;
+    padding: 8px 14px;
+    background-color: #1e88e5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    width: fit-content;
+}
+
+.btn-continuar:hover {
+    background-color: #1565c0;
+}

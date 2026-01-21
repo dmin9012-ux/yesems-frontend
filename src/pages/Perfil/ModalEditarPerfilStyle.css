@@ -1,0 +1,40 @@
+.modal-editar {
+    width: 480px;
+    padding: 20px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.tabs button.active {
+    background: #1e88e5;
+    color: white;
+}
+
+.tab-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}

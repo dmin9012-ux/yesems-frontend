@@ -1,0 +1,183 @@
+/* Fondo general */
+
+.login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #00003f, #02024f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+/* Card */
+
+.login-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+
+/* Logo */
+
+.login-logo {
+    width: 120px;
+    margin-bottom: 15px;
+}
+
+
+/* Textos */
+
+.login-title {
+    margin: 10px 0 5px;
+    font-size: 26px;
+    color: #00003f;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+
+/* Formulario */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #00003f;
+    box-shadow: 0 0 0 2px rgba(0, 0, 63, 0.15);
+}
+
+
+/* Opciones */
+
+.login-options {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 13px;
+}
+
+
+/* Botón */
+
+.btn-login {
+    background: #00003f;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #02025f;
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+
+/* Footer */
+
+.login-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #374151;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+
+/* Links */
+
+.link {
+    color: #fcb424;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+
+/* Animación */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsive */
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+    .login-title {
+        font-size: 22px;
+    }
+}
+
+
+/* PASSWORD CON OJO */
+
+.password-group {
+    position: relative;
+}
+
+.password-group input {
+    padding-right: 45px;
+    /* espacio para el ojo */
+}
+
+.password-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.password-eye:hover {
+    opacity: 1;
+}
