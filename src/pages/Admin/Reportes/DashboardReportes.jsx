@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarios } from "../../../servicios/usuarioAdminService";
-import { obtenerCursos } from "../../../servicios/CursosService";
+import { obtenerCursos } from "../../../servicios/cursosService";
 import {
   PieChart, Pie, Cell, Tooltip,
   BarChart, Bar, XAxis, YAxis, Legend
