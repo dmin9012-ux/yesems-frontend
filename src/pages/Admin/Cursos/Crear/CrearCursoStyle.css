@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 /* ===============================
    FUENTES Y CONTENEDOR PRINCIPAL
 =============================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 body {
     font-family: 'Inter', sans-serif;
     background: #f4f7fa;
@@ -24,8 +25,8 @@ body {
 h1 {
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 30px;
     background: linear-gradient(90deg, #1e88e5, #43a047);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
