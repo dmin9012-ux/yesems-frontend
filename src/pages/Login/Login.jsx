@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/logo-yesems.png";
@@ -15,6 +15,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // 🔎 VERIFICACIÓN RÁPIDA (OBLIGATORIA)
+  useEffect(() => {
+    console.log("API URL:", import.meta.env.VITE_API_URL);
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -22,25 +27,29 @@ export default function Login() {
     try {
       const res = await login({ email, password });
 
-      if (!res.ok) {
-        alert("❌ " + res.message);
+      // ❌ Error lógico del backend
+      if (!res || res.ok === false) {
+        alert("❌ " + (res?.message || "Credenciales incorrectas"));
         return;
       }
 
       const usuario = res.usuario;
 
-      if (usuario.verificado === false) {
+      // ⚠ Usuario no verificado
+      if (usuario?.verificado === false) {
         alert("⚠ Debes verificar tu correo antes de iniciar sesión.");
         return;
       }
 
-      if (usuario.rol === "admin") {
+      // 🚀 Redirección por rol
+      if (usuario?.rol === "admin") {
         navigate("/admin", { replace: true });
       } else {
         navigate("/principal", { replace: true });
       }
+
     } catch (error) {
-      console.error("Error en login:", error);
+      console.error("❌ Error en login:", error);
       alert("❌ Error al conectar con el servidor");
     } finally {
       setLoading(false);
