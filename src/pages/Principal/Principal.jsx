@@ -34,7 +34,7 @@ const Principal = () => {
         console.log("🧪 DATA progresoRes.data:", progresoRes.data);
 
           if (!progresoRes.ok) {
-            throw new Error("Error al cargar progreso");
+            throw new Error("Error al cargar el progreso");
           }
 
 
