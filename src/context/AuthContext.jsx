@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         loading,
-        isAuthenticated: !!user && !!localStorage.getItem("token"),
+        isAuthenticated: !!user,
         isAdmin: user && user.rol === "admin",
         login,
         logout,
