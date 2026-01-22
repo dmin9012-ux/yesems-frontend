@@ -4,7 +4,7 @@ import Menu from "../../components/Menu/Menu";
 import TopBar from "../../components/TopBar/TopBar";
 
 import { obtenerCursos } from "../../servicios/cursosService";
-import { obtenerProgresoUsuario } from "../../servicios/progresoService";
+//import { obtenerProgresoUsuario } from "../../servicios/progresoService";
 
 import "./PrincipalStyle.css";
 
@@ -34,7 +34,7 @@ const Principal = () => {
         console.log("🧪 DATA progresoRes.data:", progresoRes.data);
 
           if (!progresoRes.ok) {
-            throw new Error("Error al cargar el progreso");
+            throw new Error("Error al cargar progreso");
           }
 
 
