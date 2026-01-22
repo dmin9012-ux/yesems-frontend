@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
   =============================== */
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-    if (storedUser) {
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
     }
 
@@ -30,10 +31,12 @@ export const AuthProvider = ({ children }) => {
       return res;
     }
 
-    // Guardar TODO en user (token incluido)
+    // Guardar solo el token en localStorage
+    localStorage.setItem("token", res.token);
+
+    // Guardar info del usuario sin token dentro de user
     const userData = {
       ...res.usuario,
-      token: res.token,
     };
 
     localStorage.setItem("user", JSON.stringify(userData));
@@ -47,6 +50,7 @@ export const AuthProvider = ({ children }) => {
   =============================== */
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token"); // ✅ eliminar token también
     setUser(null);
   };
 
@@ -55,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         loading,
-        isAuthenticated: !!user && !!user.token,
+        isAuthenticated: !!user && !!localStorage.getItem("token"),
         isAdmin: user && user.rol === "admin",
         login,
         logout,

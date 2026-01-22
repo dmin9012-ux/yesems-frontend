@@ -15,7 +15,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // 🔎 VERIFICACIÓN RÁPIDA (OBLIGATORIA)
+  // 🔎 VERIFICACIÓN RÁPIDA
   useEffect(() => {
     console.log("API URL:", import.meta.env.VITE_API_URL);
   }, []);
@@ -27,22 +27,24 @@ export default function Login() {
     try {
       const res = await login({ email, password });
 
-      // ❌ Error lógico del backend
+      // ❌ Error de login
       if (!res || res.ok === false) {
-        alert("❌ " + (res?.message || "Credenciales incorrectas"));
+        alert("❌ " + (res && res.message ? res.message : "Credenciales incorrectas"));
+        setLoading(false);
         return;
       }
 
       const usuario = res.usuario;
 
       // ⚠ Usuario no verificado
-      if (usuario?.verificado === false) {
+      if (usuario && usuario.verificado === false) {
         alert("⚠ Debes verificar tu correo antes de iniciar sesión.");
+        setLoading(false);
         return;
       }
 
       // 🚀 Redirección por rol
-      if (usuario?.rol === "admin") {
+      if (usuario && usuario.rol === "admin") {
         navigate("/admin", { replace: true });
       } else {
         navigate("/principal", { replace: true });
