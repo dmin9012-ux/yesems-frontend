@@ -4,7 +4,7 @@ import Menu from "../../components/Menu/Menu";
 import TopBar from "../../components/TopBar/TopBar";
 
 import { obtenerCursos } from "../../servicios/cursosService";
-//import { obtenerProgresoUsuario } from "../../servicios/progresoService";
+import { obtenerProgresoUsuario } from "../../servicios/progresoService";
 
 import "./PrincipalStyle.css";
 
