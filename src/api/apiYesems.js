@@ -3,7 +3,7 @@ import axios from "axios";
 
 // 🔗 Instancia de Axios
 const apiYesems = axios.create({
-    baseURL: import.meta.env.VITE_API_URL, // https://yesems-backend-production.up.railway.app
+    baseURL: import.meta.env.VITE_API_URL.replace(/\/$/, ""), // elimina / final si existe
     headers: {
         "Content-Type": "application/json",
     },
@@ -28,9 +28,7 @@ apiYesems.interceptors.request.use(
 // Solo propaga el error (útil para manejarlo en el login)
 apiYesems.interceptors.response.use(
     (response) => response,
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 export default apiYesems;
