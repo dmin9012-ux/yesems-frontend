@@ -2,27 +2,45 @@ import { createContext, useState, useEffect } from "react";
 import { obtenerProgresoUsuario } from "../servicios/progresoService";
 import { useAuth } from "./AuthContext";
 
-// 🔹 Contexto
 export const ProgresoContext = createContext();
 
-// 🔹 Provider
 export const ProgresoProvider = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
 
-  // { cursoId: [leccionIds] }
   const [progresoGlobal, setProgresoGlobal] = useState({});
-
-  // { cursoId: [nivelesAprobados] }
   const [nivelesAprobadosGlobal, setNivelesAprobadosGlobal] = useState({});
-
-  // 📦 Progreso completo desde backend
   const [progresoCursos, setProgresoCursos] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
-  /* ======================================
-     🔄 CARGAR PROGRESO DESDE BACKEND
-  ====================================== */
+  // 🔹 CALCULAR NIVELES APROBADOS SEGÚN PROGRESO
+  const calcularNivelesAprobados = (progresoObj, cursos) => {
+    const nivelesObj = {};
+
+    cursos.forEach((curso) => {
+      const cursoId = curso.cursoId;
+      const leccionesCompletadas = progresoObj[cursoId] || [];
+      const nivelesAprobados = [];
+
+      // Cada nivel
+      curso.niveles.forEach((nivel) => {
+        const todasLeccionesIds = nivel.lecciones.map(
+          (l) => `${cursoId}-n${nivel.numero}-l${l.numero}`
+        );
+
+        // Si todas las lecciones del nivel están en progreso
+        const completado = todasLeccionesIds.every((lid) =>
+          leccionesCompletadas.includes(lid)
+        );
+        if (completado) nivelesAprobados.push(nivel.numero);
+      });
+
+      nivelesObj[cursoId] = nivelesAprobados;
+    });
+
+    return nivelesObj;
+  };
+
+  // 🔄 CARGAR PROGRESO DESDE BACKEND
   const cargarProgreso = async () => {
     if (!isAuthenticated) {
       setLoading(false);
@@ -41,16 +59,18 @@ export const ProgresoProvider = ({ children }) => {
 
       if (res.ok && Array.isArray(res.data)) {
         const progresoObj = {};
-        const nivelesObj = {};
+        const cursosData = res.data; // incluye lecciones y niveles aprobados
 
-        res.data.forEach((p) => {
+        cursosData.forEach((p) => {
           progresoObj[p.cursoId] = p.leccionesCompletadas || [];
-          nivelesObj[p.cursoId] = p.nivelesAprobados || [];
         });
 
         setProgresoGlobal(progresoObj);
-        setNivelesAprobadosGlobal(nivelesObj);
-        setProgresoCursos(res.data);
+        setProgresoCursos(cursosData);
+
+        // 🔑 recalcular niveles aprobados
+        const nivelesCalculados = calcularNivelesAprobados(progresoObj, cursosData);
+        setNivelesAprobadosGlobal(nivelesCalculados);
       }
     } catch (error) {
       console.error("❌ Error cargando progreso:", error);
@@ -59,38 +79,42 @@ export const ProgresoProvider = ({ children }) => {
     }
   };
 
-  /* ======================================
-     🚀 CARGA INICIAL
-  ====================================== */
-  useEffect(() => {
-    cargarProgreso();
-  }, [user, isAuthenticated]);
-
-  /* ======================================
-     ➕ ACTUALIZAR LECCIÓN LOCAL
-     (NO niveles, NO finalización)
-  ====================================== */
+  // ➕ ACTUALIZAR LECCIÓN LOCAL Y RECALCULAR NIVELES
   const actualizarProgreso = (cursoId, leccionId) => {
     setProgresoGlobal((prev) => {
       const cursoPrev = prev[cursoId] || [];
-
       if (!cursoPrev.includes(leccionId)) {
-        return {
+        const nuevoProgreso = {
           ...prev,
           [cursoId]: [...cursoPrev, leccionId],
         };
-      }
 
+        // 🔑 recalcular niveles aprobados para este curso
+        const cursoData = progresoCursos.find((c) => c.cursoId === cursoId);
+        if (cursoData) {
+          const nivelesCalculados = calcularNivelesAprobados(nuevoProgreso, [cursoData]);
+          setNivelesAprobadosGlobal((prevNiveles) => ({
+            ...prevNiveles,
+            [cursoId]: nivelesCalculados[cursoId] || [],
+          }));
+        }
+
+        return nuevoProgreso;
+      }
       return prev;
     });
   };
+
+  useEffect(() => {
+    cargarProgreso();
+  }, [user, isAuthenticated]);
 
   return (
     <ProgresoContext.Provider
       value={{
         progresoGlobal,
         nivelesAprobadosGlobal,
-        progresoCursos, // ← aquí viene completado, fechaFinalizacion, etc.
+        progresoCursos,
         actualizarProgreso,
         recargarProgreso: cargarProgreso,
         loading,

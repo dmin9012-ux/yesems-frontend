@@ -11,9 +11,6 @@ import { ProgresoContext } from "../../context/ProgresoContext";
 
 import "./ExamenStyle.css";
 
-/* ======================================
-   🔀 SHUFFLE (reordenar preguntas)
-====================================== */
 const shuffleArray = (array) => {
   const copia = [...array];
   for (let i = copia.length - 1; i > 0; i--) {
@@ -31,7 +28,6 @@ export default function Examen() {
 
   const { recargarProgreso } = useContext(ProgresoContext);
 
-  // 🔹 Inicialización segura
   const [examen, setExamen] = useState({ preguntas: [] });
   const [respuestas, setRespuestas] = useState({});
   const [resultado, setResultado] = useState(null);
@@ -42,9 +38,6 @@ export default function Examen() {
   const [error, setError] = useState("");
   const [bloqueado, setBloqueado] = useState(false);
 
-  /* ======================================
-     🔄 CARGAR EXAMEN
-  ====================================== */
   const cargarExamen = async () => {
     try {
       setCargando(true);
@@ -74,14 +67,7 @@ export default function Examen() {
         return;
       }
 
-      // 🔀 REORDENAR PREGUNTAS CADA CARGA
-      const preguntasBarajadas = shuffleArray(res.data.preguntas);
-
-      setExamen({
-        ...res.data,
-        preguntas: preguntasBarajadas,
-      });
-
+      setExamen({ ...res.data, preguntas: shuffleArray(res.data.preguntas) });
       setCargando(false);
     } catch (err) {
       console.error("❌ Error cargar examen:", err);
@@ -94,9 +80,6 @@ export default function Examen() {
     cargarExamen();
   }, [cursoId, nivelNumero]);
 
-  /* ======================================
-     ✏️ RESPUESTAS
-  ====================================== */
   const seleccionarRespuesta = (preguntaId, opcionIndex) => {
     setRespuestas((prev) => ({
       ...prev,
@@ -104,11 +87,8 @@ export default function Examen() {
     }));
   };
 
-  /* ======================================
-     📤 ENVIAR EXAMEN
-  ====================================== */
   const enviarExamen = async () => {
-    if (!examen || !examen.preguntas.length) return;
+    if (!examen?.preguntas?.length) return;
 
     const respuestasArray = examen.preguntas.map((p) => ({
       preguntaId: p.id,
@@ -134,6 +114,7 @@ export default function Examen() {
         return;
       }
 
+      // 🔑 RECARGAR PROGRESO Y RECALCULAR NIVELES
       await recargarProgreso();
 
       setResultado({
@@ -150,9 +131,6 @@ export default function Examen() {
     }
   };
 
-  /* ======================================
-     ⏳ CARGANDO
-  ====================================== */
   if (cargando) {
     return (
       <>
@@ -162,9 +140,6 @@ export default function Examen() {
     );
   }
 
-  /* ======================================
-     🚫 BLOQUEADO
-  ====================================== */
   if (bloqueado) {
     return (
       <>
@@ -172,10 +147,7 @@ export default function Examen() {
         <div className="examen-bloqueado">
           <h2>🚫 Acceso bloqueado</h2>
           <p>{error}</p>
-          <button
-            className="btn-examen"
-            onClick={() => navigate(`/curso/${cursoId}`)}
-          >
+          <button className="btn-examen" onClick={() => navigate(`/curso/${cursoId}`)}>
             Volver al curso
           </button>
         </div>
@@ -183,9 +155,6 @@ export default function Examen() {
     );
   }
 
-  /* ======================================
-     🏆 RESULTADO
-  ====================================== */
   if (resultado) {
     return (
       <>
@@ -201,17 +170,11 @@ export default function Examen() {
 
           {resultado.aprobado ? (
             resultado.cursoFinalizado ? (
-              <button
-                className="btn-examen aprobado"
-                onClick={() => navigate("/perfil")}
-              >
+              <button className="btn-examen aprobado" onClick={() => navigate("/perfil")}>
                 🎓 Finalizar curso
               </button>
             ) : (
-              <button
-                className="btn-examen aprobado"
-                onClick={() => navigate(`/curso/${cursoId}`)}
-              >
+              <button className="btn-examen aprobado" onClick={() => navigate(`/curso/${cursoId}`)}>
                 Volver al curso
               </button>
             )
@@ -225,9 +188,6 @@ export default function Examen() {
     );
   }
 
-  /* ======================================
-     📝 RENDER EXAMEN
-  ====================================== */
   return (
     <>
       <TopBar />
@@ -261,11 +221,7 @@ export default function Examen() {
           <p>No hay preguntas disponibles.</p>
         )}
 
-        <button
-          className="btn-examen"
-          onClick={enviarExamen}
-          disabled={enviando}
-        >
+        <button className="btn-examen" onClick={enviarExamen} disabled={enviando}>
           {enviando ? "Enviando..." : "Enviar examen"}
         </button>
       </div>
