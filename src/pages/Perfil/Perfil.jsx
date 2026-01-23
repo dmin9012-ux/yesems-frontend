@@ -25,7 +25,7 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { progresoGlobal } = useContext(ProgresoContext);
+  const { progresoGlobal, progresoCursos } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -63,7 +63,7 @@ const Perfil = () => {
   }, [logout, navigate]);
 
   /* ===============================
-     📊 PROGRESO
+     📊 CALCULAR PROGRESO DE LECCIONES
   =============================== */
   const calcularProgreso = (curso) => {
     const completadas = progresoGlobal[curso.id] || [];
@@ -91,7 +91,7 @@ const Perfil = () => {
   };
 
   /* ===============================
-     📄 CONSTANCIA
+     📄 DESCARGAR CONSTANCIA
   =============================== */
   const descargarConstancia = async (cursoId, nombreCurso) => {
     try {
@@ -115,7 +115,7 @@ const Perfil = () => {
   };
 
   /* ===============================
-     🗑 ELIMINAR CUENTA (CORREGIDO)
+     🗑 ELIMINAR CUENTA
   =============================== */
   const eliminarCuenta = async () => {
     const confirmar = window.confirm(
@@ -189,6 +189,13 @@ const Perfil = () => {
           {cursos.map((curso) => {
             const p = calcularProgreso(curso);
 
+            // ✅ Buscar progreso completo desde backend
+            const progresoCurso = progresoCursos.find(
+              (pc) => pc.cursoId === curso.id
+            );
+            const mostrarConstancia =
+              progresoCurso?.completado && progresoCurso?.constanciaEmitida;
+
             return (
               <div key={curso.id} className={`curso-card ${p.estado}`}>
                 <div className="curso-header">
@@ -213,14 +220,7 @@ const Perfil = () => {
                   {p.completadas}/{p.total} lecciones ({p.porcentaje}%)
                 </small>
 
-                {p.estado !== "completado" ? (
-                  <button
-                    className="btn-continuar"
-                    onClick={() => navigate(`/curso/${curso.id}`)}
-                  >
-                    ▶ Continuar curso
-                  </button>
-                ) : (
+                {mostrarConstancia ? (
                   <button
                     className="btn-constancia"
                     onClick={() =>
@@ -228,6 +228,13 @@ const Perfil = () => {
                     }
                   >
                     <FileText size={16} /> Descargar constancia
+                  </button>
+                ) : (
+                  <button
+                    className="btn-continuar"
+                    onClick={() => navigate(`/curso/${curso.id}`)}
+                  >
+                    ▶ Continuar curso
                   </button>
                 )}
               </div>
