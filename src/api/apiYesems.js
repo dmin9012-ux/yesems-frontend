@@ -31,4 +31,8 @@ apiYesems.interceptors.response.use(
     (error) => Promise.reject(error)
 );
 
+console.log("BASE URL Axios:",
+    import.meta.env.VITE_API_URL);
+
+
 export default apiYesems;
