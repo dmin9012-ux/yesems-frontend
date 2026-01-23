@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { registerRequest } from "../../servicios/authService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
@@ -19,7 +20,7 @@ export default function Register() {
     e.preventDefault();
 
     if (password.length < 6) {
-      alert("⚠ La contraseña debe tener mínimo 6 caracteres.");
+      toast.warning("⚠ La contraseña debe tener mínimo 6 caracteres.");
       return;
     }
 
@@ -29,35 +30,38 @@ export default function Register() {
       const res = await registerRequest({ nombre, email, password });
 
       if (!res.ok) {
-        alert("❌ " + res.message);
+        toast.error(res.message);
         return;
       }
 
-      alert(
+      toast.success(
         res.message ||
           "📧 Se te envió un correo de verificación para comprobar que eres tú."
       );
 
+      // Limpiar campos opcional
+      setNombre("");
+      setEmail("");
+      setPassword("");
+
       navigate("/login");
     } catch (error) {
       console.error("Error en registro:", error);
-      alert("❌ Error al conectar con el servidor");
+      toast.error("❌ Error al conectar con el servidor");
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ Siempre se ejecuta
     }
   };
 
   return (
     <div className="register-container">
       <div className="register-card">
-
         <img src={logo} alt="yesems logo" className="register-logo" />
 
         <h2>Crear Cuenta</h2>
         <p className="subtitle">Únete a la plataforma YES EMS</p>
 
         <form onSubmit={handleRegister}>
-
           <input
             type="text"
             placeholder="Nombre completo"
@@ -83,7 +87,6 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-
             <img
               src={showPassword ? ojoAbierto : ojoCerrado}
               alt="Mostrar contraseña"
@@ -103,7 +106,6 @@ export default function Register() {
             Inicia sesión
           </span>
         </p>
-
       </div>
     </div>
   );
