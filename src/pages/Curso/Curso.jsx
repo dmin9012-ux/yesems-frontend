@@ -1,3 +1,4 @@
+// /yesems/src/pages/Curso/Curso.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -109,7 +110,9 @@ export default function Curso() {
             curso.niveles.map((nivel) => {
               const nivelNumero = Number(nivel.numero);
 
-              const idsLeccionesNivel = nivel.lecciones.map((l) => l.id);
+              const idsLeccionesNivel = nivel.lecciones.map(
+                (_, idx) => id + "-n" + nivelNumero + "-l" + (idx + 1)
+              );
 
               const leccionesCompletadasNivel = idsLeccionesNivel.filter((lid) =>
                 leccionesCompletadas.includes(lid)
@@ -134,23 +137,26 @@ export default function Curso() {
                   </p>
 
                   <ul>
-                    {nivel.lecciones.map((lec) => {
-                      const estaCompletada = leccionesCompletadas.includes(lec.id);
+                    {nivel.lecciones.map((_, index) => {
+                      const lid = id + "-n" + nivelNumero + "-l" + (index + 1);
+                      const estaCompletada = leccionesCompletadas.includes(lid);
 
                       return (
                         <li
-                          key={lec.id}
+                          key={lid}
                           className={estaCompletada ? "completada" : ""}
                         >
                           {nivelDesbloqueado ? (
                             <Link
-                              to={`/curso/${id}/nivel/${nivel.numero}/leccion/${lec.id}`}
+                              to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
                               className="leccion-link"
                             >
-                              {lec.titulo}
+                              Lección {index + 1}
                             </Link>
                           ) : (
-                            <span className="leccion-bloqueada">🔒 {lec.titulo}</span>
+                            <span className="leccion-bloqueada">
+                              🔒 Lección {index + 1}
+                            </span>
                           )}
                         </li>
                       );
@@ -162,7 +168,7 @@ export default function Curso() {
                     <button
                       className="btn-examen-sidebar"
                       onClick={() =>
-                        navigate(`/curso/${id}/nivel/${nivel.numero}/examen`)
+                        navigate(`/curso/${id}/nivel/${nivelNumero}/examen`)
                       }
                     >
                       📝 Presentar examen
