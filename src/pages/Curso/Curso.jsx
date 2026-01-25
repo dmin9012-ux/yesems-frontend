@@ -32,22 +32,22 @@ export default function Curso() {
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          console.error("❌ Curso no encontrado");
+          console.error("Curso no encontrado");
           return;
         }
 
         setCurso(snap.data());
       } catch (error) {
-        console.error("❌ Error cargando curso:", error);
+        console.error("Error cargando curso:", error);
       } finally {
         setCargando(false);
       }
     };
 
     cargarCurso();
-  }, [id]);
+  }, [id, recargarProgreso]);
 
-  if (cargando || loading || !curso) {
+  if (cargando || loading || curso === null) {
     return (
       <>
         <TopBar />
@@ -60,17 +60,32 @@ export default function Curso() {
      NORMALIZAR PROGRESO
   ============================== */
 
-  const leccionesCompletadas = progresoGlobal[id] || [];
+  const leccionesCompletadas =
+    progresoGlobal && progresoGlobal[id]
+      ? progresoGlobal[id]
+      : [];
 
-  const nivelesAprobadosRaw = nivelesAprobadosGlobal[id] || [];
-  const nivelesAprobados = nivelesAprobadosRaw.map((n) => Number(n));
+  const nivelesAprobadosRaw =
+    nivelesAprobadosGlobal && nivelesAprobadosGlobal[id]
+      ? nivelesAprobadosGlobal[id]
+      : [];
 
-  const progresoCurso = progresoCursos.find(
-    (p) => p.cursoId === id
+  const nivelesAprobados = nivelesAprobadosRaw.map((n) =>
+    Number(n)
   );
 
+  let progresoCurso = null;
+
+  for (let i = 0; i < progresoCursos.length; i++) {
+    if (progresoCursos[i].cursoId === id) {
+      progresoCurso = progresoCursos[i];
+      break;
+    }
+  }
+
   const cursoFinalizado =
-    progresoCurso && progresoCurso.completado === true;
+    progresoCurso !== null &&
+    progresoCurso.completado === true;
 
   return (
     <>
@@ -89,7 +104,7 @@ export default function Curso() {
 
             return (
               <div
-                key={nivel.numero}
+                key={"nivel-" + nivelNumero}
                 className={
                   "nivel-sidebar " +
                   (nivelDesbloqueado ? "" : "nivel-bloqueado")
@@ -101,8 +116,14 @@ export default function Curso() {
 
                 <ul>
                   {nivel.lecciones.map((lec, index) => {
+                    const leccionNumero = index + 1;
+
                     const leccionId =
-                      id + "-n" + nivelNumero + "-l" + (index + 1);
+                      id +
+                      "-n" +
+                      nivelNumero +
+                      "-l" +
+                      leccionNumero;
 
                     const completada =
                       leccionesCompletadas.includes(leccionId);
@@ -120,10 +141,10 @@ export default function Curso() {
                               "/nivel/" +
                               nivelNumero +
                               "/leccion/" +
-                              (index + 1)
+                              leccionNumero
                             }
                           >
-                            Lección {index + 1}: {lec.titulo}
+                            Lección {leccionNumero}: {lec.titulo}
                           </Link>
                         ) : (
                           <span>🔒 {lec.titulo}</span>

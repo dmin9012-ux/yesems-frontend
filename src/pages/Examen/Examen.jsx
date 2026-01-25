@@ -12,6 +12,9 @@ import { ProgresoContext } from "../../context/ProgresoContext";
 
 import "./ExamenStyle.css";
 
+/* ======================================
+   🔀 SHUFFLE (reordenar preguntas)
+====================================== */
 const shuffleArray = (array) => {
   const copia = [...array];
   for (let i = copia.length - 1; i > 0; i--) {
@@ -39,6 +42,9 @@ export default function Examen() {
   const [error, setError] = useState("");
   const [bloqueado, setBloqueado] = useState(false);
 
+  /* ======================================
+     📥 CARGAR EXAMEN
+  ====================================== */
   const cargarExamen = async () => {
     setCargando(true);
     setError("");
@@ -55,7 +61,13 @@ export default function Examen() {
 
       if (!acceso.ok || acceso.puedeAcceder !== true) {
         setBloqueado(true);
-        setError(acceso.reason || "No puedes acceder a este examen");
+
+        if (acceso.cursoFinalizado) {
+          setError("Este curso ya fue finalizado");
+        } else {
+          setError("No cumples los requisitos para presentar este examen");
+        }
+
         setCargando(false);
         return;
       }
@@ -65,8 +77,8 @@ export default function Examen() {
         nivel: nivelNumero,
       });
 
-      if (!res.ok || !res.preguntas.length) {
-        setError("El examen no tiene preguntas");
+      if (!res.ok || !Array.isArray(res.preguntas) || res.preguntas.length === 0) {
+        setError(res.message || "El examen no tiene preguntas");
         setCargando(false);
         return;
       }
@@ -86,6 +98,9 @@ export default function Examen() {
     cargarExamen();
   }, [cursoId, nivelNumero]);
 
+  /* ======================================
+     📝 SELECCIONAR RESPUESTA
+  ====================================== */
   const seleccionarRespuesta = (preguntaId, opcionIndex) => {
     setRespuestas((prev) => ({
       ...prev,
@@ -93,7 +108,11 @@ export default function Examen() {
     }));
   };
 
+  /* ======================================
+     📤 ENVIAR EXAMEN
+  ====================================== */
   const enviarExamen = async () => {
+    if (enviando) return;
     if (!examen.preguntas.length) return;
 
     const respuestasArray = examen.preguntas.map((p) => ({
@@ -125,8 +144,8 @@ export default function Examen() {
       setResultado({
         aprobado: res.aprobado,
         porcentaje: res.porcentaje,
-        siguienteNivel: res.siguienteNivel,
         cursoFinalizado: res.cursoFinalizado,
+        minimoAprobacion: res.minimoAprobacion,
       });
     } catch (err) {
       console.error("❌ Error enviar examen:", err);
@@ -136,6 +155,9 @@ export default function Examen() {
     }
   };
 
+  /* ======================================
+     ⏳ CARGANDO
+  ====================================== */
   if (cargando) {
     return (
       <>
@@ -145,6 +167,9 @@ export default function Examen() {
     );
   }
 
+  /* ======================================
+     🚫 BLOQUEADO
+  ====================================== */
   if (bloqueado) {
     return (
       <>
@@ -163,6 +188,9 @@ export default function Examen() {
     );
   }
 
+  /* ======================================
+     🎯 RESULTADO
+  ====================================== */
   if (resultado) {
     return (
       <>
@@ -172,6 +200,10 @@ export default function Examen() {
 
           <p className="porcentaje">
             Puntaje: <strong>{resultado.porcentaje}%</strong>
+          </p>
+
+          <p>
+            Mínimo requerido: {resultado.minimoAprobacion}%
           </p>
 
           {resultado.aprobado ? (
@@ -191,7 +223,11 @@ export default function Examen() {
               </button>
             )
           ) : (
-            <button className="btn-examen reprobado" onClick={cargarExamen}>
+            <button
+              className="btn-examen reprobado"
+              onClick={cargarExamen}
+              disabled={enviando}
+            >
               Reintentar examen
             </button>
           )}
@@ -200,6 +236,9 @@ export default function Examen() {
     );
   }
 
+  /* ======================================
+     🧠 EXAMEN
+  ====================================== */
   return (
     <>
       <TopBar />
@@ -211,6 +250,7 @@ export default function Examen() {
             <h3>
               {idx + 1}. {pregunta.pregunta}
             </h3>
+
             <ul>
               {pregunta.opciones.map((opcion, i) => (
                 <li key={i}>

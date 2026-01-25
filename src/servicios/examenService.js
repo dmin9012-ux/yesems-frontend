@@ -15,7 +15,9 @@ export const obtenerExamenNivel = async({ cursoId, nivel }) => {
             ok: true,
             cursoId: res.data.cursoId,
             nivel: res.data.nivel,
-            preguntas: res.data.preguntas || [],
+            preguntas: Array.isArray(res.data.preguntas) ?
+                res.data.preguntas :
+                [],
         };
     } catch (error) {
         console.error("❌ Error obtenerExamenNivel:", error);
@@ -57,9 +59,8 @@ export const enviarExamenNivel = async({
             ok: true,
             aprobado: res.data.aprobado,
             porcentaje: res.data.porcentaje,
-            siguienteNivel: res.data.siguienteNivel || null,
-            cursoFinalizado: res.data.cursoFinalizado || false,
-            progresoActualizado: res.data.progresoActualizado || {},
+            minimoAprobacion: res.data.minimoAprobacion,
+            cursoFinalizado: res.data.cursoFinalizado,
         };
     } catch (error) {
         console.error("❌ Error enviarExamenNivel:", error);
@@ -79,7 +80,6 @@ export const enviarExamenNivel = async({
             ok: false,
             aprobado: false,
             porcentaje: 0,
-            siguienteNivel: null,
             cursoFinalizado: false,
             message,
         };
@@ -99,12 +99,12 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
         return {
             ok: true,
             puedeAcceder: res.data.puedeAcceder,
-            reason: res.data.reason || null,
+            cursoFinalizado: res.data.cursoFinalizado,
         };
     } catch (error) {
         console.error("❌ Error puedeAccederNivel:", error);
 
-        let reason = "Error al verificar acceso al nivel";
+        let message = "Error al verificar acceso al nivel";
 
         if (
             error &&
@@ -112,13 +112,14 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
             error.response.data &&
             error.response.data.message
         ) {
-            reason = error.response.data.message;
+            message = error.response.data.message;
         }
 
         return {
-            ok: true,
+            ok: false,
             puedeAcceder: false,
-            reason,
+            cursoFinalizado: false,
+            message,
         };
     }
 };
