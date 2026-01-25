@@ -23,13 +23,10 @@ export default function Curso() {
     loading,
   } = useContext(ProgresoContext);
 
-  /* ======================================
-     🔄 CARGAR CURSO + RECARGAR PROGRESO
-  ====================================== */
   useEffect(() => {
     const cargarCurso = async () => {
       try {
-        await recargarProgreso(); // 🔑 SINCRONIZA DESPUÉS DEL EXAMEN
+        await recargarProgreso();
 
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
@@ -59,107 +56,87 @@ export default function Curso() {
     );
   }
 
-  /* ======================================
-     📊 PROGRESO DESDE BACKEND
-  ====================================== */
-
   const leccionesCompletadas = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
 
   const progresoCurso = progresoCursos.find((p) => p.cursoId === id);
-  const cursoFinalizado = progresoCurso?.completado === true;
+  const cursoFinalizado = progresoCurso && progresoCurso.completado === true;
 
   return (
     <>
       <TopBar />
 
       <div className="curso-contenedor-sidebar">
-        {/* SIDEBAR */}
         <aside className="sidebar">
           <h3>{curso.nombre}</h3>
 
-          {Array.isArray(curso.niveles) &&
-            curso.niveles.map((nivel) => {
-              const nivelNumero = Number(nivel.numero);
+          {curso.niveles.map((nivel) => {
+            const nivelNumero = Number(nivel.numero);
 
-              const nivelDesbloqueado =
-                nivelNumero === 1 ||
-                nivelesAprobados.includes(nivelNumero - 1);
+            const nivelDesbloqueado =
+              nivelNumero === 1 ||
+              nivelesAprobados.includes(nivelNumero - 1);
 
-              const idsLeccionesNivel = nivel.lecciones.map((l) => l.id);
+            return (
+              <div
+                key={nivel.numero}
+                className={
+                  "nivel-sidebar " +
+                  (!nivelDesbloqueado ? "nivel-bloqueado" : "")
+                }
+              >
+                <p>
+                  Nivel {nivel.numero}: {nivel.titulo}
+                </p>
 
-              const leccionesCompletadasNivel = idsLeccionesNivel.filter(
-                (lid) => leccionesCompletadas.includes(lid)
-              );
+                <ul>
+                  {nivel.lecciones.map((lec, index) => {
+                    const leccionId =
+                      id + "-n" + nivelNumero + "-l" + (index + 1);
 
-              const nivelCompletado =
-                leccionesCompletadasNivel.length === idsLeccionesNivel.length;
+                    const completada =
+                      leccionesCompletadas.includes(leccionId);
 
-              const examenAprobado =
-                nivelesAprobados.includes(nivelNumero);
-
-              return (
-                <div
-                  key={nivel.numero}
-                  className={`nivel-sidebar ${
-                    !nivelDesbloqueado ? "nivel-bloqueado" : ""
-                  }`}
-                >
-                  <p>
-                    Nivel {nivel.numero}: {nivel.titulo}
-                  </p>
-
-                  <ul>
-                    {nivel.lecciones.map((lec) => {
-                      const estaCompletada =
-                        leccionesCompletadas.includes(lec.id);
-
-                      return (
-                        <li
-                          key={lec.id}
-                          className={estaCompletada ? "completada" : ""}
-                        >
-                          {nivelDesbloqueado ? (
-                            <Link
-                              to={`/curso/${id}/nivel/${nivel.numero}/leccion/${lec.id}`}
-                              className="leccion-link"
-                            >
-                              {lec.titulo}
-                            </Link>
-                          ) : (
-                            <span className="leccion-bloqueada">
-                              🔒 {lec.titulo}
-                            </span>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-
-                  {/* 📝 EXAMEN */}
-                  {nivelDesbloqueado &&
-                    nivelCompletado &&
-                    !examenAprobado && (
-                      <button
-                        className="btn-examen-sidebar"
-                        onClick={() =>
-                          navigate(
-                            `/curso/${id}/nivel/${nivel.numero}/examen`
-                          )
-                        }
+                    return (
+                      <li
+                        key={leccionId}
+                        className={completada ? "completada" : ""}
                       >
-                        📝 Presentar examen
-                      </button>
-                    )}
+                        {nivelDesbloqueado ? (
+                          <Link
+                            to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
+                          >
+                            Lección {index + 1}: {lec.titulo}
+                          </Link>
+                        ) : (
+                          <span>🔒 {lec.titulo}</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
 
-                  {examenAprobado && (
-                    <p className="nivel-aprobado">✅ Nivel aprobado</p>
+                {nivelDesbloqueado &&
+                  !nivelesAprobados.includes(nivelNumero) && (
+                    <button
+                      className="btn-examen-sidebar"
+                      onClick={() =>
+                        navigate(
+                          `/curso/${id}/nivel/${nivelNumero}/examen`
+                        )
+                      }
+                    >
+                      📝 Presentar examen
+                    </button>
                   )}
-                </div>
-              );
-            })}
 
-          {/* 🎓 FINALIZAR CURSO */}
+                {nivelesAprobados.includes(nivelNumero) && (
+                  <p className="nivel-aprobado">✅ Nivel aprobado</p>
+                )}
+              </div>
+            );
+          })}
+
           {cursoFinalizado && (
             <button
               className="btn-finalizar-curso"
@@ -177,11 +154,10 @@ export default function Curso() {
           </button>
         </aside>
 
-        {/* MAIN */}
         <main className="contenido">
           <h2 className="curso-titulo">{curso.nombre}</h2>
           <p className="curso-descripcion">
-            {curso.descripcion || "No hay descripción disponible"}
+            {curso.descripcion}
           </p>
         </main>
       </div>
