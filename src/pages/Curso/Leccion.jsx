@@ -30,7 +30,7 @@ export default function Leccion() {
     recargarProgreso,
   } = useContext(ProgresoContext);
 
-  // ✅ ID CANÓNICO (BACKEND ↔ FRONTEND)
+  // ID CANÓNICO
   const leccionId = id + "-n" + nivelNum + "-l" + numLeccion;
 
   /* ===============================
@@ -47,6 +47,7 @@ export default function Leccion() {
 
         if (!snap.exists()) {
           setError("Curso no encontrado");
+          setCargando(false);
           return;
         }
 
@@ -54,6 +55,7 @@ export default function Leccion() {
 
         if (!data.niveles || !data.niveles[nivelNum - 1]) {
           setError("Nivel no encontrado");
+          setCargando(false);
           return;
         }
 
@@ -64,6 +66,7 @@ export default function Leccion() {
           !nivelData.lecciones[numLeccion - 1]
         ) {
           setError("Lección no encontrada");
+          setCargando(false);
           return;
         }
 
@@ -74,11 +77,15 @@ export default function Leccion() {
         setLeccionActual({
           id: leccionId,
           titulo: leccionData.titulo,
-          videoURL:
-            leccionData.videoURL ||
-            "https://www.youtube.com/embed/dQw4w9WgXcQ",
-          contenidoHTML: leccionData.contenidoHTML || "",
-          materiales: leccionData.materiales || [],
+          videoURL: leccionData.videoURL
+            ? leccionData.videoURL
+            : "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          contenidoHTML: leccionData.contenidoHTML
+            ? leccionData.contenidoHTML
+            : "",
+          materiales: leccionData.materiales
+            ? leccionData.materiales
+            : [],
           nivelTitulo: nivelData.titulo,
         });
 
@@ -100,7 +107,8 @@ export default function Leccion() {
      💾 GUARDAR PROGRESO
   =============================== */
   const guardarProgreso = async () => {
-    const progresoCursoActual = progresoGlobal[id] || [];
+    const progresoCursoActual =
+      progresoGlobal[id] ? progresoGlobal[id] : [];
 
     if (progresoCursoActual.includes(leccionId)) {
       await recargarProgreso();
@@ -112,7 +120,7 @@ export default function Leccion() {
 
       const res = await validarLeccion({
         cursoId: id,
-        leccionId,
+        leccionId: leccionId,
       });
 
       if (res && res.ok === false) {
@@ -159,21 +167,17 @@ export default function Leccion() {
     );
   }
 
-  if (!curso.niveles || !curso.niveles[nivelNum - 1]) {
-    return (
-      <>
-        <TopBar />
-        <p className="cargando">Cargando estructura del curso...</p>
-      </>
-    );
-  }
-
   /* ===============================
-     📊 PROGRESO (NORMALIZADO)
+     📊 PROGRESO
   =============================== */
-  const progresoCursoActual = progresoGlobal[id] || [];
+  const progresoCursoActual =
+    progresoGlobal[id] ? progresoGlobal[id] : [];
 
-  const nivelesAprobadosRaw = nivelesAprobadosGlobal[id] || [];
+  const nivelesAprobadosRaw =
+    nivelesAprobadosGlobal[id]
+      ? nivelesAprobadosGlobal[id]
+      : [];
+
   const nivelesAprobados = nivelesAprobadosRaw.map((n) =>
     Number(n)
   );
@@ -270,8 +274,7 @@ export default function Leccion() {
                 }
               >
                 <p>
-                  Nivel {nivelItem.numero}:{" "}
-                  {nivelItem.titulo}
+                  Nivel {nivelItem.numero}: {nivelItem.titulo}
                 </p>
 
                 <ul>
@@ -300,16 +303,12 @@ export default function Leccion() {
                       >
                         {desbloqueado ? (
                           <Link
-                            to={`/curso/${id}/nivel/${nivelNumero}/leccion/${
-                              index + 1
-                            }`}
+                            to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
                           >
                             Lección {index + 1}
                           </Link>
                         ) : (
-                          <span>
-                            🔒 Lección {index + 1}
-                          </span>
+                          <span>🔒 Lección {index + 1}</span>
                         )}
                       </li>
                     );
@@ -321,31 +320,7 @@ export default function Leccion() {
         </aside>
 
         <main className="contenido">
-          <div className="indicador-leccion">
-            Nivel {nivelNum} · Lección {numLeccion} de{" "}
-            {totalLeccionesNivel}
-          </div>
-
-          <div className="barra-progreso">
-            <p>Progreso del nivel</p>
-            <progress value={progresoNivelPct} max="100" />
-            <span>{progresoNivelPct}%</span>
-          </div>
-
-          <div className="barra-progreso">
-            <p>Progreso del curso</p>
-            <progress value={progresoCursoPct} max="100" />
-            <span>{progresoCursoPct}%</span>
-          </div>
-
           <h1>{leccionActual.titulo}</h1>
-          <h3>{leccionActual.nivelTitulo}</h3>
-
-          {leccionCompletada && (
-            <p className="leccion-completada">
-              ✔️ Lección completada
-            </p>
-          )}
 
           <div className="video-container">
             <iframe
@@ -355,27 +330,12 @@ export default function Leccion() {
             />
           </div>
 
-          {leccionActual.contenidoHTML && (
-            <div
-              className="contenido-html"
-              dangerouslySetInnerHTML={{
-                __html: leccionActual.contenidoHTML,
-              }}
-            />
-          )}
-
           <div className="navegacion-lecciones">
-            <button
-              onClick={navegarAnterior}
-              className="btn-nav"
-            >
-              ⬅ Anterior
-            </button>
+            <button onClick={navegarAnterior}>⬅ Anterior</button>
 
             {!esUltimaLeccion && (
               <button
                 onClick={navegarSiguiente}
-                className="btn-nav"
                 disabled={guardando}
               >
                 Siguiente ➝
@@ -385,10 +345,9 @@ export default function Leccion() {
             {esUltimaLeccion && (
               <button
                 onClick={irAExamenNivel}
-                className="btn-nav btn-finalizar"
                 disabled={guardando}
               >
-                📝 Presentar examen del nivel
+                📝 Presentar examen
               </button>
             )}
           </div>
