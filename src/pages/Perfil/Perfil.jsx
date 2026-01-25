@@ -25,7 +25,8 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { progresoGlobal, progresoCursos } = useContext(ProgresoContext);
+  const { progresoGlobal, progresoCursos, recargarProgreso } =
+    useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -63,19 +64,30 @@ const Perfil = () => {
   }, [logout, navigate]);
 
   /* ===============================
+     🔄 RECARGAR CURSOS AL CAMBIAR PROGRESO
+  =============================== */
+  useEffect(() => {
+    recargarProgreso(); // recarga progreso desde backend
+  }, [recargarProgreso]);
+
+  /* ===============================
      📊 CALCULAR PROGRESO DE LECCIONES
   =============================== */
   const calcularProgreso = (curso) => {
-    const completadas = progresoGlobal[curso.id] || [];
+    // Buscar progreso real del backend
+    const progresoCursoBackend = progresoCursos.find(
+      (pc) => pc.cursoId === curso.id
+    );
+
+    const completadas =
+      progresoCursoBackend?.leccionesCompletadas || progresoGlobal[curso.id] || [];
 
     let total = 0;
     curso.niveles.forEach((n) => {
       total += n.lecciones.length;
     });
 
-    const porcentaje = total
-      ? Math.round((completadas.length / total) * 100)
-      : 0;
+    const porcentaje = total ? Math.round((completadas.length / total) * 100) : 0;
 
     return {
       porcentaje,
@@ -87,6 +99,8 @@ const Perfil = () => {
           : porcentaje === 100
           ? "completado"
           : "en-progreso",
+      completado: porcentaje === 100,
+      constanciaEmitida: progresoCursoBackend?.constanciaEmitida || false,
     };
   };
 
@@ -189,12 +203,7 @@ const Perfil = () => {
           {cursos.map((curso) => {
             const p = calcularProgreso(curso);
 
-            // ✅ Buscar progreso completo desde backend
-            const progresoCurso = progresoCursos.find(
-              (pc) => pc.cursoId === curso.id
-            );
-            const mostrarConstancia =
-              progresoCurso?.completado && progresoCurso?.constanciaEmitida;
+            const mostrarConstancia = p.completado && p.constanciaEmitida;
 
             return (
               <div key={curso.id} className={`curso-card ${p.estado}`}>
@@ -223,9 +232,7 @@ const Perfil = () => {
                 {mostrarConstancia ? (
                   <button
                     className="btn-constancia"
-                    onClick={() =>
-                      descargarConstancia(curso.id, curso.nombre)
-                    }
+                    onClick={() => descargarConstancia(curso.id, curso.nombre)}
                   >
                     <FileText size={16} /> Descargar constancia
                   </button>
