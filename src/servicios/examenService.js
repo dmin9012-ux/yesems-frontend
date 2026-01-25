@@ -1,3 +1,4 @@
+// servicios/examenService.js
 import apiYesems from "../api/apiYesems";
 
 /* =====================================================
@@ -10,7 +11,12 @@ export const obtenerExamenNivel = async({ cursoId, nivel }) => {
             "/examen/" + cursoId + "/nivel/" + nivel
         );
 
-        return res.data;
+        return {
+            ok: true,
+            cursoId: res.data.cursoId,
+            nivel: res.data.nivel,
+            preguntas: res.data.preguntas || [],
+        };
     } catch (error) {
         console.error("❌ Error obtenerExamenNivel:", error);
 
@@ -47,7 +53,14 @@ export const enviarExamenNivel = async({
             "/examen/" + cursoId + "/nivel/" + nivel, { respuestas }
         );
 
-        return res.data;
+        return {
+            ok: true,
+            aprobado: res.data.aprobado,
+            porcentaje: res.data.porcentaje,
+            siguienteNivel: res.data.siguienteNivel || null,
+            cursoFinalizado: res.data.cursoFinalizado || false,
+            progresoActualizado: res.data.progresoActualizado || {},
+        };
     } catch (error) {
         console.error("❌ Error enviarExamenNivel:", error);
 
@@ -66,6 +79,8 @@ export const enviarExamenNivel = async({
             ok: false,
             aprobado: false,
             porcentaje: 0,
+            siguienteNivel: null,
+            cursoFinalizado: false,
             message,
         };
     }
@@ -81,7 +96,11 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
             "/examen/" + cursoId + "/nivel/" + nivel + "/puede-acceder"
         );
 
-        return res.data;
+        return {
+            ok: true,
+            puedeAcceder: res.data.puedeAcceder,
+            reason: res.data.reason || null,
+        };
     } catch (error) {
         console.error("❌ Error puedeAccederNivel:", error);
 
@@ -97,7 +116,7 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
         }
 
         return {
-            ok: false,
+            ok: true,
             puedeAcceder: false,
             reason,
         };

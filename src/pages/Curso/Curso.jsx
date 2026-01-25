@@ -18,15 +18,19 @@ export default function Curso() {
   const {
     progresoGlobal,
     nivelesAprobadosGlobal,
+    progresoCursos,
+    recargarProgreso,
     loading,
   } = useContext(ProgresoContext);
 
   /* ======================================
-     🔄 CARGAR CURSO
+     🔄 CARGAR CURSO + RECARGAR PROGRESO
   ====================================== */
   useEffect(() => {
     const cargarCurso = async () => {
       try {
+        await recargarProgreso(); // 🔑 SINCRONIZA DESPUÉS DEL EXAMEN
+
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
@@ -56,19 +60,14 @@ export default function Curso() {
   }
 
   /* ======================================
-     📊 PROGRESO
+     📊 PROGRESO DESDE BACKEND
   ====================================== */
 
   const leccionesCompletadas = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
 
-  const totalNiveles = Array.isArray(curso.niveles)
-    ? curso.niveles.length
-    : 0;
-
-  const cursoFinalizado =
-    nivelesAprobados.length === totalNiveles &&
-    totalNiveles > 0;
+  const progresoCurso = progresoCursos.find((p) => p.cursoId === id);
+  const cursoFinalizado = progresoCurso?.completado === true;
 
   return (
     <>
@@ -87,18 +86,14 @@ export default function Curso() {
                 nivelNumero === 1 ||
                 nivelesAprobados.includes(nivelNumero - 1);
 
-              const idsLeccionesNivel = nivel.lecciones.map(
-                (l) => l.id
+              const idsLeccionesNivel = nivel.lecciones.map((l) => l.id);
+
+              const leccionesCompletadasNivel = idsLeccionesNivel.filter(
+                (lid) => leccionesCompletadas.includes(lid)
               );
 
-              const leccionesCompletadasNivel =
-                idsLeccionesNivel.filter((lid) =>
-                  leccionesCompletadas.includes(lid)
-                );
-
               const nivelCompletado =
-                leccionesCompletadasNivel.length ===
-                idsLeccionesNivel.length;
+                leccionesCompletadasNivel.length === idsLeccionesNivel.length;
 
               const examenAprobado =
                 nivelesAprobados.includes(nivelNumero);
@@ -115,20 +110,18 @@ export default function Curso() {
                   </p>
 
                   <ul>
-                    {nivel.lecciones.map((lec, index) => {
+                    {nivel.lecciones.map((lec) => {
                       const estaCompletada =
                         leccionesCompletadas.includes(lec.id);
 
                       return (
                         <li
                           key={lec.id}
-                          className={
-                            estaCompletada ? "completada" : ""
-                          }
+                          className={estaCompletada ? "completada" : ""}
                         >
                           {nivelDesbloqueado ? (
                             <Link
-                              to={`/curso/${id}/nivel/${nivel.numero}/leccion/${index + 1}`}
+                              to={`/curso/${id}/nivel/${nivel.numero}/leccion/${lec.id}`}
                               className="leccion-link"
                             >
                               {lec.titulo}
@@ -160,9 +153,7 @@ export default function Curso() {
                     )}
 
                   {examenAprobado && (
-                    <p className="nivel-aprobado">
-                      ✅ Nivel aprobado
-                    </p>
+                    <p className="nivel-aprobado">✅ Nivel aprobado</p>
                   )}
                 </div>
               );

@@ -1,9 +1,10 @@
+// pages/Examen.jsx
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import TopBar from "../../components/TopBar/TopBar";
-import apiYesems from "../../api/apiYesems";
 import {
+  obtenerExamenNivel,
   enviarExamenNivel,
   puedeAccederNivel,
 } from "../../servicios/examenService";
@@ -39,39 +40,44 @@ export default function Examen() {
   const [bloqueado, setBloqueado] = useState(false);
 
   const cargarExamen = async () => {
-    try {
-      setCargando(true);
-      setError("");
-      setBloqueado(false);
-      setExamen({ preguntas: [] });
-      setRespuestas({});
-      setResultado(null);
+    setCargando(true);
+    setError("");
+    setBloqueado(false);
+    setExamen({ preguntas: [] });
+    setRespuestas({});
+    setResultado(null);
 
+    try {
       const acceso = await puedeAccederNivel({
         cursoId,
         nivel: nivelNumero,
       });
 
-      if (!acceso?.ok || acceso.puedeAcceder !== true) {
+      if (!acceso.ok || acceso.puedeAcceder !== true) {
         setBloqueado(true);
-        setError(acceso?.reason || "No puedes acceder a este examen");
+        setError(acceso.reason || "No puedes acceder a este examen");
         setCargando(false);
         return;
       }
 
-      const res = await apiYesems.get(`/examen/${cursoId}/nivel/${nivelNumero}`);
+      const res = await obtenerExamenNivel({
+        cursoId,
+        nivel: nivelNumero,
+      });
 
-      if (!res?.data?.ok || !res.data.preguntas?.length) {
+      if (!res.ok || !res.preguntas.length) {
         setError("El examen no tiene preguntas");
         setCargando(false);
         return;
       }
 
-      setExamen({ ...res.data, preguntas: shuffleArray(res.data.preguntas) });
-      setCargando(false);
+      setExamen({
+        preguntas: shuffleArray(res.preguntas),
+      });
     } catch (err) {
       console.error("❌ Error cargar examen:", err);
       setError("Error al cargar el examen");
+    } finally {
       setCargando(false);
     }
   };
@@ -88,7 +94,7 @@ export default function Examen() {
   };
 
   const enviarExamen = async () => {
-    if (!examen?.preguntas?.length) return;
+    if (!examen.preguntas.length) return;
 
     const respuestasArray = examen.preguntas.map((p) => ({
       preguntaId: p.id,
@@ -109,18 +115,17 @@ export default function Examen() {
         respuestas: respuestasArray,
       });
 
-      if (!res?.ok) {
-        alert(res?.message || "Error al enviar el examen");
+      if (!res.ok) {
+        alert(res.message || "Error al enviar el examen");
         return;
       }
 
-      // 🔑 RECARGAR PROGRESO Y RECALCULAR NIVELES
       await recargarProgreso();
 
       setResultado({
         aprobado: res.aprobado,
         porcentaje: res.porcentaje,
-        mensaje: res.mensaje,
+        siguienteNivel: res.siguienteNivel,
         cursoFinalizado: res.cursoFinalizado,
       });
     } catch (err) {
@@ -147,7 +152,10 @@ export default function Examen() {
         <div className="examen-bloqueado">
           <h2>🚫 Acceso bloqueado</h2>
           <p>{error}</p>
-          <button className="btn-examen" onClick={() => navigate(`/curso/${cursoId}`)}>
+          <button
+            className="btn-examen"
+            onClick={() => navigate(`/curso/${cursoId}`)}
+          >
             Volver al curso
           </button>
         </div>
@@ -166,15 +174,19 @@ export default function Examen() {
             Puntaje: <strong>{resultado.porcentaje}%</strong>
           </p>
 
-          <p className="mensaje">{resultado.mensaje}</p>
-
           {resultado.aprobado ? (
             resultado.cursoFinalizado ? (
-              <button className="btn-examen aprobado" onClick={() => navigate("/perfil")}>
+              <button
+                className="btn-examen aprobado"
+                onClick={() => navigate("/perfil")}
+              >
                 🎓 Finalizar curso
               </button>
             ) : (
-              <button className="btn-examen aprobado" onClick={() => navigate(`/curso/${cursoId}`)}>
+              <button
+                className="btn-examen aprobado"
+                onClick={() => navigate(`/curso/${cursoId}`)}
+              >
                 Volver al curso
               </button>
             )
@@ -194,34 +206,36 @@ export default function Examen() {
       <div className="examen-contenedor">
         <h1>Examen – Nivel {nivelNumero}</h1>
 
-        {examen?.preguntas?.length > 0 ? (
-          examen.preguntas.map((pregunta, idx) => (
-            <div key={pregunta.id} className="pregunta">
-              <h3>
-                {idx + 1}. {pregunta.pregunta}
-              </h3>
-              <ul>
-                {pregunta.opciones.map((opcion, i) => (
-                  <li key={i}>
-                    <label>
-                      <input
-                        type="radio"
-                        name={pregunta.id}
-                        checked={respuestas[pregunta.id] === i}
-                        onChange={() => seleccionarRespuesta(pregunta.id, i)}
-                      />
-                      {opcion}
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        ) : (
-          <p>No hay preguntas disponibles.</p>
-        )}
+        {examen.preguntas.map((pregunta, idx) => (
+          <div key={pregunta.id} className="pregunta">
+            <h3>
+              {idx + 1}. {pregunta.pregunta}
+            </h3>
+            <ul>
+              {pregunta.opciones.map((opcion, i) => (
+                <li key={i}>
+                  <label>
+                    <input
+                      type="radio"
+                      name={pregunta.id}
+                      checked={respuestas[pregunta.id] === i}
+                      onChange={() =>
+                        seleccionarRespuesta(pregunta.id, i)
+                      }
+                    />
+                    {opcion}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
 
-        <button className="btn-examen" onClick={enviarExamen} disabled={enviando}>
+        <button
+          className="btn-examen"
+          onClick={enviarExamen}
+          disabled={enviando}
+        >
           {enviando ? "Enviando..." : "Enviar examen"}
         </button>
       </div>
