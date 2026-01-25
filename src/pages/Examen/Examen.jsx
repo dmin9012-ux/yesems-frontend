@@ -1,20 +1,14 @@
-// pages/Examen.jsx
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import TopBar from "../../components/TopBar/TopBar";
-import {
-  obtenerExamenNivel,
-  enviarExamenNivel,
-  puedeAccederNivel,
-} from "../../servicios/examenService";
+import apiYesems from "../../api/apiYesems";
+import { enviarExamenNivel, puedeAccederNivel } from "../../servicios/examenService";
 import { ProgresoContext } from "../../context/ProgresoContext";
 
 import "./ExamenStyle.css";
 
-/* ======================================
-   🔀 SHUFFLE (reordenar preguntas)
-====================================== */
+/* 🔀 Mezclar preguntas */
 const shuffleArray = (array) => {
   const copia = [...array];
   for (let i = copia.length - 1; i > 0; i--) {
@@ -30,62 +24,42 @@ export default function Examen() {
   const nivelNumero = Number(nivel);
   const navigate = useNavigate();
 
-  const { recargarProgreso } = useContext(ProgresoContext);
+  const { recargarProgreso, actualizarNivelesAprobados } = useContext(ProgresoContext);
 
   const [examen, setExamen] = useState({ preguntas: [] });
   const [respuestas, setRespuestas] = useState({});
   const [resultado, setResultado] = useState(null);
-
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
-
   const [error, setError] = useState("");
   const [bloqueado, setBloqueado] = useState(false);
 
-  /* ======================================
-     📥 CARGAR EXAMEN
-  ====================================== */
+  /* ===============================
+     Cargar examen y verificar acceso
+  =============================== */
   const cargarExamen = async () => {
-    setCargando(true);
-    setError("");
-    setBloqueado(false);
-    setExamen({ preguntas: [] });
-    setRespuestas({});
-    setResultado(null);
-
     try {
-      const acceso = await puedeAccederNivel({
-        cursoId,
-        nivel: nivelNumero,
-      });
+      setCargando(true);
+      setError("");
+      setBloqueado(false);
+      setExamen({ preguntas: [] });
+      setRespuestas({});
+      setResultado(null);
 
-      if (!acceso.ok || acceso.puedeAcceder !== true) {
+      const acceso = await puedeAccederNivel({ cursoId, nivel: nivelNumero });
+      if (!acceso?.ok || acceso.puedeAcceder !== true) {
         setBloqueado(true);
-
-        if (acceso.cursoFinalizado) {
-          setError("Este curso ya fue finalizado");
-        } else {
-          setError("No cumples los requisitos para presentar este examen");
-        }
-
-        setCargando(false);
+        setError(acceso?.reason || "No puedes acceder a este examen");
         return;
       }
 
-      const res = await obtenerExamenNivel({
-        cursoId,
-        nivel: nivelNumero,
-      });
-
-      if (!res.ok || !Array.isArray(res.preguntas) || res.preguntas.length === 0) {
-        setError(res.message || "El examen no tiene preguntas");
-        setCargando(false);
+      const res = await apiYesems.get(`/examen/${cursoId}/nivel/${nivelNumero}`);
+      if (!res?.data?.ok || !res.data.preguntas?.length) {
+        setError("El examen no tiene preguntas");
         return;
       }
 
-      setExamen({
-        preguntas: shuffleArray(res.preguntas),
-      });
+      setExamen({ ...res.data, preguntas: shuffleArray(res.data.preguntas) });
     } catch (err) {
       console.error("❌ Error cargar examen:", err);
       setError("Error al cargar el examen");
@@ -98,27 +72,14 @@ export default function Examen() {
     cargarExamen();
   }, [cursoId, nivelNumero]);
 
-  /* ======================================
-     📝 SELECCIONAR RESPUESTA
-  ====================================== */
   const seleccionarRespuesta = (preguntaId, opcionIndex) => {
-    setRespuestas((prev) => ({
-      ...prev,
-      [preguntaId]: opcionIndex,
-    }));
+    setRespuestas((prev) => ({ ...prev, [preguntaId]: opcionIndex }));
   };
 
-  /* ======================================
-     📤 ENVIAR EXAMEN
-  ====================================== */
   const enviarExamen = async () => {
-    if (enviando) return;
-    if (!examen.preguntas.length) return;
+    if (!examen?.preguntas?.length) return;
 
-    const respuestasArray = examen.preguntas.map((p) => ({
-      preguntaId: p.id,
-      respuesta: respuestas[p.id],
-    }));
+    const respuestasArray = examen.preguntas.map((p) => ({ preguntaId: p.id, respuesta: respuestas[p.id] }));
 
     if (respuestasArray.some((r) => r.respuesta === undefined)) {
       alert("❗ Debes responder todas las preguntas");
@@ -127,25 +88,23 @@ export default function Examen() {
 
     try {
       setEnviando(true);
+      const res = await enviarExamenNivel({ cursoId, nivel: nivelNumero, respuestas: respuestasArray });
 
-      const res = await enviarExamenNivel({
-        cursoId,
-        nivel: nivelNumero,
-        respuestas: respuestasArray,
-      });
-
-      if (!res.ok) {
-        alert(res.message || "Error al enviar el examen");
+      if (!res?.ok) {
+        alert(res?.message || "Error al enviar el examen");
         return;
       }
 
       await recargarProgreso();
 
+      if (res.aprobado) {
+        actualizarNivelesAprobados(cursoId, nivelNumero);
+      }
+
       setResultado({
         aprobado: res.aprobado,
         porcentaje: res.porcentaje,
         cursoFinalizado: res.cursoFinalizado,
-        minimoAprobacion: res.minimoAprobacion,
       });
     } catch (err) {
       console.error("❌ Error enviar examen:", err);
@@ -155,102 +114,53 @@ export default function Examen() {
     }
   };
 
-  /* ======================================
-     ⏳ CARGANDO
-  ====================================== */
-  if (cargando) {
-    return (
-      <>
-        <TopBar />
-        <p className="cargando">Cargando examen...</p>
-      </>
-    );
-  }
+  /* ===============================
+     Renderizado
+  =============================== */
+  if (cargando) return <><TopBar /><p className="cargando">Cargando examen...</p></>;
 
-  /* ======================================
-     🚫 BLOQUEADO
-  ====================================== */
-  if (bloqueado) {
-    return (
-      <>
-        <TopBar />
-        <div className="examen-bloqueado">
-          <h2>🚫 Acceso bloqueado</h2>
-          <p>{error}</p>
-          <button
-            className="btn-examen"
-            onClick={() => navigate(`/curso/${cursoId}`)}
-          >
-            Volver al curso
-          </button>
-        </div>
-      </>
-    );
-  }
+  if (bloqueado) return (
+    <>
+      <TopBar />
+      <div className="examen-bloqueado">
+        <h2>🚫 Acceso bloqueado</h2>
+        <p>{error}</p>
+        <button className="btn-examen" onClick={() => navigate(`/curso/${cursoId}`)}>Volver al curso</button>
+      </div>
+    </>
+  );
 
-  /* ======================================
-     🎯 RESULTADO
-  ====================================== */
-  if (resultado) {
-    return (
-      <>
-        <TopBar />
-        <div className="resultado-examen">
-          <h1>{resultado.aprobado ? "🎉 ¡Aprobado!" : "❌ Reprobado"}</h1>
-
-          <p className="porcentaje">
-            Puntaje: <strong>{resultado.porcentaje}%</strong>
-          </p>
-
-          <p>
-            Mínimo requerido: {resultado.minimoAprobacion}%
-          </p>
-
-          {resultado.aprobado ? (
-            resultado.cursoFinalizado ? (
-              <button
-                className="btn-examen aprobado"
-                onClick={() => navigate("/perfil")}
-              >
-                🎓 Finalizar curso
-              </button>
-            ) : (
-              <button
-                className="btn-examen aprobado"
-                onClick={() => navigate(`/curso/${cursoId}`)}
-              >
-                Volver al curso
-              </button>
-            )
+  if (resultado) return (
+    <>
+      <TopBar />
+      <div className="resultado-examen">
+        <h1>{resultado.aprobado ? "🎉 ¡Aprobado!" : "❌ Reprobado"}</h1>
+        <p className="porcentaje">Puntaje: <strong>{resultado.porcentaje}%</strong></p>
+        {resultado.aprobado && resultado.cursoFinalizado && <p>🎓 ¡Felicidades! Has completado todo el curso.</p>}
+        {resultado.aprobado ? (
+          resultado.cursoFinalizado ? (
+            <button className="btn-examen aprobado" onClick={() => navigate("/perfil")}>🎓 Finalizar curso</button>
           ) : (
-            <button
-              className="btn-examen reprobado"
-              onClick={cargarExamen}
-              disabled={enviando}
-            >
-              Reintentar examen
-            </button>
-          )}
-        </div>
-      </>
-    );
-  }
+            <button className="btn-examen aprobado" onClick={() => navigate(`/curso/${cursoId}`)}>Volver al curso</button>
+          )
+        ) : (
+          <button className="btn-examen reprobado" onClick={cargarExamen}>Reintentar examen</button>
+        )}
+      </div>
+    </>
+  );
 
-  /* ======================================
-     🧠 EXAMEN
-  ====================================== */
   return (
     <>
       <TopBar />
       <div className="examen-contenedor">
         <h1>Examen – Nivel {nivelNumero}</h1>
 
-        {examen.preguntas.map((pregunta, idx) => (
-          <div key={pregunta.id} className="pregunta">
-            <h3>
-              {idx + 1}. {pregunta.pregunta}
-            </h3>
+        {error && <p className="error-examen">❌ {error}</p>}
 
+        {examen?.preguntas?.length > 0 ? examen.preguntas.map((pregunta, idx) => (
+          <div key={pregunta.id} className="pregunta">
+            <h3>{idx + 1}. {pregunta.pregunta}</h3>
             <ul>
               {pregunta.opciones.map((opcion, i) => (
                 <li key={i}>
@@ -259,9 +169,7 @@ export default function Examen() {
                       type="radio"
                       name={pregunta.id}
                       checked={respuestas[pregunta.id] === i}
-                      onChange={() =>
-                        seleccionarRespuesta(pregunta.id, i)
-                      }
+                      onChange={() => seleccionarRespuesta(pregunta.id, i)}
                     />
                     {opcion}
                   </label>
@@ -269,13 +177,9 @@ export default function Examen() {
               ))}
             </ul>
           </div>
-        ))}
+        )) : <p>No hay preguntas disponibles.</p>}
 
-        <button
-          className="btn-examen"
-          onClick={enviarExamen}
-          disabled={enviando}
-        >
+        <button className="btn-examen" onClick={enviarExamen} disabled={enviando}>
           {enviando ? "Enviando..." : "Enviar examen"}
         </button>
       </div>

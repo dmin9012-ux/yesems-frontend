@@ -14,6 +14,7 @@ export default function Curso() {
 
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [accesos, setAccesos] = useState({}); // track de acceso a cada nivel
 
   const {
     progresoGlobal,
@@ -23,31 +24,62 @@ export default function Curso() {
     loading,
   } = useContext(ProgresoContext);
 
+  /* ======================================
+     🔄 CARGAR CURSO + PROGRESO
+  ====================================== */
   useEffect(() => {
     const cargarCurso = async () => {
       try {
-        await recargarProgreso();
+        await recargarProgreso(); // 🔑 sincroniza progresos
 
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          console.error("Curso no encontrado");
+          console.error("❌ Curso no encontrado");
           return;
         }
 
         setCurso(snap.data());
       } catch (error) {
-        console.error("Error cargando curso:", error);
+        console.error("❌ Error cargando curso:", error);
       } finally {
         setCargando(false);
       }
     };
 
     cargarCurso();
-  }, [id, recargarProgreso]);
+  }, [id]);
 
-  if (cargando || loading || curso === null) {
+  /* ======================================
+     🔹 FUNCION PARA CONSULTAR ACCESO A NIVEL
+  ====================================== */
+  const verificarAccesoNivel = async (nivelNumero) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `https://yesems-backend-production.up.railway.app/api/examen/${id}/nivel/${nivelNumero}/puede-acceder`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      setAccesos((prev) => ({ ...prev, [nivelNumero]: data.puedeAcceder }));
+    } catch (error) {
+      console.error(error);
+      setAccesos((prev) => ({ ...prev, [nivelNumero]: false }));
+    }
+  };
+
+  /* ======================================
+     🔄 CONSULTAR ACCESO PARA TODOS LOS NIVELES
+  ====================================== */
+  useEffect(() => {
+    if (!curso?.niveles) return;
+    curso.niveles.forEach((nivel) => {
+      verificarAccesoNivel(Number(nivel.numero));
+    });
+  }, [curso]);
+
+  if (cargando || loading || !curso) {
     return (
       <>
         <TopBar />
@@ -56,131 +88,95 @@ export default function Curso() {
     );
   }
 
-  /* =============================
-     NORMALIZAR PROGRESO
-  ============================== */
-
-  const leccionesCompletadas =
-    progresoGlobal && progresoGlobal[id]
-      ? progresoGlobal[id]
-      : [];
-
-  const nivelesAprobadosRaw =
-    nivelesAprobadosGlobal && nivelesAprobadosGlobal[id]
-      ? nivelesAprobadosGlobal[id]
-      : [];
-
-  const nivelesAprobados = nivelesAprobadosRaw.map((n) =>
-    Number(n)
-  );
-
-  let progresoCurso = null;
-
-  for (let i = 0; i < progresoCursos.length; i++) {
-    if (progresoCursos[i].cursoId === id) {
-      progresoCurso = progresoCursos[i];
-      break;
-    }
-  }
-
-  const cursoFinalizado =
-    progresoCurso !== null &&
-    progresoCurso.completado === true;
+  /* ======================================
+     📊 PROGRESO DESDE BACKEND
+  ====================================== */
+  const leccionesCompletadas = progresoGlobal[id] || [];
+  const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
+  const progresoCurso = progresoCursos.find((p) => p.cursoId === id);
+  const cursoFinalizado = progresoCurso?.completado === true;
 
   return (
     <>
       <TopBar />
 
       <div className="curso-contenedor-sidebar">
+        {/* SIDEBAR */}
         <aside className="sidebar">
           <h3>{curso.nombre}</h3>
 
-          {curso.niveles.map((nivel) => {
-            const nivelNumero = Number(nivel.numero);
+          {Array.isArray(curso.niveles) &&
+            curso.niveles.map((nivel) => {
+              const nivelNumero = Number(nivel.numero);
 
-            const nivelDesbloqueado =
-              nivelNumero === 1 ||
-              nivelesAprobados.includes(nivelNumero - 1);
+              const idsLeccionesNivel = nivel.lecciones.map((l) => l.id);
 
-            return (
-              <div
-                key={"nivel-" + nivelNumero}
-                className={
-                  "nivel-sidebar " +
-                  (nivelDesbloqueado ? "" : "nivel-bloqueado")
-                }
-              >
-                <p>
-                  Nivel {nivel.numero}: {nivel.titulo}
-                </p>
+              const leccionesCompletadasNivel = idsLeccionesNivel.filter((lid) =>
+                leccionesCompletadas.includes(lid)
+              );
 
-                <ul>
-                  {nivel.lecciones.map((lec, index) => {
-                    const leccionNumero = index + 1;
+              const nivelCompletado =
+                leccionesCompletadasNivel.length === idsLeccionesNivel.length;
 
-                    const leccionId =
-                      id +
-                      "-n" +
-                      nivelNumero +
-                      "-l" +
-                      leccionNumero;
+              const examenAprobado = nivelesAprobados.includes(nivelNumero);
 
-                    const completada =
-                      leccionesCompletadas.includes(leccionId);
+              const nivelDesbloqueado = accesos[nivelNumero] ?? false;
 
-                    return (
-                      <li
-                        key={leccionId}
-                        className={completada ? "completada" : ""}
-                      >
-                        {nivelDesbloqueado ? (
-                          <Link
-                            to={
-                              "/curso/" +
-                              id +
-                              "/nivel/" +
-                              nivelNumero +
-                              "/leccion/" +
-                              leccionNumero
-                            }
-                          >
-                            Lección {leccionNumero}: {lec.titulo}
-                          </Link>
-                        ) : (
-                          <span>🔒 {lec.titulo}</span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
+              return (
+                <div
+                  key={nivel.numero}
+                  className={`nivel-sidebar ${
+                    !nivelDesbloqueado ? "nivel-bloqueado" : ""
+                  }`}
+                >
+                  <p>
+                    Nivel {nivel.numero}: {nivel.titulo}
+                  </p>
 
-                {nivelDesbloqueado &&
-                  !nivelesAprobados.includes(nivelNumero) && (
+                  <ul>
+                    {nivel.lecciones.map((lec) => {
+                      const estaCompletada = leccionesCompletadas.includes(lec.id);
+
+                      return (
+                        <li
+                          key={lec.id}
+                          className={estaCompletada ? "completada" : ""}
+                        >
+                          {nivelDesbloqueado ? (
+                            <Link
+                              to={`/curso/${id}/nivel/${nivel.numero}/leccion/${lec.id}`}
+                              className="leccion-link"
+                            >
+                              {lec.titulo}
+                            </Link>
+                          ) : (
+                            <span className="leccion-bloqueada">🔒 {lec.titulo}</span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  {/* 📝 BOTÓN EXAMEN */}
+                  {nivelDesbloqueado && nivelCompletado && !examenAprobado && (
                     <button
                       className="btn-examen-sidebar"
                       onClick={() =>
-                        navigate(
-                          "/curso/" +
-                            id +
-                            "/nivel/" +
-                            nivelNumero +
-                            "/examen"
-                        )
+                        navigate(`/curso/${id}/nivel/${nivel.numero}/examen`)
                       }
                     >
                       📝 Presentar examen
                     </button>
                   )}
 
-                {nivelesAprobados.includes(nivelNumero) && (
-                  <p className="nivel-aprobado">
-                    ✅ Nivel aprobado
-                  </p>
-                )}
-              </div>
-            );
-          })}
+                  {examenAprobado && (
+                    <p className="nivel-aprobado">✅ Nivel aprobado</p>
+                  )}
+                </div>
+              );
+            })}
 
+          {/* 🎓 BOTÓN FINALIZAR CURSO */}
           {cursoFinalizado && (
             <button
               className="btn-finalizar-curso"
@@ -198,10 +194,11 @@ export default function Curso() {
           </button>
         </aside>
 
+        {/* MAIN */}
         <main className="contenido">
           <h2 className="curso-titulo">{curso.nombre}</h2>
           <p className="curso-descripcion">
-            {curso.descripcion}
+            {curso.descripcion || "No hay descripción disponible"}
           </p>
         </main>
       </div>

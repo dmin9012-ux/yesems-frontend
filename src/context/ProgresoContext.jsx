@@ -12,14 +12,11 @@ export const ProgresoProvider = ({ children }) => {
   const [progresoCursos, setProgresoCursos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* ======================================
-     🔄 CARGAR PROGRESO DESDE BACKEND
-  ====================================== */
+  /* ===============================
+     🔄 Cargar progreso desde backend
+  =============================== */
   const cargarProgreso = async () => {
     if (!isAuthenticated || !user || user.rol === "admin") {
-      setProgresoGlobal({});
-      setNivelesAprobadosGlobal({});
-      setProgresoCursos([]);
       setLoading(false);
       return;
     }
@@ -29,27 +26,18 @@ export const ProgresoProvider = ({ children }) => {
     try {
       const res = await obtenerProgresoUsuario();
 
-      /**
-       * Backend:
-       * {
-       *   ok: true,
-       *   progresos: [
-       *     { cursoId, leccionesCompletadas, nivelesAprobados }
-       *   ]
-       * }
-       */
-      if (res && res.data && res.data.ok && Array.isArray(res.data.progresos)) {
+      if (res.ok && Array.isArray(res.data)) {
         const progresoObj = {};
         const nivelesObj = {};
 
-        res.data.progresos.forEach((curso) => {
+        res.data.forEach((curso) => {
           progresoObj[curso.cursoId] = curso.leccionesCompletadas || [];
           nivelesObj[curso.cursoId] = curso.nivelesAprobados || [];
         });
 
         setProgresoGlobal(progresoObj);
         setNivelesAprobadosGlobal(nivelesObj);
-        setProgresoCursos(res.data.progresos);
+        setProgresoCursos(res.data);
       }
     } catch (error) {
       console.error("❌ Error cargando progreso:", error);
@@ -58,38 +46,32 @@ export const ProgresoProvider = ({ children }) => {
     }
   };
 
-  /* ======================================
-     ➕ ACTUALIZAR PROGRESO LOCAL (LECCIÓN)
-  ====================================== */
+  /* ===============================
+     ➕ Actualizar progreso local (lección)
+  =============================== */
   const actualizarProgreso = (cursoId, leccionId) => {
     setProgresoGlobal((prev) => {
-      const cursoActual = prev[cursoId] || [];
-
-      if (cursoActual.includes(leccionId)) {
-        return prev;
-      }
+      const prevCurso = prev[cursoId] || [];
+      if (prevCurso.includes(leccionId)) return prev;
 
       return {
         ...prev,
-        [cursoId]: [...cursoActual, leccionId],
+        [cursoId]: [...prevCurso, leccionId],
       };
     });
   };
 
-  /* ======================================
-     ✅ ACTUALIZAR NIVEL APROBADO (EXAMEN)
-  ====================================== */
-  const aprobarNivel = (cursoId, nivel) => {
+  /* ===============================
+     ✅ Actualizar niveles aprobados localmente
+  =============================== */
+  const actualizarNivelesAprobados = (cursoId, nivelNumero) => {
     setNivelesAprobadosGlobal((prev) => {
-      const nivelesActuales = prev[cursoId] || [];
-
-      if (nivelesActuales.includes(nivel)) {
-        return prev;
-      }
+      const prevNiveles = prev[cursoId] || [];
+      if (prevNiveles.includes(nivelNumero)) return prev;
 
       return {
         ...prev,
-        [cursoId]: [...nivelesActuales, nivel],
+        [cursoId]: [...prevNiveles, nivelNumero],
       };
     });
   };
@@ -105,7 +87,7 @@ export const ProgresoProvider = ({ children }) => {
         nivelesAprobadosGlobal,
         progresoCursos,
         actualizarProgreso,
-        aprobarNivel,
+        actualizarNivelesAprobados, // 🔑 nuevo método
         recargarProgreso: cargarProgreso,
         loading,
       }}

@@ -1,4 +1,3 @@
-// servicios/examenService.js
 import apiYesems from "../api/apiYesems";
 
 /* =====================================================
@@ -11,14 +10,7 @@ export const obtenerExamenNivel = async({ cursoId, nivel }) => {
             "/examen/" + cursoId + "/nivel/" + nivel
         );
 
-        return {
-            ok: true,
-            cursoId: res.data.cursoId,
-            nivel: res.data.nivel,
-            preguntas: Array.isArray(res.data.preguntas) ?
-                res.data.preguntas :
-                [],
-        };
+        return res.data;
     } catch (error) {
         console.error("❌ Error obtenerExamenNivel:", error);
 
@@ -55,13 +47,7 @@ export const enviarExamenNivel = async({
             "/examen/" + cursoId + "/nivel/" + nivel, { respuestas }
         );
 
-        return {
-            ok: true,
-            aprobado: res.data.aprobado,
-            porcentaje: res.data.porcentaje,
-            minimoAprobacion: res.data.minimoAprobacion,
-            cursoFinalizado: res.data.cursoFinalizado,
-        };
+        return res.data;
     } catch (error) {
         console.error("❌ Error enviarExamenNivel:", error);
 
@@ -80,7 +66,6 @@ export const enviarExamenNivel = async({
             ok: false,
             aprobado: false,
             porcentaje: 0,
-            cursoFinalizado: false,
             message,
         };
     }
@@ -96,15 +81,11 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
             "/examen/" + cursoId + "/nivel/" + nivel + "/puede-acceder"
         );
 
-        return {
-            ok: true,
-            puedeAcceder: res.data.puedeAcceder,
-            cursoFinalizado: res.data.cursoFinalizado,
-        };
+        return res.data;
     } catch (error) {
         console.error("❌ Error puedeAccederNivel:", error);
 
-        let message = "Error al verificar acceso al nivel";
+        let reason = "Error al verificar acceso al nivel";
 
         if (
             error &&
@@ -112,14 +93,13 @@ export const puedeAccederNivel = async({ cursoId, nivel }) => {
             error.response.data &&
             error.response.data.message
         ) {
-            message = error.response.data.message;
+            reason = error.response.data.message;
         }
 
         return {
             ok: false,
             puedeAcceder: false,
-            cursoFinalizado: false,
-            message,
+            reason,
         };
     }
 };
