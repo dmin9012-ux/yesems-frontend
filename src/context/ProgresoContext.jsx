@@ -48,16 +48,42 @@ export const ProgresoProvider = ({ children }) => {
 
   /* ===============================
      ➕ Actualizar progreso local (lección)
+     ⚡ Ahora sincroniza progresoGlobal y progresoCursos
   =============================== */
   const actualizarProgreso = (cursoId, leccionId) => {
     setProgresoGlobal((prev) => {
       const prevCurso = prev[cursoId] || [];
       if (prevCurso.includes(leccionId)) return prev;
 
-      return {
+      const nuevoProgresoGlobal = {
         ...prev,
         [cursoId]: [...prevCurso, leccionId],
       };
+
+      // 🔹 Actualizar también progresoCursos
+      setProgresoCursos((prevCursos) => {
+        const cursoIndex = prevCursos.findIndex((c) => c.cursoId === cursoId);
+        if (cursoIndex === -1) return prevCursos;
+
+        const cursoPrev = prevCursos[cursoIndex];
+        const lecciones = cursoPrev.leccionesCompletadas || [];
+
+        if (lecciones.includes(leccionId)) return prevCursos;
+
+        const totalLecciones = cursoPrev.totalLecciones || lecciones.length + 1;
+
+        const cursoActualizado = {
+          ...cursoPrev,
+          leccionesCompletadas: [...lecciones, leccionId],
+          completado: lecciones.length + 1 >= totalLecciones,
+        };
+
+        const nuevosCursos = [...prevCursos];
+        nuevosCursos[cursoIndex] = cursoActualizado;
+        return nuevosCursos;
+      });
+
+      return nuevoProgresoGlobal;
     });
   };
 
@@ -87,7 +113,7 @@ export const ProgresoProvider = ({ children }) => {
         nivelesAprobadosGlobal,
         progresoCursos,
         actualizarProgreso,
-        actualizarNivelesAprobados, // 🔑 nuevo método
+        actualizarNivelesAprobados,
         recargarProgreso: cargarProgreso,
         loading,
       }}

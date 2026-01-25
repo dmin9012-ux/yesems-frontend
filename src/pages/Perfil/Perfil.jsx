@@ -25,8 +25,12 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { progresoGlobal, progresoCursos, recargarProgreso } =
-    useContext(ProgresoContext);
+
+  const {
+    progresoGlobal,
+    progresoCursos,
+    recargarProgreso,
+  } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -64,30 +68,33 @@ const Perfil = () => {
   }, [logout, navigate]);
 
   /* ===============================
-     🔄 RECARGAR CURSOS AL CAMBIAR PROGRESO
+     🔄 RECARGAR PROGRESO AL ENTRAR
   =============================== */
   useEffect(() => {
-    recargarProgreso(); // recarga progreso desde backend
+    recargarProgreso();
   }, [recargarProgreso]);
 
   /* ===============================
-     📊 CALCULAR PROGRESO DE LECCIONES
+     📊 CALCULAR PROGRESO (CORREGIDO)
   =============================== */
   const calcularProgreso = (curso) => {
-    // Buscar progreso real del backend
-    const progresoCursoBackend = progresoCursos.find(
-      (pc) => pc.cursoId === curso.id
+    // ✅ Fuente única de lecciones completadas
+    const completadas = progresoGlobal[curso.id] || [];
+
+    // total de lecciones del curso
+    const total = curso.niveles.reduce(
+      (acc, n) => acc + (n.lecciones?.length || 0),
+      0
     );
 
-    const completadas =
-      progresoCursoBackend?.leccionesCompletadas || progresoGlobal[curso.id] || [];
+    const porcentaje = total
+      ? Math.round((completadas.length / total) * 100)
+      : 0;
 
-    let total = 0;
-    curso.niveles.forEach((n) => {
-      total += n.lecciones.length;
-    });
-
-    const porcentaje = total ? Math.round((completadas.length / total) * 100) : 0;
+    // 🔹 info extra SOLO del backend
+    const progresoBackend = progresoCursos.find(
+      (pc) => pc.cursoId === curso.id
+    );
 
     return {
       porcentaje,
@@ -100,7 +107,7 @@ const Perfil = () => {
           ? "completado"
           : "en-progreso",
       completado: porcentaje === 100,
-      constanciaEmitida: progresoCursoBackend?.constanciaEmitida || false,
+      constanciaEmitida: progresoBackend?.constanciaEmitida || false,
     };
   };
 
@@ -140,9 +147,7 @@ const Perfil = () => {
 
     try {
       await apiYesems.delete("/usuario/perfil/me");
-
       alert("✅ Cuenta eliminada correctamente");
-
       logout();
       navigate("/login");
     } catch (error) {
@@ -202,7 +207,6 @@ const Perfil = () => {
 
           {cursos.map((curso) => {
             const p = calcularProgreso(curso);
-
             const mostrarConstancia = p.completado && p.constanciaEmitida;
 
             return (
@@ -232,7 +236,9 @@ const Perfil = () => {
                 {mostrarConstancia ? (
                   <button
                     className="btn-constancia"
-                    onClick={() => descargarConstancia(curso.id, curso.nombre)}
+                    onClick={() =>
+                      descargarConstancia(curso.id, curso.nombre)
+                    }
                   >
                     <FileText size={16} /> Descargar constancia
                   </button>
