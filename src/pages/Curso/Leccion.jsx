@@ -30,11 +30,11 @@ export default function Leccion() {
     recargarProgreso,
   } = useContext(ProgresoContext);
 
-  // ✅ ID CANÓNICO (ALINEADO CON BACKEND)
+  // ✅ ID CANÓNICO (BACKEND ↔ FRONTEND)
   const leccionId = id + "-n" + nivelNum + "-l" + numLeccion;
 
   /* ===============================
-     📥 CARGAR LECCIÓN (BLINDADO)
+     📥 CARGAR LECCIÓN
   =============================== */
   useEffect(() => {
     const cargarLeccion = async () => {
@@ -59,7 +59,10 @@ export default function Leccion() {
 
         const nivelData = data.niveles[nivelNum - 1];
 
-        if (!nivelData.lecciones || !nivelData.lecciones[numLeccion - 1]) {
+        if (
+          !nivelData.lecciones ||
+          !nivelData.lecciones[numLeccion - 1]
+        ) {
           setError("Lección no encontrada");
           return;
         }
@@ -79,7 +82,9 @@ export default function Leccion() {
           nivelTitulo: nivelData.titulo,
         });
 
-        setEsUltimaLeccion(numLeccion === nivelData.lecciones.length);
+        setEsUltimaLeccion(
+          numLeccion === nivelData.lecciones.length
+        );
       } catch (err) {
         console.error("❌ Error cargando lección:", err);
         setError("Error al cargar la lección");
@@ -96,6 +101,7 @@ export default function Leccion() {
   =============================== */
   const guardarProgreso = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
+
     if (progresoCursoActual.includes(leccionId)) {
       await recargarProgreso();
       return true;
@@ -103,7 +109,11 @@ export default function Leccion() {
 
     try {
       setGuardando(true);
-      const res = await validarLeccion({ cursoId: id, leccionId });
+
+      const res = await validarLeccion({
+        cursoId: id,
+        leccionId,
+      });
 
       if (res && res.ok === false) {
         alert(res.message || "Error al guardar progreso");
@@ -149,11 +159,24 @@ export default function Leccion() {
     );
   }
 
+  if (!curso.niveles || !curso.niveles[nivelNum - 1]) {
+    return (
+      <>
+        <TopBar />
+        <p className="cargando">Cargando estructura del curso...</p>
+      </>
+    );
+  }
+
   /* ===============================
-     📊 PROGRESO
+     📊 PROGRESO (NORMALIZADO)
   =============================== */
   const progresoCursoActual = progresoGlobal[id] || [];
-  const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
+
+  const nivelesAprobadosRaw = nivelesAprobadosGlobal[id] || [];
+  const nivelesAprobados = nivelesAprobadosRaw.map((n) =>
+    Number(n)
+  );
 
   const totalLeccionesNivel =
     curso.niveles[nivelNum - 1].lecciones.length;
@@ -163,9 +186,10 @@ export default function Leccion() {
     0
   );
 
-  const leccionesNivelIds = curso.niveles[nivelNum - 1].lecciones.map(
-    (_, idx) => id + "-n" + nivelNum + "-l" + (idx + 1)
-  );
+  const leccionesNivelIds =
+    curso.niveles[nivelNum - 1].lecciones.map(
+      (_, idx) => id + "-n" + nivelNum + "-l" + (idx + 1)
+    );
 
   const completadasNivel = leccionesNivelIds.filter((l) =>
     progresoCursoActual.includes(l)
@@ -179,7 +203,8 @@ export default function Leccion() {
     (progresoCursoActual.length / totalLeccionesCurso) * 100
   );
 
-  const leccionCompletada = progresoCursoActual.includes(leccionId);
+  const leccionCompletada =
+    progresoCursoActual.includes(leccionId);
 
   /* ===============================
      ➡️ NAVEGACIÓN
@@ -207,7 +232,9 @@ export default function Leccion() {
     if (siguiente > nivelData.lecciones.length) {
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
     } else {
-      navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${siguiente}`);
+      navigate(
+        `/curso/${id}/nivel/${nivelNum}/leccion/${siguiente}`
+      );
     }
   };
 
@@ -243,7 +270,8 @@ export default function Leccion() {
                 }
               >
                 <p>
-                  Nivel {nivelItem.numero}: {nivelItem.titulo}
+                  Nivel {nivelItem.numero}:{" "}
+                  {nivelItem.titulo}
                 </p>
 
                 <ul>
@@ -279,7 +307,9 @@ export default function Leccion() {
                             Lección {index + 1}
                           </Link>
                         ) : (
-                          <span>🔒 Lección {index + 1}</span>
+                          <span>
+                            🔒 Lección {index + 1}
+                          </span>
                         )}
                       </li>
                     );
@@ -312,7 +342,9 @@ export default function Leccion() {
           <h3>{leccionActual.nivelTitulo}</h3>
 
           {leccionCompletada && (
-            <p className="leccion-completada">✔️ Lección completada</p>
+            <p className="leccion-completada">
+              ✔️ Lección completada
+            </p>
           )}
 
           <div className="video-container">
@@ -333,7 +365,10 @@ export default function Leccion() {
           )}
 
           <div className="navegacion-lecciones">
-            <button onClick={navegarAnterior} className="btn-nav">
+            <button
+              onClick={navegarAnterior}
+              className="btn-nav"
+            >
               ⬅ Anterior
             </button>
 

@@ -56,11 +56,21 @@ export default function Curso() {
     );
   }
 
-  const leccionesCompletadas = progresoGlobal[id] || [];
-  const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
+  /* =============================
+     NORMALIZAR PROGRESO
+  ============================== */
 
-  const progresoCurso = progresoCursos.find((p) => p.cursoId === id);
-  const cursoFinalizado = progresoCurso && progresoCurso.completado === true;
+  const leccionesCompletadas = progresoGlobal[id] || [];
+
+  const nivelesAprobadosRaw = nivelesAprobadosGlobal[id] || [];
+  const nivelesAprobados = nivelesAprobadosRaw.map((n) => Number(n));
+
+  const progresoCurso = progresoCursos.find(
+    (p) => p.cursoId === id
+  );
+
+  const cursoFinalizado =
+    progresoCurso && progresoCurso.completado === true;
 
   return (
     <>
@@ -82,7 +92,7 @@ export default function Curso() {
                 key={nivel.numero}
                 className={
                   "nivel-sidebar " +
-                  (!nivelDesbloqueado ? "nivel-bloqueado" : "")
+                  (nivelDesbloqueado ? "" : "nivel-bloqueado")
                 }
               >
                 <p>
@@ -104,7 +114,14 @@ export default function Curso() {
                       >
                         {nivelDesbloqueado ? (
                           <Link
-                            to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
+                            to={
+                              "/curso/" +
+                              id +
+                              "/nivel/" +
+                              nivelNumero +
+                              "/leccion/" +
+                              (index + 1)
+                            }
                           >
                             Lección {index + 1}: {lec.titulo}
                           </Link>
@@ -122,7 +139,11 @@ export default function Curso() {
                       className="btn-examen-sidebar"
                       onClick={() =>
                         navigate(
-                          `/curso/${id}/nivel/${nivelNumero}/examen`
+                          "/curso/" +
+                            id +
+                            "/nivel/" +
+                            nivelNumero +
+                            "/examen"
                         )
                       }
                     >
@@ -131,7 +152,9 @@ export default function Curso() {
                   )}
 
                 {nivelesAprobados.includes(nivelNumero) && (
-                  <p className="nivel-aprobado">✅ Nivel aprobado</p>
+                  <p className="nivel-aprobado">
+                    ✅ Nivel aprobado
+                  </p>
                 )}
               </div>
             );
