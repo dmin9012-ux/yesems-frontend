@@ -30,7 +30,7 @@ export default function Leccion() {
     recargarProgreso,
   } = useContext(ProgresoContext);
 
-  const leccionId = id + "-n" + nivelNum + "-l" + numLeccion;
+  const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
 
   /* ===============================
      📥 CARGAR LECCIÓN
@@ -43,18 +43,32 @@ export default function Leccion() {
 
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
+
         if (!snap.exists()) {
           setError("Curso no encontrado");
           return;
         }
 
         const data = snap.data();
-        const nivelData = data.niveles?.[nivelNum - 1];
-        const leccionData = nivelData?.lecciones?.[numLeccion - 1];
-        if (!nivelData || !leccionData) {
+
+        // 🔎 Buscar nivel por número (no por índice)
+        const nivelData = data.niveles?.find((n) => Number(n.numero) === nivelNum);
+        if (!nivelData) {
+          console.error("❌ Nivel no encontrado:", nivelNum);
+          setError("Nivel no encontrado");
+          return;
+        }
+
+        const leccionData = nivelData.lecciones?.[numLeccion - 1];
+        if (!leccionData) {
+          console.error("❌ Lección no encontrada:", numLeccion);
           setError("Lección no encontrada");
           return;
         }
+
+        console.log("Curso cargado:", data);
+        console.log("Nivel encontrado:", nivelData);
+        console.log("Lección encontrada:", leccionData);
 
         setCurso(data);
         setLeccionActual({
@@ -65,6 +79,7 @@ export default function Leccion() {
           materiales: leccionData.materiales || [],
           nivelTitulo: nivelData.titulo,
         });
+
         setEsUltimaLeccion(numLeccion === nivelData.lecciones.length);
       } catch (err) {
         console.error("❌ Error cargando lección:", err);
@@ -82,9 +97,7 @@ export default function Leccion() {
   =============================== */
   const guardarProgreso = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
-    if (progresoCursoActual.includes(leccionId)) {
-      return true; // Ya completada, no recargar
-    }
+    if (progresoCursoActual.includes(leccionId)) return true;
 
     try {
       setGuardando(true);
@@ -114,7 +127,10 @@ export default function Leccion() {
     }
   };
 
-  if (cargando || !curso || !leccionActual) {
+  /* ===============================
+     🔹 RENDER DE CARGANDO / ERROR
+  =============================== */
+  if (cargando) {
     return (
       <>
         <TopBar />
@@ -123,15 +139,25 @@ export default function Leccion() {
     );
   }
 
+  if (!curso || !leccionActual) {
+    return (
+      <>
+        <TopBar />
+        <p className="error-leccion">❌ {error || "No se pudo cargar la lección"}</p>
+      </>
+    );
+  }
+
+  /* ===============================
+     📊 CÁLCULO DE PROGRESO
+  =============================== */
   const progresoCursoActual = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
 
-  const totalLeccionesNivel = curso.niveles[nivelNum - 1].lecciones.length;
-  const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + n.lecciones.length, 0);
+  const totalLeccionesNivel = curso.niveles.find(n => Number(n.numero) === nivelNum)?.lecciones.length || 0;
+  const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0);
 
-  const leccionesNivelIds = curso.niveles[nivelNum - 1].lecciones.map(
-    (_, idx) => id + "-n" + nivelNum + "-l" + (idx + 1)
-  );
+  const leccionesNivelIds = curso.niveles.find(n => Number(n.numero) === nivelNum)?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
   const completadasNivel = leccionesNivelIds.filter((l) => progresoCursoActual.includes(l)).length;
 
   const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
@@ -149,7 +175,7 @@ export default function Leccion() {
     if (l < 1) {
       n--;
       if (n < 1) return;
-      l = curso.niveles[n - 1].lecciones.length;
+      l = curso.niveles.find(nv => Number(nv.numero) === n)?.lecciones.length || 1;
     }
 
     navigate(`/curso/${id}/nivel/${n}/leccion/${l}`);
@@ -159,10 +185,9 @@ export default function Leccion() {
     const ok = await guardarProgreso();
     if (!ok) return;
 
-    let siguienteLeccion = numLeccion + 1;
-    const nivelData = curso.niveles[nivelNum - 1];
-    if (siguienteLeccion > nivelData.lecciones.length) {
-      // Última lección → ir a examen
+    const nivelData = curso.niveles.find(nv => Number(nv.numero) === nivelNum);
+    const siguienteLeccion = numLeccion + 1;
+    if (siguienteLeccion > (nivelData?.lecciones.length || 0)) {
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
     } else {
       navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${siguienteLeccion}`);
@@ -185,6 +210,7 @@ export default function Leccion() {
       <div className="leccion-contenedor-sidebar">
         <aside className="sidebar">
           <h3>{curso.nombre}</h3>
+
           {curso.niveles.map((nivelItem) => {
             const nivelNumero = Number(nivelItem.numero);
             const desbloqueado = nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1);
@@ -192,7 +218,7 @@ export default function Leccion() {
             return (
               <div
                 key={nivelItem.numero}
-                className={"nivel-sidebar " + (!desbloqueado ? "nivel-bloqueado" : "")}
+                className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}
               >
                 <p>
                   Nivel {nivelItem.numero}: {nivelItem.titulo}
@@ -200,14 +226,14 @@ export default function Leccion() {
 
                 <ul>
                   {nivelItem.lecciones.map((_, index) => {
-                    const lid = id + "-n" + nivelNumero + "-l" + (index + 1);
+                    const lid = `${id}-n${nivelNumero}-l${index + 1}`;
                     const esActual = nivelNumero === nivelNum && index + 1 === numLeccion;
                     const completada = progresoCursoActual.includes(lid);
 
                     return (
                       <li
                         key={lid}
-                        className={(esActual ? "active " : "") + (completada ? "completada" : "")}
+                        className={`${esActual ? "active " : ""}${completada ? "completada" : ""}`}
                       >
                         {desbloqueado ? (
                           <Link to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}>
