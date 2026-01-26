@@ -1,176 +1,115 @@
-/* ===============================
-    LAYOUT Y FUENTES
-================================ */
+/* PerfilStyle.css */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
-.perfil-page,
-.perfil-layout {
+.perfil-page {
     display: flex;
     min-height: 100vh;
-    background: #f4f7f6;
+    background: #f8f9fa;
     font-family: "Inter", sans-serif;
-    padding-top: 70px;
-    /* Espacio para el TopBar fijo */
 }
 
 
-/* ===============================
-    SIDEBAR UNIFICADO
-================================ */
+/* SIDEBAR: Ahora con más personalidad */
 
 .perfil-sidebar {
-    width: 320px;
+    width: 300px;
     background: #ffffff;
-    padding: 50px 25px;
+    padding: 60px 25px;
     border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.02);
-    position: sticky;
-    top: 70px;
-    height: calc(100vh - 70px);
 }
 
-.perfil-avatar,
-.avatar-large {
-    width: 110px;
-    height: 110px;
-    border-radius: 32px;
-    /* Estilo Squircle moderno */
+.perfil-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 30px;
+    /* Bordes redondeados modernos, no círculo perfecto */
     background: #00003f;
-    /* Azul Profundo */
+    /* Tu Azul Profundo */
     color: #fcb424;
-    /* Amarillo Ámbar */
+    /* Inicial en Amarillo Ámbar */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
+    font-size: 42px;
     font-weight: 800;
     margin-bottom: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.15);
+    box-shadow: 0 10px 20px rgba(0, 0, 63, 0.2);
 }
 
 .perfil-sidebar h3 {
     color: #00003f;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 800;
     margin-bottom: 5px;
-    text-align: center;
-}
-
-.user-role-tag {
-    font-size: 10px;
-    font-weight: 800;
-    color: #64748b;
-    background: #f1f5f9;
-    padding: 4px 12px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
 }
 
 .perfil-email {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #64748b;
+    color: #6b7280;
     font-size: 0.9rem;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 
-/* Navegación del Sidebar */
+/* Botones del Sidebar */
 
-.perfil-nav,
-.profile-nav {
+.perfil-nav {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
-.perfil-nav button,
-.nav-item {
+.perfil-sidebar button {
     display: flex;
     align-items: center;
     gap: 12px;
     width: 100%;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     background: transparent;
-    color: #1e293b;
-    /* Texto bien visible */
-    font-weight: 700;
-    /* Fuente negrita para legibilidad */
+    color: #4b5563;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     text-align: left;
-    font-size: 15px;
 }
 
-.perfil-nav button:hover,
-.nav-item:hover {
-    background: #f1f5f9;
-    color: #00003f;
-    transform: translateX(5px);
-}
-
-
-/* Estado activo unificado */
-
-.perfil-nav button.active,
-.nav-item.active {
-    background: #00003f;
-    color: #ffffff;
-}
-
-.perfil-nav button.active svg,
-.nav-item.active svg {
-    color: #fcb424;
-}
-
-.nav-divider {
-    height: 1px;
-    background: #e5e7eb;
-    margin: 15px 0;
-    width: 100%;
-}
-
-
-/* Botones de acción especial */
-
-.logout,
-.logout-item {
+.perfil-sidebar button:hover {
+    background: #f3f4f6;
     color: #00003f;
 }
 
-.danger,
-.delete-item {
-    color: #ef4444 !important;
+.perfil-sidebar button.logout {
+    margin-top: 20px;
+    color: #00003f;
 }
 
-.danger:hover,
-.delete-item:hover {
-    background: #fef2f2 !important;
+.perfil-sidebar button.danger {
+    color: #ef4444;
+}
+
+.perfil-sidebar button.danger:hover {
+    background: #fee2e2;
 }
 
 
-/* ===============================
-    CONTENIDO PRINCIPAL
-================================ */
+/* MAIN CONTENT */
 
 .perfil-main {
     flex: 1;
     padding: 60px;
-    max-width: 900px;
 }
 
 .perfil-main h2 {
     color: #00003f;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 800;
     margin-bottom: 40px;
     display: flex;
@@ -179,93 +118,154 @@
 }
 
 
-/* Cards de Cursos */
+/* CARDS DE CURSOS EN PERFIL */
 
 .perfil-curso-card {
     background: white;
-    border-radius: 24px;
-    padding: 30px;
+    border-radius: 20px;
+    padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 63, 0.04);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     border: 1px solid #f0f0f0;
-    display: flex;
-    flex-direction: column;
+    transition: transform 0.3s ease;
 }
 
-.curso-header-info {
+.perfil-curso-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.05);
+}
+
+.curso-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.curso-name {
-    font-size: 1.25rem;
+.curso-header strong {
+    font-size: 1.2rem;
     color: #00003f;
-    font-weight: 800;
 }
 
 
-/* Barra de Progreso */
+/* Badge de estado */
 
-.progress-bar-wrapper {
-    background: #e2e8f0;
-    height: 12px;
+.badge {
+    padding: 6px 12px;
     border-radius: 20px;
-    margin: 10px 0 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
-.progress-bar-inner {
+.badge.completado {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.en-progreso {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.no-iniciado {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+
+/* BARRA DE PROGRESO PERSONALIZADA */
+
+.progress-bar-bg {
+    background: #e5e7eb;
+    height: 10px;
+    border-radius: 10px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
     height: 100%;
     background: #fcb424;
-    /* Ámbar */
-    border-radius: 20px;
-    transition: width 1s ease;
+    /* Tu Amarillo Ámbar */
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
 }
 
-.completado .progress-bar-inner {
+.completado .progress-bar-fill {
     background: #10b981;
-    /* Verde éxito */
+    /* Verde éxito para completados */
 }
 
 
-/* Botones de acción en card */
+/* BOTONES DE ACCIÓN */
 
-.btn-action-continue,
+.btn-perfil-continuar,
+.btn-perfil-constancia {
+    margin-top: 15px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .btn-perfil-continuar {
     background: #00003f;
-    color: white;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-weight: 800;
+    color: #ffffff;
 }
 
-.btn-action-download,
 .btn-perfil-constancia {
     background: #fcb424;
     color: #00003f;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-weight: 800;
+}
+
+.btn-perfil-constancia:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
 }
 
 
-/* Responsive */
+/* Loader */
 
-@media (max-width: 1024px) {
-    .perfil-page,
-    .perfil-layout {
+.perfil-cargando {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #00003f;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fcb424;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .perfil-page {
         flex-direction: column;
-        padding-top: 70px;
     }
     .perfil-sidebar {
         width: 100%;
-        height: auto;
-        position: static;
         border-right: none;
         border-bottom: 1px solid #ddd;
     }
     .perfil-main {
-        padding: 40px 20px;
+        padding: 30px 20px;
     }
 }
