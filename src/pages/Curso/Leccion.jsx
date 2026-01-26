@@ -27,7 +27,7 @@ export default function Leccion() {
     progresoGlobal,
     nivelesAprobadosGlobal,
     actualizarProgreso,
-    recargarProgreso // 🔑 Importante para sincronizar
+    recargarProgreso 
   } = useContext(ProgresoContext);
 
   const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
@@ -89,16 +89,12 @@ export default function Leccion() {
   =============================== */
   const guardarProgresoReal = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
-    
-    // Si ya está marcada como completada localmente, no llamamos al API
     if (progresoCursoActual.includes(leccionId)) return true;
 
     setGuardando(true);
     try {
       const res = await validarLeccion({ cursoId: id, leccionId });
-
       if (res?.ok) {
-        // Actualizamos el contexto global
         actualizarProgreso(id, leccionId);
         return true;
       } else {
@@ -121,9 +117,7 @@ export default function Leccion() {
     if (!ok) return;
 
     const nivelData = curso.niveles.find((nv) => Number(nv.numero) === nivelNum);
-    
     if (numLeccion >= (nivelData?.lecciones.length || 0)) {
-      // Si era la última lección, vamos al examen
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
     } else {
       navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${numLeccion + 1}`);
@@ -148,7 +142,6 @@ export default function Leccion() {
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
   const nivelData = curso.niveles.find((n) => Number(n.numero) === nivelNum);
   
-  // Cálculos de progreso
   const totalLeccionesNivel = nivelData?.lecciones.length || 0;
   const leccionesNivelIds = nivelData?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
   const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
@@ -168,7 +161,8 @@ export default function Leccion() {
               <div key={nNum} className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}>
                 <p>Nivel {nNum}: {nivelItem.titulo}</p>
                 <ul>
-                  {nivelItem.lecciones.map((_, idx) => {
+                  {/* MODIFICADO: Ahora 'lecc' representa el objeto de la lección */}
+                  {nivelItem.lecciones.map((lecc, idx) => {
                     const lid = `${id}-n${nNum}-l${idx + 1}`;
                     const esActual = nNum === nivelNum && (idx + 1) === numLeccion;
                     const completada = progresoActual.includes(lid);
@@ -176,10 +170,12 @@ export default function Leccion() {
                       <li key={lid} className={`${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
                         {desbloqueado ? (
                           <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`}>
-                            {completada ? "✅" : "📖"} Lección {idx + 1}
+                            {completada ? "✅ " : "📖 "} 
+                            {/* MODIFICADO: Muestra el título real en lugar de 'Lección X' */}
+                            {lecc.titulo || `Lección ${idx + 1}`}
                           </Link>
                         ) : (
-                          <span>🔒 Lección {idx + 1}</span>
+                          <span>🔒 {lecc.titulo || `Lección ${idx + 1}`}</span>
                         )}
                       </li>
                     );
@@ -191,35 +187,35 @@ export default function Leccion() {
         </aside>
 
         <main className="contenido">
-          <div className="header-leccion">
-            <span className="badge-nivel">Nivel {nivelNum}</span>
-            <h1>{leccionActual.titulo}</h1>
+          <div className="indicador-leccion">
+            Nivel {nivelNum} · Unidad {numLeccion} de {totalLeccionesNivel}
           </div>
+          
+          <h1 className="leccion-titulo">{leccionActual.titulo}</h1>
+          <h3 className="nivel-subtitulo">{leccionActual.nivelTitulo}</h3>
 
-          <div className="progreso-mini">
-            <span>Progreso del nivel: {progresoNivelPct}%</span>
-            <div className="barra"><div className="llenado" style={{width: `${progresoNivelPct}%`}}></div></div>
-          </div>
-
-          <div className="video-wrapper">
+          <div className="video-container">
             {leccionActual.videoURL ? (
                <iframe src={leccionActual.videoURL} title="Video lección" allowFullScreen />
-            ) : <div className="no-video">No hay video disponible para esta lección</div>}
+            ) : <div className="no-video">Video no disponible</div>}
           </div>
 
           {leccionActual.contenidoHTML && (
-            <div className="lectura-container" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
+            /* MODIFICADO: Clase 'contenido-html' para aplicar los estilos del CSS */
+            <div className="contenido-html" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
 
-          <div className="footer-navegacion">
-            <button onClick={() => navigate(-1)} className="btn-secundario">Volver</button>
+          <div className="navegacion-lecciones">
+            <button onClick={() => navigate(-1)} className="btn-nav">
+              ⬅ Anterior
+            </button>
             
             {esUltimaLeccion ? (
-              <button onClick={irAExamenNivel} className="btn-principal" disabled={guardando}>
-                {guardando ? "Guardando..." : "Ir al Examen 📝"}
+              <button onClick={irAExamenNivel} className="btn-nav btn-finalizar" disabled={guardando}>
+                {guardando ? "Guardando..." : "Realizar Examen 📝"}
               </button>
             ) : (
-              <button onClick={navegarSiguiente} className="btn-principal" disabled={guardando}>
+              <button onClick={navegarSiguiente} className="btn-nav" disabled={guardando}>
                 {guardando ? "Guardando..." : "Siguiente Lección ➝"}
               </button>
             )}

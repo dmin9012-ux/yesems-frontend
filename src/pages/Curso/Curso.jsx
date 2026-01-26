@@ -5,7 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { ProgresoContext } from "../../context/ProgresoContext";
-import apiYesems from "../../api/apiYesems"; // Usamos tu instancia de Axios configurada
+import apiYesems from "../../api/apiYesems";
 
 import "./CursoStyle.css";
 
@@ -32,7 +32,6 @@ export default function Curso() {
     const cargarDatosCurso = async () => {
       setCargando(true);
       try {
-        // Cargar el curso desde Firestore
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
@@ -44,7 +43,6 @@ export default function Curso() {
 
         setCurso({ id: snap.id, ...snap.data() });
 
-        // Sincronizar progreso si el contexto está vacío
         if (progresoCursos.length === 0) {
           await recargarProgreso();
         }
@@ -56,15 +54,13 @@ export default function Curso() {
     };
 
     cargarDatosCurso();
-  }, [id, recargarProgreso]); // Eliminamos progresoCursos.length de aquí para evitar bucles
+  }, [id, recargarProgreso]);
 
   /* ======================================
-      🔹 VERIFICAR ACCESOS (Optimizado)
+      🔹 VERIFICAR ACCESOS
   ====================================== */
   const verificarTodosLosAccesos = useCallback(async (niveles) => {
     const nuevosAccesos = {};
-    
-    // Ejecutamos las verificaciones en paralelo para mayor velocidad
     const promesas = niveles.map(async (nivel) => {
       const num = Number(nivel.numero);
       if (num === 1) {
@@ -94,15 +90,12 @@ export default function Curso() {
       <>
         <TopBar />
         <div className="cargando-container">
-          <p className="cargando">Cargando contenido del curso...</p>
+          <p className="cargando">Sincronizando contenido...</p>
         </div>
       </>
     );
   }
 
-  /* ======================================
-      📊 DATOS DE PROGRESO
-  ====================================== */
   const leccionesCompletadas = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
   const progresoActual = progresoCursos.find((p) => p.cursoId === id);
@@ -120,7 +113,6 @@ export default function Curso() {
             curso.niveles.sort((a,b) => a.numero - b.numero).map((nivel) => {
               const nivelNumero = Number(nivel.numero);
 
-              // Generar IDs de lecciones (Asegúrate de que coincidan con los del backend)
               const idsLeccionesNivel = nivel.lecciones.map(
                 (_, idx) => `${id}-n${nivelNumero}-l${idx + 1}`
               );
@@ -145,7 +137,8 @@ export default function Curso() {
                   </p>
 
                   <ul>
-                    {nivel.lecciones.map((_, index) => {
+                    {/* MODIFICADO: Ahora 'lecc' representa el objeto de la lección para extraer su título */}
+                    {nivel.lecciones.map((lecc, index) => {
                       const lid = `${id}-n${nivelNumero}-l${index + 1}`;
                       const estaCompletada = leccionesCompletadas.includes(lid);
 
@@ -156,11 +149,13 @@ export default function Curso() {
                               to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
                               className="leccion-link"
                             >
-                              {estaCompletada ? "✅" : "📖"} Lección {index + 1}
+                              {estaCompletada ? "✅ " : "📖 "} 
+                              {/* MOSTRAR TÍTULO REAL */}
+                              {lecc.titulo || `Lección ${index + 1}`}
                             </Link>
                           ) : (
                             <span className="leccion-bloqueada">
-                              🔒 Lección {index + 1}
+                              🔒 {lecc.titulo || `Lección ${index + 1}`}
                             </span>
                           )}
                         </li>
@@ -202,10 +197,9 @@ export default function Curso() {
           <h2 className="curso-titulo">{curso.nombre}</h2>
           <div className="curso-info-card">
             <p className="curso-descripcion">
-              {curso.descripcion || "Bienvenido a este curso. Completa todas las lecciones de cada nivel para habilitar el examen."}
+              {curso.descripcion || "Completa todas las lecciones para habilitar tu evaluación."}
             </p>
           </div>
-          {/* Aquí podrías añadir un gráfico de progreso visual */}
         </main>
       </div>
     </>
