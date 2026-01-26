@@ -2,25 +2,24 @@ import apiYesems from "../api/apiYesems";
 
 /**
  * 🔹 Obtener TODOS mis progresos
- * Backend: GET /api/progreso
- * ⚠️ Backend devuelve ARRAY DIRECTO
+ * Backend: GET /api/progreso/mis-progresos ✅
  */
 export const obtenerProgresoUsuario = async() => {
     try {
-        const res = await apiYesems.get("/progreso");
+        // Ajustamos la ruta para que coincida con el backend
+        const res = await apiYesems.get("/progreso/mis-progresos");
 
-        if (Array.isArray(res.data)) {
-            return {
-                ok: true,
-                data: res.data,
-            };
-        }
+        // El backend responde con { ok: true, data: [...] }
+        // Verificamos res.data.data porque axios mete la respuesta en 'data' 
+        // y tu controlador mete el array en una propiedad 'data'
+        const arrayProgresos = res.data && res.data.data ? res.data.data : [];
 
         return {
             ok: true,
-            data: [],
+            data: arrayProgresos,
         };
     } catch (error) {
+        console.error("❌ Error en obtenerProgresoUsuario:", error);
         let message = "Error al obtener el progreso del usuario";
 
         if (
@@ -35,6 +34,7 @@ export const obtenerProgresoUsuario = async() => {
         return {
             ok: false,
             message,
+            data: [] // Retornamos array vacío para evitar errores de .map() o .find()
         };
     }
 };
@@ -57,12 +57,14 @@ export const validarLeccion = async({ cursoId, leccionId }) => {
             leccionId,
         });
 
+        // res.data contiene el objeto que envía el controlador { ok, message, data: progreso }
         return {
             ok: true,
-            alreadyValidated: res.data.alreadyValidated === true,
-            data: res.data,
+            alreadyValidated: res.data && res.data.alreadyValidated === true,
+            data: res.data && res.data.data ? res.data.data : null,
         };
     } catch (error) {
+        console.error("❌ Error en validarLeccion:", error);
         let message = "Error al guardar el progreso";
 
         if (
