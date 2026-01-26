@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck } from "lucide-react";
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
@@ -26,7 +27,7 @@ export default function Examen() {
   const { recargarProgreso, actualizarNivelesAprobados } = useContext(ProgresoContext);
 
   const [examen, setExamen] = useState({ preguntas: [] });
-  const [respuestas, setRespuestas] = useState({});
+  const [respuestas, setRespuestas] = useState({}); // <--- Este es el que limpiaremos
   const [resultado, setResultado] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
@@ -39,6 +40,9 @@ export default function Examen() {
       setError("");
       setBloqueado(false);
       setResultado(null);
+      
+      // ✅ LA SOLUCIÓN: Limpiamos las respuestas al cargar o reintentar
+      setRespuestas({}); 
 
       const acceso = await puedeAccederNivel({ cursoId, nivel: nivelNumero });
       if (!acceso?.ok || acceso.puedeAcceder !== true) {
@@ -98,80 +102,98 @@ export default function Examen() {
     }
   };
 
-  if (cargando) return <><TopBar /><div className="cargando">Cargando evaluación...</div></>;
+  if (cargando) return (
+    <div className="examen-loading-full">
+      <div className="spinner-yes"></div>
+      <p>Preparando tu evaluación...</p>
+    </div>
+  );
 
   if (bloqueado) return (
-    <>
+    <div className="examen-screen-msg">
       <TopBar />
-      <div className="examen-bloqueado">
-        <h2>🚫 Acceso restringido</h2>
+      <div className="msg-card locked">
+        <AlertCircle size={60} />
+        <h2>Acceso restringido</h2>
         <p>{error}</p>
-        <button className="btn-examen aprobado" onClick={() => navigate(`/curso/${cursoId}`)}>Volver</button>
+        <button className="btn-yes primary" onClick={() => navigate(`/curso/${cursoId}`)}>Volver al curso</button>
       </div>
-    </>
+    </div>
   );
 
   if (resultado) return (
-    <>
+    <div className="examen-screen-msg">
       <TopBar />
-      <div className="resultado-examen">
-        <div className={`resultado-header ${resultado.aprobado ? "aprobado" : "reprobado"}`}>
-          <h1>{resultado.aprobado ? "🎉 ¡Excelente trabajo!" : "❌ No se alcanzó el puntaje"}</h1>
-          <p className="porcentaje">{resultado.porcentaje}%</p>
-          <p>Mínimo para aprobar: 80%</p>
-        </div>
-        <div className="resultado-acciones">
+      <div className={`msg-card result ${resultado.aprobado ? "success" : "fail"}`}>
+        {resultado.aprobado ? <CheckCircle size={80} color="#10b981" /> : <XCircle size={80} color="#ef4444" />}
+        <h1>{resultado.aprobado ? "¡Excelente trabajo!" : "Puntaje insuficiente"}</h1>
+        <div className="score-badge">{resultado.porcentaje}%</div>
+        <p className="min-score">Mínimo requerido: 80%</p>
+        
+        <div className="result-actions">
           {resultado.aprobado ? (
-            <button className="btn-examen aprobado" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
-              {resultado.cursoFinalizado ? "Ver mi Constancia 🎓" : "Continuar al siguiente nivel ➝"}
+            <button className="btn-yes success" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
+              {resultado.cursoFinalizado ? "Ver mi Constancia 🎓" : "Siguiente nivel"} <ArrowRight size={18} />
             </button>
           ) : (
-            <button className="btn-examen reprobado" onClick={cargarExamen}>Intentar de nuevo</button>
+            <button className="btn-yes retry" onClick={cargarExamen}>
+              <RotateCcw size={18} /> Intentar de nuevo
+            </button>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 
   return (
-    <>
+    <div className="examen-layout">
       <TopBar />
-      <div className="examen-contenedor">
-        <header className="examen-header">
-          <h1>Nivel {nivelNumero}</h1>
-          <p>Selecciona la respuesta correcta para cada pregunta.</p>
+      <div className="examen-content">
+        <header className="examen-header-main">
+          <div className="header-info">
+            <ClipboardCheck size={32} />
+            <div>
+              <h1>Evaluación: Nivel {nivelNumero}</h1>
+              <p>Analiza cada pregunta cuidadosamente antes de responder.</p>
+            </div>
+          </div>
         </header>
 
-        {examen.preguntas.map((pregunta, idx) => (
-          <div key={pregunta.id} className="pregunta-card">
-            <h3><span className="n-pregunta">{idx + 1}</span> {pregunta.pregunta}</h3>
-            <ul className="opciones-lista">
-              {pregunta.opciones.map((opcion, i) => (
-                <li 
-                  key={i} 
-                  className={`opcion-item ${respuestas[pregunta.id] === i ? "seleccionada" : ""}`}
-                  onClick={() => seleccionarRespuesta(pregunta.id, i)}
-                >
-                  <label>
-                    <input
-                      type="radio"
-                      name={pregunta.id}
-                      checked={respuestas[pregunta.id] === i}
-                      readOnly
-                    />
-                    <div className="opcion-indicador"></div>
-                    <span className="opcion-texto">{opcion}</span>
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <div className="preguntas-list">
+          {examen.preguntas.map((pregunta, idx) => (
+            <div key={pregunta.id} className={`pregunta-card-student ${respuestas[pregunta.id] !== undefined ? "answered" : ""}`}>
+              <div className="pregunta-header">
+                <span className="q-number">{idx + 1}</span>
+                <h3>{pregunta.pregunta}</h3>
+              </div>
+              <div className="opciones-grid-student">
+                {pregunta.opciones.map((opcion, i) => (
+                  <div 
+                    key={i} 
+                    className={`opcion-choice ${respuestas[pregunta.id] === i ? "selected" : ""}`}
+                    onClick={() => seleccionarRespuesta(pregunta.id, i)}
+                  >
+                    <div className="radio-custom">
+                        <div className="radio-inner"></div>
+                    </div>
+                    <span className="opcion-txt">{opcion}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
 
-        <button className="btn-enviar" onClick={enviarExamen} disabled={enviando}>
-          {enviando ? "Calificando..." : "Finalizar Evaluación"}
-        </button>
+        <footer className="examen-footer-action">
+          <button 
+            className="btn-finish-exam" 
+            onClick={enviarExamen} 
+            disabled={enviando}
+          >
+            {enviando ? "Enviando respuestas..." : "Finalizar Evaluación"}
+          </button>
+        </footer>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,28 +1,51 @@
 /* ===============================
-   CONTENEDOR Y LAYOUT
+   LAYOUT Y CONTENEDOR
 ================================ */
 
-.examen-contenedor {
-    max-width: 800px;
-    margin: 70px auto;
-    padding: 0 20px;
-    font-family: 'Segoe UI', Roboto, sans-serif;
+.examen-layout {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    padding-top: 80px;
+    /* Espacio para TopBar */
 }
 
-.examen-header {
-    text-align: center;
+.examen-content {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.examen-header-main {
     margin-bottom: 40px;
 }
 
-.examen-header h1 {
-    color: #0d47a1;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.examen-header p {
-    color: #666;
-    font-size: 1.1rem;
+.header-info h1 {
+    color: #00003f;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.header-info p {
+    color: #64748b;
+    margin: 5px 0 0 0;
+}
+
+.header-info svg {
+    color: #fcb424;
+    /* Ámbar para el icono de examen */
 }
 
 
@@ -30,183 +53,208 @@
    TARJETAS DE PREGUNTAS
 ================================ */
 
-.pregunta-card {
+.pregunta-card-student {
     background: white;
-    border-radius: 15px;
-    padding: 25px;
+    border-radius: 24px;
+    padding: 35px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
-    border: 1px solid #eee;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
 }
 
-.pregunta-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+.pregunta-card-student.answered {
+    border-left: 6px solid #fcb424;
+    /* Marca visual de completada */
 }
 
-.pregunta-card h3 {
-    font-size: 1.25rem;
-    color: #333;
-    margin-bottom: 20px;
-    line-height: 1.4;
+.pregunta-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-.n-pregunta {
-    color: #1e88e5;
+.q-number {
+    background: #00003f;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 800;
-    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.pregunta-header h3 {
+    font-size: 1.2rem;
+    color: #1e293b;
+    line-height: 1.5;
+    margin: 0;
 }
 
 
 /* ===============================
-   OPCIONES (LISTA)
-================================ */
+   OPCIONES DE SELECCIÓN
+=============================== */
 
-.opciones-lista {
-    list-style: none;
-    padding: 0;
+.opciones-grid-student {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.opcion-item {
-    margin-bottom: 12px;
-    border: 2px solid #f0f0f0;
-    border-radius: 10px;
+.opcion-choice {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.opcion-item label {
+.opcion-choice:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    transform: translateX(5px);
+}
+
+.opcion-choice.selected {
+    background: #f0f7ff;
+    border-color: #00003f;
+}
+
+
+/* Radio Custom */
+
+.radio-custom {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    padding: 15px;
-    cursor: pointer;
-    width: 100%;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.opcion-item input[type="radio"] {
-    margin-right: 15px;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+.opcion-choice.selected .radio-custom {
+    border-color: #00003f;
 }
 
-.opcion-texto {
+.radio-inner {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.opcion-choice.selected .radio-inner {
+    background: #fcb424;
+}
+
+.opcion-txt {
     font-size: 1rem;
-    color: #444;
+    font-weight: 500;
+    color: #475569;
 }
 
-
-/* Estado seleccionada */
-
-.opcion-item.seleccionada {
-    border-color: #1e88e5;
-    background-color: #e3f2fd;
-}
-
-.opcion-item.seleccionada .opcion-texto {
-    color: #0d47a1;
-    font-weight: 600;
-}
-
-.opcion-item:hover:not(.seleccionada) {
-    background-color: #f8f9fa;
-    border-color: #ddd;
+.opcion-choice.selected .opcion-txt {
+    color: #00003f;
+    font-weight: 700;
 }
 
 
 /* ===============================
-   RESULTADOS
-================================ */
+   PANTALLAS DE RESULTADO
+=============================== */
 
-.resultado-examen {
-    max-width: 600px;
-    margin: 60px auto;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.resultado-header {
-    padding: 40px;
-    color: white;
-}
-
-.resultado-header.aprobado {
-    background: linear-gradient(135deg, #2e7d32, #43a047);
-}
-
-.resultado-header.reprobado {
-    background: linear-gradient(135deg, #c62828, #e53935);
-}
-
-.resultado-header h1 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
-
-.porcentaje {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 10px 0;
-}
-
-.resultado-acciones {
-    padding: 30px;
+.examen-screen-msg {
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+}
+
+.msg-card {
+    background: white;
+    padding: 50px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.score-badge {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #00003f;
+    margin: 20px 0;
+}
+
+.min-score {
+    color: #64748b;
+    font-weight: 600;
 }
 
 
 /* ===============================
    BOTONES
-================================ */
+=============================== */
 
-.btn-enviar,
-.btn-examen {
-    width: 100%;
-    padding: 18px;
-    border-radius: 12px;
+.btn-yes {
+    padding: 16px 32px;
+    border-radius: 14px;
     border: none;
+    font-weight: 800;
     font-size: 1.1rem;
-    font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+    width: 100%;
 }
 
-.btn-enviar {
-    background: #0d47a1;
+.btn-yes.success {
+    background: #10b981;
     color: white;
+}
+
+.btn-yes.retry {
+    background: #00003f;
+    color: white;
+}
+
+.btn-yes.primary {
+    background: #fcb424;
+    color: #00003f;
+}
+
+.btn-finish-exam {
+    width: 100%;
+    padding: 20px;
+    background: #fcb424;
+    color: #00003f;
+    border: none;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(252, 180, 36, 0.3);
     margin-top: 20px;
 }
 
-.btn-enviar:hover {
-    background: #1565c0;
-    transform: translateY(-2px);
-}
-
-.btn-examen.aprobado {
-    background: #1e88e5;
-    color: white;
-}
-
-.btn-examen.reprobado {
-    background: #f4f4f4;
-    color: #333;
-}
-
-
-/* ===============================
-   RESPONSIVE
-================================ */
-
-@media (max-width: 600px) {
-    .examen-header h1 {
-        font-size: 1.8rem;
-    }
-    .pregunta-card {
-        padding: 15px;
-    }
+.btn-finish-exam:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    box-shadow: none;
 }
