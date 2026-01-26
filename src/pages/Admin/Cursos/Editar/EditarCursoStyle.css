@@ -1,35 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
-/* ===============================
-   VARIABLES DE DISEÑO
-=============================== */
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 :root {
-    --bg-main: #f8fafc;
+    --bg-main: #f4f7f6;
     --bg-card: #ffffff;
-    --bg-soft: #f1f5f9;
-    --text-main: #0f172a;
+    --yes-blue: #00003f;
+    --yes-amber: #fcb424;
+    --text-main: #1e293b;
     --text-muted: #64748b;
-    --primary: #2563eb;
-    --primary-soft: #eff6ff;
-    --success: #16a34a;
-    --success-soft: #ecfdf5;
-    --warning: #f59e0b;
-    --warning-soft: #fff7ed;
-    --danger: #dc2626;
-    --danger-soft: #fef2f2;
     --border: #e2e8f0;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --shadow-sm: 0 4px 10px rgba(0, 0, 0, .04);
-    --shadow-md: 0 10px 30px rgba(0, 0, 0, .08);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 30px rgba(0, 0, 63, 0.08);
 }
-
-
-/* ===============================
-   BASE
-=============================== */
 
 * {
     box-sizing: border-box;
@@ -42,131 +25,164 @@ body {
     margin: 0;
 }
 
-
-/* ===============================
-   CONTENEDORES
-=============================== */
-
-.crear-curso-container,
 .editar-curso-container {
-    max-width: 1200px;
-    margin: 90px auto 50px;
-    padding: 32px;
+    max-width: 1000px;
+    margin: 100px auto 60px;
+    padding: 0 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
 /* ===============================
-   TITULOS
+   TÍTULOS Y HEADER
 =============================== */
 
 h1 {
-    font-size: 32px;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--yes-blue);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.btn-regresar {
+    background: transparent;
+    color: var(--text-muted);
     font-weight: 700;
     margin-bottom: 30px;
+    display: inline-block;
+    padding: 8px 0;
 }
 
-h3 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 14px;
-}
-
-h4 {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 20px 0 12px;
+.btn-regresar:hover {
+    color: var(--yes-blue);
 }
 
 
 /* ===============================
-   TARJETAS
+   SECCIONES Y TARJETAS
 =============================== */
 
 .card {
     background: var(--bg-card);
-    padding: 28px;
+    padding: 35px;
     border-radius: var(--radius-lg);
-    margin-bottom: 28px;
+    margin-bottom: 30px;
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
 }
 
-.leccion-card {
-    background: var(--primary-soft);
-    border-radius: var(--radius-md);
-    padding: 22px;
-    margin: 22px 0;
-    border-left: 6px solid var(--primary);
+
+/* NIVEL: El contenedor principal de contenido */
+
+.nivel-titulo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--yes-blue);
+    border-left: 5px solid var(--yes-amber);
+    padding-left: 15px;
+    margin-bottom: 20px;
 }
+
+
+/* LECCIÓN: Color azul suave para enfoque */
+
+.leccion-card {
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 25px;
+    margin: 25px 0;
+    border: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.leccion-card::before {
+    content: "LECCIÓN";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--yes-blue);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+
+/* PREGUNTA: Color ámbar suave para exámenes */
 
 .pregunta-card {
-    background: var(--warning-soft);
+    background: #fffbeb;
     border-radius: var(--radius-md);
-    padding: 20px;
+    padding: 25px;
     margin: 20px 0;
-    border-left: 6px solid var(--warning);
+    border: 1px solid #fef3c7;
 }
 
+
+/* MATERIAL: Color verde suave */
+
 .material-card {
-    background: var(--success-soft);
+    background: #f0fdf4;
     border-radius: var(--radius-sm);
-    padding: 16px;
-    margin-top: 14px;
-    border-left: 5px solid var(--success);
+    padding: 18px;
+    margin-top: 15px;
+    border: 1px solid #dcfce7;
 }
 
 
 /* ===============================
-   FORMULARIOS
+   INPUTS Y FORMULARIOS
 =============================== */
 
 label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-main);
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--yes-blue);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 input,
 textarea,
 select {
     width: 100%;
-    padding: 12px 14px;
-    margin-top: 6px;
+    padding: 14px;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    font-size: 14px;
+    border: 1.5px solid var(--border);
+    font-size: 15px;
     background: #fff;
-    color: var(--text-main);
-}
-
-textarea {
-    resize: vertical;
-    min-height: 90px;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--text-muted);
+    transition: all 0.3s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--yes-blue);
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
-
-
-/* ===============================
-   FILAS INLINE
-=============================== */
 
 .inline-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 
@@ -177,72 +193,67 @@ select:focus {
 button {
     border: none;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: var(--radius-sm);
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 }
 
 
-/* Guardar */
+/* El botón maestro de Guardar */
 
 .btn-guardar {
     width: 100%;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #fff;
-    font-size: 16px;
-    padding: 16px;
-    margin-top: 30px;
-    box-shadow: var(--shadow-md);
+    background: var(--yes-amber);
+    color: var(--yes-blue);
+    font-size: 18px;
+    padding: 18px;
+    margin-top: 40px;
+    font-weight: 800;
+    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
 }
 
 .btn-guardar:hover {
+    background: #e6a91e;
     transform: translateY(-2px);
-    opacity: .95;
 }
 
 
-/* Agregar */
+/* Botones de Agregar (+) */
 
-button[type="button"] {
-    background: var(--primary);
-    color: #fff;
-    padding: 8px 14px;
+button[onClick*="add"],
+button:contains("Agregar") {
+    background: var(--yes-blue) !important;
+    color: white !important;
+    padding: 10px 16px;
     font-size: 13px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-button[type="button"]:hover {
-    background: #1d4ed8;
-}
-
-
-/* Eliminar */
-
-button[type="button"].danger,
-button[type="button"]:has(❌) {
-    background: var(--danger);
-}
-
-button[type="button"].danger:hover {
-    background: #b91c1c;
+button[onClick*="add"]:hover {
+    background: #00005a !important;
+    transform: scale(1.02);
 }
 
 
-/* ===============================
-   SELECT
-=============================== */
+/* Botones de Eliminar (X) */
 
-select {
-    cursor: pointer;
+button[onClick*="remove"] {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 8px 12px;
+}
+
+button[onClick*="remove"]:hover {
+    background: #dc2626;
+    color: white;
 }
 
 
-/* ===============================
-   SEPARADORES
-=============================== */
+/* Especial para botones dentro de inline-row */
 
-section+section {
-    margin-top: 40px;
+.inline-row button {
+    padding: 14px;
+    margin-top: 0;
 }
 
 
@@ -251,11 +262,13 @@ section+section {
 =============================== */
 
 @media (max-width: 768px) {
-    .crear-curso-container,
     .editar-curso-container {
-        padding: 20px;
+        padding: 80px 15px 30px;
     }
     h1 {
-        font-size: 26px;
+        font-size: 28px;
+    }
+    .card {
+        padding: 20px;
     }
 }

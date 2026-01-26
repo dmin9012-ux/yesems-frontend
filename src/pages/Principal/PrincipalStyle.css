@@ -2,13 +2,23 @@
 
 .principal-container {
     min-height: 100vh;
-    padding: 50px 20px;
-    background: linear-gradient(135deg, #f8f9fa, #e0e3e6);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    /* Ajustado para que TopBar quede arriba */
+    background: #f8f9fa;
+    /* Fondo gris muy claro para resaltar las cards */
+    font-family: "Inter", "Segoe UI", sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+}
+
+.principal-content {
+    padding: 60px 20px;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
@@ -16,130 +26,140 @@
 
 .principal-title {
     font-size: 3rem;
-    color: #1f2937;
+    color: #00003f;
+    /* Tu Azul Profundo */
     margin-bottom: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: color 0.3s ease;
-}
-
-.principal-title:hover {
-    color: #2563eb;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-align: center;
 }
 
 
 /* Subtítulo */
 
 .principal-subtitle {
-    font-size: 1.4rem;
-    color: #4b5563;
-    margin-bottom: 40px;
-    max-width: 800px;
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin-bottom: 50px;
+    max-width: 600px;
     line-height: 1.6;
+    text-align: center;
 }
 
 
-/* Grid de cursos */
+/* Grid de cursos (Si lo manejas en Menu.jsx, estas clases te servirán) */
 
 .cursos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 35px;
     width: 100%;
-    max-width: 1200px;
-    padding: 0 10px;
+    margin-top: 20px;
 }
 
 
-/* Card individual */
+/* Card individual mejorada */
 
 .curso-card {
     background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
-    text-align: left;
+    border: 1px solid #f0f0f0;
 }
 
 .curso-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.12);
+    border-color: #e5e7eb;
 }
 
 
-/* Imagen de la card */
+/* Imagen de la card con zoom */
 
 .curso-card img {
     width: 100%;
-    height: 220px;
-    /* más grande que antes */
+    height: 200px;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s ease;
 }
 
 .curso-card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 
 /* Contenido de la card */
 
 .curso-card h3 {
-    font-size: 1.6rem;
-    margin: 15px;
-    color: #1f2937;
+    font-size: 1.5rem;
+    margin: 20px 20px 10px;
+    color: #00003f;
+    /* Azul para títulos de cursos */
+    font-weight: 700;
 }
 
 .curso-card p {
-    font-size: 1rem;
-    margin: 0 15px 15px 15px;
-    color: #4b5563;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    margin: 0 20px 20px;
+    color: #6b7280;
+    line-height: 1.6;
+    flex-grow: 1;
 }
 
 
-/* Botones de acción */
+/* Botones de acción (CTA) */
 
 .card-actions {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 15px 20px 15px;
+    padding: 0 20px 25px;
 }
 
 .card-actions button {
-    background: #2563eb;
-    color: #fff;
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Azul Profundo para contraste */
     border: none;
-    padding: 10px 16px;
+    width: 100%;
+    padding: 14px;
     border-radius: 12px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: background 0.3s ease, transform 0.2s ease;
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.2);
+    transition: all 0.3s ease;
 }
 
 .card-actions button:hover {
-    background: #1d4ed8;
-    transform: scale(1.05);
+    background: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
 }
 
 
-/* Animación de entrada de las cards */
+/* Spinner de carga unificado */
 
-.curso-card {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.6s forwards;
+.loader-container {
+    padding: 100px 0;
+    text-align: center;
 }
 
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+.spinner {
+    width: 45px;
+    height: 45px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fcb424;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
     }
 }
 
@@ -148,18 +168,9 @@
 
 @media (max-width: 768px) {
     .principal-title {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
     }
     .principal-subtitle {
-        font-size: 1.2rem;
-    }
-    .curso-card img {
-        height: 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .curso-card img {
-        height: 160px;
+        font-size: 1.1rem;
     }
 }

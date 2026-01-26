@@ -1,9 +1,13 @@
+/* VerifyCodeStyle.css – Identidad YES EMS */
+
 .verify-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #00003f, #02024f);
+    /* Fondo radial para mayor profundidad */
+    background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
+    font-family: "Inter", "Segoe UI", sans-serif;
     padding: 20px;
 }
 
@@ -11,83 +15,120 @@
     background-color: #ffffff;
     width: 100%;
     max-width: 420px;
-    padding: 35px 30px;
-    border-radius: 14px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    padding: 45px 35px;
+    border-radius: 24px;
+    /* Bordes redondeados modernos */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .verify-logo {
-    width: 120px;
+    width: 130px;
     margin-bottom: 15px;
 }
 
 .verify-card h2 {
     color: #00003f;
+    font-size: 1.8rem;
+    font-weight: 800;
     margin-bottom: 8px;
 }
 
 .subtitle {
     font-size: 14px;
-    color: #555;
-    margin-bottom: 25px;
+    color: #6b7280;
+    margin-bottom: 30px;
+    line-height: 1.5;
 }
+
+
+/* 🔹 INPUT DE CÓDIGO (ESTILO APP BANCARIA/SECURITY) */
 
 .verify-card input {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 18px;
-    font-size: 20px;
-    letter-spacing: 6px;
+    padding: 16px;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 8px;
+    /* Espacio para que los 6 dígitos se vean claros */
     text-align: center;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    color: #00003f;
     outline: none;
+    transition: all 0.3s ease;
 }
 
 .verify-card input:focus {
-    border-color: #fcb424;
-    box-shadow: 0 0 0 2px rgba(252, 180, 36, 0.25);
+    border-color: #00003f;
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.1);
 }
+
+
+/* 🔹 BOTÓN AMARILLO (CTA PRINCIPAL) */
 
 .verify-card button {
     width: 100%;
-    padding: 14px;
-    background-color: #00003f;
-    color: #fff;
+    padding: 16px;
+    background-color: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Azul Profundo */
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: bold;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
     cursor: pointer;
-}
-
-.verify-card button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
+    transition: all 0.3s ease;
 }
 
 .verify-card button:hover:not(:disabled) {
-    background-color: #02024f;
+    background-color: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.4);
 }
 
-.mensaje {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #dc2626;
+.verify-card button:disabled {
+    background-color: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 .footer-text {
-    margin-top: 18px;
-    font-size: 13px;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #6b7280;
 }
 
 .link {
     color: #00003f;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 .link:hover {
-    text-decoration: underline;
+    color: #fcb424;
+    text-decoration: none;
+}
+
+@media (max-width: 480px) {
+    .verify-card {
+        padding: 40px 25px;
+    }
 }

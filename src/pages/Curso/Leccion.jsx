@@ -1,11 +1,12 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext } from "react";
 import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { validarLeccion } from "../../servicios/progresoService";
 import { ProgresoContext } from "../../context/ProgresoContext";
+import { notify } from "../../Util/toast"; // 👈 Importamos tus Toasts
 
 import "./LeccionStyle.css";
 
@@ -21,30 +22,25 @@ export default function Leccion() {
   const [esUltimaLeccion, setEsUltimaLeccion] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
 
   const {
     progresoGlobal,
     nivelesAprobadosGlobal,
-    actualizarProgreso,
-    recargarProgreso 
+    actualizarProgreso
   } = useContext(ProgresoContext);
 
   const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
 
-  /* ===============================
-      📥 CARGAR LECCIÓN
-  =============================== */
   useEffect(() => {
     const cargarLeccion = async () => {
       setCargando(true);
-      setError("");
       try {
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          setError("Curso no encontrado");
+          notify("error", "Curso no encontrado");
+          navigate("/principal");
           return;
         }
 
@@ -52,13 +48,14 @@ export default function Leccion() {
         const nivelData = data.niveles?.find((n) => Number(n.numero) === nivelNum);
         
         if (!nivelData) {
-          setError("Nivel no encontrado");
+          notify("error", "Nivel no encontrado");
+          navigate(`/curso/${id}`);
           return;
         }
 
         const leccionData = nivelData.lecciones?.[numLeccion - 1];
         if (!leccionData) {
-          setError("Lección no encontrada");
+          notify("error", "Lección no encontrada");
           return;
         }
 
@@ -75,18 +72,15 @@ export default function Leccion() {
         setEsUltimaLeccion(numLeccion === nivelData.lecciones.length);
       } catch (err) {
         console.error("Error cargando lección:", err);
-        setError("Error al conectar con la base de datos");
+        notify("error", "Error de conexión");
       } finally {
         setCargando(false);
       }
     };
 
     cargarLeccion();
-  }, [id, nivelNum, numLeccion, leccionId]);
+  }, [id, nivelNum, numLeccion, leccionId, navigate]);
 
-  /* ===============================
-      💾 GUARDAR PROGRESO
-  =============================== */
   const guardarProgresoReal = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
     if (progresoCursoActual.includes(leccionId)) return true;
@@ -96,22 +90,20 @@ export default function Leccion() {
       const res = await validarLeccion({ cursoId: id, leccionId });
       if (res?.ok) {
         actualizarProgreso(id, leccionId);
+        notify("success", "Progreso guardado ✨"); // 👈 Toast de éxito
         return true;
       } else {
-        setError(res.message || "No se pudo guardar el progreso");
+        notify("error", res.message || "No se pudo guardar el progreso");
         return false;
       }
     } catch (err) {
-      console.error("Error validar lección:", err);
+      notify("error", "Error al guardar progreso");
       return false;
     } finally {
       setGuardando(false);
     }
   };
 
-  /* ===============================
-      🔹 NAVEGACIÓN
-  =============================== */
   const navegarSiguiente = async () => {
     const ok = await guardarProgresoReal();
     if (!ok) return;
@@ -129,93 +121,99 @@ export default function Leccion() {
     if (ok) navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
   };
 
-  if (cargando) return <><TopBar /><div className="cargando">Cargando lección...</div></>;
-
-  if (error || !leccionActual) return (
-    <><TopBar /><div className="error-container">
-      <p className="error-leccion">❌ {error || "Lección no disponible"}</p>
-      <button onClick={() => navigate(`/curso/${id}`)}>Volver al curso</button>
-    </div></>
+  if (cargando) return (
+    <>
+      <TopBar />
+      <div className="loader-full">
+        <div className="spinner"></div>
+        <p>Preparando lección...</p>
+      </div>
+    </>
   );
 
   const progresoActual = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
   const nivelData = curso.niveles.find((n) => Number(n.numero) === nivelNum);
-  
   const totalLeccionesNivel = nivelData?.lecciones.length || 0;
-  const leccionesNivelIds = nivelData?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
-  const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
-  const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
 
   return (
     <>
       <TopBar />
       <div className="leccion-contenedor-sidebar">
         <aside className="sidebar">
-          <h3>{curso.nombre}</h3>
-          {curso.niveles.map((nivelItem) => {
-            const nNum = Number(nivelItem.numero);
-            const desbloqueado = nNum === 1 || nivelesAprobados.includes(nNum - 1);
+          <div className="sidebar-header">
+            <h3>{curso.nombre}</h3>
+          </div>
+          <nav className="sidebar-nav">
+            {curso.niveles.map((nivelItem) => {
+              const nNum = Number(nivelItem.numero);
+              const desbloqueado = nNum === 1 || nivelesAprobados.includes(nNum - 1);
 
-            return (
-              <div key={nNum} className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}>
-                <p>Nivel {nNum}: {nivelItem.titulo}</p>
-                <ul>
-                  {/* MODIFICADO: Ahora 'lecc' representa el objeto de la lección */}
-                  {nivelItem.lecciones.map((lecc, idx) => {
-                    const lid = `${id}-n${nNum}-l${idx + 1}`;
-                    const esActual = nNum === nivelNum && (idx + 1) === numLeccion;
-                    const completada = progresoActual.includes(lid);
-                    return (
-                      <li key={lid} className={`${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
-                        {desbloqueado ? (
-                          <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`}>
-                            {completada ? "✅ " : "📖 "} 
-                            {/* MODIFICADO: Muestra el título real en lugar de 'Lección X' */}
-                            {lecc.titulo || `Lección ${idx + 1}`}
-                          </Link>
-                        ) : (
-                          <span>🔒 {lecc.titulo || `Lección ${idx + 1}`}</span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
+              return (
+                <div key={nNum} className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}>
+                  <p className="nivel-titulo">Nivel {nNum}: {nivelItem.titulo}</p>
+                  <ul className="lecciones-lista">
+                    {nivelItem.lecciones.map((lecc, idx) => {
+                      const lid = `${id}-n${nNum}-l${idx + 1}`;
+                      const esActual = nNum === nivelNum && (idx + 1) === numLeccion;
+                      const completada = progresoActual.includes(lid);
+                      return (
+                        <li key={lid} className={`leccion-item ${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
+                          {desbloqueado ? (
+                            <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`} className="leccion-link">
+                              <span className="icon">{completada ? "✅" : "📖"}</span>
+                              <span className="text">{lecc.titulo || `Lección ${idx + 1}`}</span>
+                            </Link>
+                          ) : (
+                            <span className="leccion-bloqueada">
+                              <span className="icon">🔒</span>
+                              <span className="text">{lecc.titulo || `Lección ${idx + 1}`}</span>
+                            </span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </nav>
         </aside>
 
-        <main className="contenido">
-          <div className="indicador-leccion">
-            Nivel {nivelNum} · Unidad {numLeccion} de {totalLeccionesNivel}
+        <main className="contenido-leccion">
+          <div className="header-leccion">
+            <span className="badge-nivel">Nivel {nivelNum}</span>
+            <span className="progreso-texto">Unidad {numLeccion} de {totalLeccionesNivel}</span>
           </div>
           
           <h1 className="leccion-titulo">{leccionActual.titulo}</h1>
-          <h3 className="nivel-subtitulo">{leccionActual.nivelTitulo}</h3>
 
-          <div className="video-container">
+          <div className="video-wrapper">
             {leccionActual.videoURL ? (
-               <iframe src={leccionActual.videoURL} title="Video lección" allowFullScreen />
-            ) : <div className="no-video">Video no disponible</div>}
+               <iframe 
+                src={leccionActual.videoURL} 
+                title="Video lección" 
+                allowFullScreen 
+                className="video-iframe"
+               />
+            ) : <div className="no-video">El material audiovisual no está disponible.</div>}
           </div>
 
           {leccionActual.contenidoHTML && (
-            /* MODIFICADO: Clase 'contenido-html' para aplicar los estilos del CSS */
-            <div className="contenido-html" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
+            <div className="contenido-html-rich" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
 
-          <div className="navegacion-lecciones">
-            <button onClick={() => navigate(-1)} className="btn-nav">
+          <div className="navegacion-footer">
+            <button onClick={() => navigate(-1)} className="btn-secundario">
               ⬅ Anterior
             </button>
             
             {esUltimaLeccion ? (
-              <button onClick={irAExamenNivel} className="btn-nav btn-finalizar" disabled={guardando}>
+              <button onClick={irAExamenNivel} className="btn-primario" disabled={guardando}>
                 {guardando ? "Guardando..." : "Realizar Examen 📝"}
               </button>
             ) : (
-              <button onClick={navegarSiguiente} className="btn-nav" disabled={guardando}>
+              <button onClick={navegarSiguiente} className="btn-primario" disabled={guardando}>
                 {guardando ? "Guardando..." : "Siguiente Lección ➝"}
               </button>
             )}

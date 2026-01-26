@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { registerRequest } from "../../servicios/authService";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { notify } from "../../Util/toast"; // 👈 Cambiamos toast por tu utilidad
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
@@ -20,7 +20,7 @@ export default function Register() {
     e.preventDefault();
 
     if (password.length < 6) {
-      toast.warning("⚠ La contraseña debe tener mínimo 6 caracteres.");
+      notify("warning", "La contraseña debe tener mínimo 6 caracteres.");
       return;
     }
 
@@ -30,16 +30,14 @@ export default function Register() {
       const res = await registerRequest({ nombre, email, password });
 
       if (!res.ok) {
-        toast.error(res.message);
+        notify("error", res.message || "Error al registrar usuario");
         return;
       }
 
-      toast.success(
-        res.message ||
-          "📧 Se te envió un correo de verificación para comprobar que eres tú."
-      );
+      // Éxito: Notificamos al usuario
+      notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
 
-      // Limpiar campos opcional
+      // Limpiar campos
       setNombre("");
       setEmail("");
       setPassword("");
@@ -47,9 +45,9 @@ export default function Register() {
       navigate("/login");
     } catch (error) {
       console.error("Error en registro:", error);
-      toast.error("❌ Error al conectar con el servidor");
+      notify("error", "Error al conectar con el servidor");
     } finally {
-      setLoading(false); // ✅ Siempre se ejecuta
+      setLoading(false);
     }
   };
 
@@ -62,24 +60,27 @@ export default function Register() {
         <p className="subtitle">Únete a la plataforma YES EMS</p>
 
         <form onSubmit={handleRegister}>
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="Nombre completo"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          {/* 🔐 PASSWORD CON OJO */}
-          <div className="password-group">
+          <div className="password-group input-group">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Contraseña (mínimo 6 caracteres)"

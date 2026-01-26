@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../../../../firebase/firebaseConfig";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import TopBarAdmin from "../../../../components/TopBarAdmin/TopBarAdmin";
+import { notify } from "../../../../Util/toast"; // 👈 Sincronizado con tus Toasts
+import { Save, Plus, Trash2, FileText, Video, HelpCircle, ArrowLeft } from "lucide-react"; 
 import "./EditarCursoStyle.css";
 
 export default function EditarCurso() {
@@ -11,35 +13,30 @@ export default function EditarCurso() {
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* ===============================
-     🔄 CARGAR CURSO
-  =============================== */
   useEffect(() => {
     const load = async () => {
-      const ref = doc(db, "cursos", id);
-      const snap = await getDoc(ref);
-
-      if (!snap.exists()) {
-        alert("Curso no encontrado");
-        navigate("/admin/cursos");
-        return;
+      try {
+        const ref = doc(db, "cursos", id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          notify("error", "Curso no encontrado");
+          navigate("/admin/cursos");
+          return;
+        }
+        setCurso(snap.data());
+      } catch (err) {
+        notify("error", "Error al cargar datos");
+      } finally {
+        setLoading(false);
       }
-
-      setCurso(snap.data());
-      setLoading(false);
     };
-
     load();
   }, [id, navigate]);
 
-  /* ===============================
-     🔧 HELPERS
-  =============================== */
   const updateDeep = (path, value) => {
     const copy = JSON.parse(JSON.stringify(curso));
     const parts = path.split(".");
     let current = copy;
-
     for (let i = 0; i < parts.length - 1; i++) {
       current = current[isNaN(parts[i]) ? parts[i] : Number(parts[i])];
     }
@@ -56,9 +53,6 @@ export default function EditarCurso() {
     setCurso({ ...curso, [field]: copy });
   };
 
-  /* ===============================
-     📚 NIVELES / LECCIONES
-  =============================== */
   const addNivel = () =>
     setCurso((prev) => ({
       ...prev,
@@ -71,198 +65,143 @@ export default function EditarCurso() {
   const removeNivel = (ni) => {
     const copy = [...curso.niveles];
     copy.splice(ni, 1);
-    setCurso({
-      ...curso,
-      niveles: copy.map((n, i) => ({ ...n, numero: i + 1 }))
-    });
+    setCurso({ ...curso, niveles: copy.map((n, i) => ({ ...n, numero: i + 1 })) });
   };
 
   const addLeccion = (ni) => {
     const copy = JSON.parse(JSON.stringify(curso));
     copy.niveles[ni].lecciones.push({
-      id: crypto.randomUUID(),
-      titulo: "",
-      videoURL: "",
-      contenidoHTML: "",
-      materiales: []
+      id: crypto.randomUUID(), titulo: "", videoURL: "", contenidoHTML: "", materiales: []
     });
     setCurso(copy);
   };
 
-  const removeLeccion = (ni, li) => {
-    const copy = JSON.parse(JSON.stringify(curso));
-    copy.niveles[ni].lecciones.splice(li, 1);
-    setCurso(copy);
-  };
-
-  /* ===============================
-     📎 MATERIALES
-  =============================== */
   const addMaterial = (ni, li) => {
     const copy = JSON.parse(JSON.stringify(curso));
     copy.niveles[ni].lecciones[li].materiales.push({
-      id: crypto.randomUUID(),
-      titulo: "",
-      tipo: "pdf",
-      urlPreview: "",
-      urlDownload: ""
+      id: crypto.randomUUID(), titulo: "", tipo: "pdf", urlPreview: "", urlDownload: ""
     });
     setCurso(copy);
   };
 
-  const removeMaterial = (ni, li, mi) => {
-    const copy = JSON.parse(JSON.stringify(curso));
-    copy.niveles[ni].lecciones[li].materiales.splice(mi, 1);
-    setCurso(copy);
-  };
-
-  /* ===============================
-     ❓ PREGUNTAS
-  =============================== */
   const addPregunta = (ni) => {
     const copy = JSON.parse(JSON.stringify(curso));
     copy.niveles[ni].preguntas.push({
-      id: crypto.randomUUID(),
-      pregunta: "",
-      opciones: ["", "", "", ""],
-      correcta: 0
+      id: crypto.randomUUID(), pregunta: "", opciones: ["", "", "", ""], correcta: 0
     });
     setCurso(copy);
   };
 
-  const removePregunta = (ni, pi) => {
-    const copy = JSON.parse(JSON.stringify(curso));
-    copy.niveles[ni].preguntas.splice(pi, 1);
-    setCurso(copy);
-  };
-
-  /* ===============================
-     💾 GUARDAR
-  =============================== */
   const handleSave = async () => {
-    await setDoc(doc(db, "cursos", id), {
-      ...curso,
-      updatedAt: serverTimestamp()
-    });
-
-    alert("✅ Curso actualizado");
-    navigate("/admin/cursos");
+    try {
+      await setDoc(doc(db, "cursos", id), {
+        ...curso,
+        updatedAt: serverTimestamp()
+      });
+      notify("success", "Cambios guardados con éxito ✅");
+      navigate("/admin/cursos");
+    } catch (err) {
+      notify("error", "Error al guardar los cambios");
+    }
   };
 
-  if (loading) return <p>Cargando...</p>;
-  if (!curso) return null;
+  if (loading) return <div className="admin-loader">Sincronizando...</div>;
 
-  /* ===============================
-     🧩 UI
-  =============================== */
   return (
-    <>
+    <div className="admin-layout">
       <TopBarAdmin />
-      <div className="editar-curso-container">
-        <h1>Editar Curso</h1>
+      <div className="editar-curso-main">
+        <header className="admin-header-sticky">
+          <div className="title-section">
+            <button className="btn-back-circle" onClick={() => navigate("/admin/cursos")}><ArrowLeft /></button>
+            <h1>Editando: {curso.nombre}</h1>
+          </div>
+          <button className="btn-save-master" onClick={handleSave}>
+            <Save size={18} /> Guardar Todo
+          </button>
+        </header>
 
-        <button
-          type="button"
-          className="btn-regresar"
-          onClick={() => navigate("/admin/cursos")}
-        >
-          ← Regresar a cursos
-        </button>
-
-        {/* INFO GENERAL */}
-        <section className="card">
-          <label>Nombre</label>
-          <input placeholder="Nombre del curso" value={curso.nombre} onChange={(e) => updateDeep("nombre", e.target.value)} />
-
-          <label>Imagen URL</label>
-          <input placeholder="URL de la imagen" value={curso.imagenURL} onChange={(e) => updateDeep("imagenURL", e.target.value)} />
-
-          <label>Descripción corta</label>
-          <textarea placeholder="Descripción corta" value={curso.descripcion} onChange={(e) => updateDeep("descripcion", e.target.value)} />
-
-          <label>Descripción larga</label>
-          <textarea placeholder="Descripción larga" value={curso.descripcionLarga} onChange={(e) => updateDeep("descripcionLarga", e.target.value)} />
-
-          <h4>🎯 Objetivos</h4>
-          {curso.objetivos.map((o, i) => (
-            <div key={i} className="inline-row">
-              <input placeholder={`Objetivo ${i + 1}`} value={o} onChange={(e) => updateDeep(`objetivos.${i}`, e.target.value)} />
-              <button onClick={() => removeArrayItem("objetivos", i)}>❌</button>
-            </div>
-          ))}
-          <button onClick={() => addArrayItem("objetivos")}>➕ Agregar objetivo</button>
-
-          <h4>📌 Requisitos</h4>
-          {curso.requisitos.map((r, i) => (
-            <div key={i} className="inline-row">
-              <input placeholder={`Requisito ${i + 1}`} value={r} onChange={(e) => updateDeep(`requisitos.${i}`, e.target.value)} />
-              <button onClick={() => removeArrayItem("requisitos", i)}>❌</button>
-            </div>
-          ))}
-          <button onClick={() => addArrayItem("requisitos")}>➕ Agregar requisito</button>
-        </section>
-
-        {/* NIVELES */}
-        {curso.niveles.map((nivel, ni) => (
-          <section key={ni} className="card">
-            <h3 className="nivel-titulo">Nivel {nivel.numero} - {nivel.titulo || "Título del nivel"}</h3>
-            <input placeholder="Título del nivel" value={nivel.titulo} onChange={(e) => updateDeep(`niveles.${ni}.titulo`, e.target.value)} />
-
-            {/* LECCIONES */}
-            {nivel.lecciones.map((lec, li) => (
-              <div key={lec.id} className="leccion-card">
-                <input placeholder={`Título lección ${li + 1}`} value={lec.titulo} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.titulo`, e.target.value)} />
-                <input placeholder="Video URL" value={lec.videoURL} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.videoURL`, e.target.value)} />
-                <textarea placeholder="Contenido HTML" value={lec.contenidoHTML} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.contenidoHTML`, e.target.value)} />
-
-                <button onClick={() => addMaterial(ni, li)}>📎 Agregar material</button>
-                {lec.materiales.map((mat, mi) => (
-                  <div key={mat.id} className="material-card">
-                    <input placeholder="Título PDF" value={mat.titulo} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.titulo`, e.target.value)} />
-                    <input placeholder="URL Preview" value={mat.urlPreview} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlPreview`, e.target.value)} />
-                    <input placeholder="URL Descarga" value={mat.urlDownload} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlDownload`, e.target.value)} />
-                    <button onClick={() => removeMaterial(ni, li, mi)}>❌ Eliminar material</button>
-                  </div>
-                ))}
-
-                <button onClick={() => removeLeccion(ni, li)}>🗑 Eliminar lección</button>
+        <div className="editor-grid">
+          {/* COLUMNA IZQUIERDA: CONFIG GENERAL */}
+          <aside className="editor-aside">
+            <section className="admin-card">
+              <h3><FileText size={18} /> Info General</h3>
+              <div className="input-group">
+                <label>Título del Curso</label>
+                <input value={curso.nombre} onChange={(e) => updateDeep("nombre", e.target.value)} />
               </div>
-            ))}
-            <button onClick={() => addLeccion(ni)}>➕ Agregar lección</button>
+              <div className="input-group">
+                <label>URL Imagen de Portada</label>
+                <input value={curso.imagenURL} onChange={(e) => updateDeep("imagenURL", e.target.value)} />
+              </div>
+              <div className="input-group">
+                <label>Descripción del catálogo</label>
+                <textarea rows="3" value={curso.descripcion} onChange={(e) => updateDeep("descripcion", e.target.value)} />
+              </div>
+            </section>
 
-            {/* PREGUNTAS */}
-            <h4>❓ Preguntas</h4>
-            {nivel.preguntas.map((p, pi) => (
-              <div key={p.id} className="pregunta-card">
-                <input placeholder="Pregunta" value={p.pregunta} onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.pregunta`, e.target.value)} />
-                {p.opciones.map((op, oi) => (
-                  <input
-                    key={oi}
-                    placeholder={`Opción ${oi + 1}`}
-                    value={op}
-                    onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.opciones.${oi}`, e.target.value)}
-                  />
-                ))}
-                <select
-                  value={p.correcta}
-                  onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.correcta`, Number(e.target.value))}
-                >
-                  {p.opciones.map((_, oi) => (
-                    <option key={oi} value={oi}>Opción {oi + 1}</option>
+            <section className="admin-card">
+              <h3>🎯 Objetivos y Requisitos</h3>
+              {curso.objetivos.map((o, i) => (
+                <div key={i} className="dynamic-input">
+                  <input value={o} onChange={(e) => updateDeep(`objetivos.${i}`, e.target.value)} />
+                  <button onClick={() => removeArrayItem("objetivos", i)} className="btn-icon-del">×</button>
+                </div>
+              ))}
+              <button className="btn-add-small" onClick={() => addArrayItem("objetivos")}><Plus size={14}/> Objetivo</button>
+            </section>
+          </aside>
+
+          {/* COLUMNA DERECHA: ESTRUCTURA CURRICULAR */}
+          <main className="editor-content">
+            {curso.niveles.map((nivel, ni) => (
+              <section key={ni} className="nivel-block">
+                <div className="nivel-header">
+                  <h2>Nivel {nivel.numero}</h2>
+                  <input className="nivel-input-titulo" placeholder="Ej: Introducción a la medicina" value={nivel.titulo} onChange={(e) => updateDeep(`niveles.${ni}.titulo`, e.target.value)} />
+                  <button className="btn-del-nivel" onClick={() => removeNivel(ni)}><Trash2 size={16}/></button>
+                </div>
+
+                <div className="nivel-body">
+                  {/* LECCIONES */}
+                  <div className="section-title"><Video size={16}/> Lecciones</div>
+                  {nivel.lecciones.map((lec, li) => (
+                    <div key={lec.id} className="leccion-editor-card">
+                      <input className="input-lec-titulo" placeholder="Título de la lección" value={lec.titulo} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.titulo`, e.target.value)} />
+                      <input placeholder="URL Video (YouTube/Vimeo)" value={lec.videoURL} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.videoURL`, e.target.value)} />
+                      <textarea placeholder="Contenido HTML o Texto" value={lec.contenidoHTML} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.contenidoHTML`, e.target.value)} />
+                      <button className="btn-del-lec" onClick={() => removeLeccion(ni, li)}>Eliminar Lección</button>
+                    </div>
                   ))}
-                </select>
-                <button onClick={() => removePregunta(ni, pi)}>❌ Eliminar pregunta</button>
-              </div>
+                  <button className="btn-add-section" onClick={() => addLeccion(ni)}><Plus size={16}/> Nueva Lección</button>
+
+                  {/* EXAMEN */}
+                  <div className="section-title"><HelpCircle size={16}/> Banco de Preguntas (Examen)</div>
+                  {nivel.preguntas.map((p, pi) => (
+                    <div key={p.id} className="pregunta-editor-card">
+                      <input className="input-q" placeholder="Pregunta" value={p.pregunta} onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.pregunta`, e.target.value)} />
+                      <div className="opciones-grid">
+                        {p.opciones.map((op, oi) => (
+                          <input key={oi} placeholder={`Opción ${oi + 1}`} value={op} onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.opciones.${oi}`, e.target.value)} />
+                        ))}
+                      </div>
+                      <div className="q-footer">
+                        <label>Respuesta Correcta:</label>
+                        <select value={p.correcta} onChange={(e) => updateDeep(`niveles.${ni}.preguntas.${pi}.correcta`, Number(e.target.value))}>
+                          {p.opciones.map((_, oi) => <option key={oi} value={oi}>Opción {oi + 1}</option>)}
+                        </select>
+                        <button className="btn-del-q" onClick={() => removePregunta(ni, pi)}>Borrar Pregunta</button>
+                      </div>
+                    </div>
+                  ))}
+                  <button className="btn-add-section" onClick={() => addPregunta(ni)}><Plus size={16}/> Nueva Pregunta</button>
+                </div>
+              </section>
             ))}
-            <button onClick={() => addPregunta(ni)}>➕ Agregar pregunta</button>
-
-            <button onClick={() => removeNivel(ni)}>🗑 Eliminar nivel</button>
-          </section>
-        ))}
-
-        <button onClick={addNivel}>➕ Agregar nivel</button>
-        <button className="btn-guardar" onClick={handleSave}>Guardar cambios</button>
+            <button className="btn-add-nivel-master" onClick={addNivel}><Plus /> Agregar Nuevo Nivel</button>
+          </main>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

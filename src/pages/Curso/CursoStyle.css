@@ -1,253 +1,242 @@
-/* Contenedor general */
+/* Contenedor general con estructura de Dashboard */
 
-.curso-container {
-    padding: 40px 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
-    position: relative;
-    /* Para el botón absoluto dentro del contenedor */
+.curso-contenedor-sidebar {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Inter', sans-serif;
 }
 
 
-/* Título del curso */
+/* ===============================
+   ⬅️ SIDEBAR DEL CURSO
+=============================== */
 
-.curso-titulo {
-    font-size: 52px;
-    font-weight: 900;
-    margin-bottom: 15px;
-    color: #0d47a1;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-
-/* Descripción */
-
-.curso-descripcion {
-    font-size: 18px;
-    margin-bottom: 35px;
-    color: #333;
-    line-height: 1.6;
-}
-
-
-/* Subtítulos */
-
-.subtitulo {
-    margin-top: 40px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1e88e5;
-    margin-bottom: 25px;
-}
-
-
-/* Lista de niveles */
-
-.niveles-lista {
+.sidebar {
+    width: 320px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    color: #00003f;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f3f4f6;
 }
 
 
-/* Tarjetas de niveles */
+/* Niveles en el Sidebar */
 
-.nivel-card {
-    padding: 25px 20px;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #ffffff, #e3f2fd);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.nivel-sidebar {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f9fafb;
+    border: 1px solid #f0f0f0;
 }
 
-.nivel-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+.nivel-titulo {
+    font-weight: 800;
+    color: #00003f;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
 }
-
-.nivel-card h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: #1565c0;
-    font-weight: 700;
-}
-
-
-/* Lista de lecciones */
 
 .lecciones-lista {
     list-style: none;
     padding: 0;
-    margin-top: 10px;
+}
+
+.leccion-item {
+    margin-bottom: 6px;
 }
 
 .leccion-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     text-decoration: none;
-    color: #0d47a1;
-    font-weight: 600;
-    padding: 8px 12px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    padding: 8px 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
 }
 
 .leccion-link:hover {
-    background-color: #bbdefb;
-    color: #0d47a1;
-    transform: translateX(5px);
+    background: #e5e7eb;
+    color: #00003f;
+}
+
+.leccion-item.completada .leccion-link {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.leccion-bloqueada {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    cursor: not-allowed;
 }
 
 
-/* Botón regresar a principal (abajo derecha) */
+/* ===============================
+   📦 CONTENIDO PRINCIPAL
+=============================== */
 
-.btn-regresar-principal {
-    position: absolute;
-    /* Absoluto respecto al contenedor */
-    bottom: 20px;
-    right: 20px;
-    background: #555;
-    color: white;
+.contenido-curso {
+    flex: 1;
+    padding: 60px;
+    max-width: 900px;
+}
+
+.curso-titulo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00003f;
+    margin-bottom: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e0e7ff;
+    color: #00003f;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 30px;
+}
+
+.curso-info-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.curso-descripcion {
+    font-size: 1.1rem;
+    color: #4b5563;
+    line-height: 1.7;
+}
+
+
+/* ===============================
+   🔘 BOTONES Y ESTADOS
+=============================== */
+
+.btn-examen-sidebar {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    font-weight: 800;
     border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s;
+    transition: all 0.3s ease;
 }
 
-.btn-regresar-principal:hover {
-    background: #333;
+.btn-examen-sidebar:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
+}
+
+.nivel-aprobado {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #16a34a;
+    background: #dcfce7;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.btn-regresar-sidebar {
+    width: 100%;
+    margin-top: auto;
+    /* Empuja al final del sidebar */
+    padding: 12px;
+    background: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-regresar-sidebar:hover {
+    background: #e5e7eb;
+    color: #00003f;
+}
+
+
+/* Loader */
+
+.cargando-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fcb424;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 
 /* Responsive */
 
 @media (max-width: 1024px) {
-    .curso-container {
-        padding: 30px 20px;
+    .sidebar {
+        width: 260px;
     }
-    .curso-titulo {
-        font-size: 44px;
-    }
-    .subtitulo {
-        font-size: 24px;
+    .contenido-curso {
+        padding: 40px;
     }
 }
 
 @media (max-width: 768px) {
-    .curso-container {
-        padding: 20px 15px;
+    .curso-contenedor-sidebar {
+        flex-direction: column;
     }
-    .curso-titulo {
-        font-size: 36px;
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
     }
-    .nivel-card {
-        padding: 20px 15px;
-    }
-}
-
-.completada>a {
-    text-decoration: line-through;
-    color: green;
-    font-weight: bold;
-}
-
-
-/* Botón materiales */
-
-.btn-materiales {
-    margin-top: 6px;
-    margin-left: 10px;
-    padding: 4px 10px;
-    font-size: 0.8rem;
-    background-color: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-materiales:hover {
-    background-color: #0d47a1;
-}
-
-
-/* ===============================
-   🔒 NIVELES BLOQUEADOS
-=============================== */
-
-.nivel-bloqueado {
-    opacity: 0.55;
-    pointer-events: none;
-    filter: grayscale(70%);
-}
-
-.nivel-bloqueado p {
-    color: #777;
-}
-
-
-/* ===============================
-   🔒 LECCIÓN BLOQUEADA
-=============================== */
-
-.leccion-bloqueada {
-    display: block;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: #999;
-    font-weight: 600;
-    cursor: not-allowed;
-}
-
-
-/* ===============================
-   📝 BOTÓN EXAMEN
-=============================== */
-
-.btn-examen-sidebar {
-    margin-top: 12px;
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(135deg, #ff9800, #f57c00);
-    color: white;
-    font-weight: 700;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-examen-sidebar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-}
-
-
-/* ===============================
-   ✅ NIVEL APROBADO
-=============================== */
-
-.nivel-aprobado {
-    margin-top: 10px;
-    color: #2e7d32;
-    font-weight: 800;
-    text-align: center;
-    background: #e8f5e9;
-    padding: 6px;
-    border-radius: 6px;
-}
-
-
-/* ===============================
-   🎯 LECCIÓN COMPLETADA (MEJORA)
-=============================== */
-
-.completada>a {
-    text-decoration: line-through;
-    color: #2e7d32;
-    font-weight: 800;
 }

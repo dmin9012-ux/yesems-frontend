@@ -1,24 +1,34 @@
 .admin-container {
     display: flex;
     min-height: calc(100vh - 60px);
-    background: #f0f2f5;
-    font-family: 'Inter', sans-serif;
+    background: #f4f7f6;
+    /* Gris técnico muy claro */
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 
-/* SIDEBAR */
+/* SIDEBAR ADMINISTRATIVO */
 
 .admin-sidebar {
-    width: 250px;
+    width: 260px;
     background: #ffffff;
     padding: 45px 20px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #e5e7eb;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.02);
 }
 
 .sidebar-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    color: #00003f;
+    /* Tu Azul Profundo */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #fcb424;
+    /* Detalle Amarillo Ámbar */
+    padding-bottom: 10px;
+    display: inline-block;
 }
 
 .sidebar-menu {
@@ -27,16 +37,20 @@
 }
 
 .sidebar-menu li {
-    padding: 12px 15px;
-    font-size: 17px;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4b5563;
     cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.2s;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
 }
 
 .sidebar-menu li:hover {
-    background: #e3f2fd;
-    color: #0d47a1;
+    background: #f3f4f6;
+    color: #00003f;
+    transform: translateX(5px);
 }
 
 
@@ -44,52 +58,99 @@
 
 .admin-main {
     flex: 1;
-    padding: 40px;
+    padding: 50px;
 }
 
 .admin-title {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 900;
-    color: #0d47a1;
+    color: #00003f;
+    /* Azul Profundo */
     margin-bottom: 10px;
+    letter-spacing: -1px;
 }
 
 .admin-subtitle {
-    font-size: 18px;
-    color: #444;
-    margin-bottom: 35px;
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin-bottom: 40px;
 }
 
 
-/* CARDS */
+/* TARJETAS DE ACCIÓN RÁPIDA */
 
 .admin-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
 }
 
 .admin-card {
-    background: linear-gradient(145deg, #ffffff, #e3f2fd);
-    padding: 25px;
-    border-radius: 18px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 35px 25px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f0f0f0;
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* Efecto visual al pasar el mouse */
+
+.admin-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .admin-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.1);
+    border-color: #e5e7eb;
+}
+
+.admin-card:hover::before {
+    opacity: 1;
 }
 
 .admin-card h3 {
     font-size: 22px;
-    margin-bottom: 10px;
-    color: #1565c0;
+    margin-bottom: 12px;
+    color: #00003f;
+    /* Azul Profundo */
+    font-weight: 800;
 }
 
 .admin-card p {
     font-size: 15px;
-    color: #444;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .admin-container {
+        flex-direction: column;
+    }
+    .admin-sidebar {
+        width: 100%;
+        padding: 25px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+    .admin-main {
+        padding: 30px 20px;
+    }
 }

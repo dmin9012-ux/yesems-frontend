@@ -1,96 +1,62 @@
+/* VerificarCorreoStyle.css */
+
 .verificar-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #f1f1f1;
+    min-height: 100vh;
+    /* Fondo radial consistente con el Login y Registro */
+    background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
+    padding: 20px;
+    font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 .verificar-card {
-    width: 380px;
-    padding: 30px;
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    padding: 45px 35px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 24px;
+    /* Bordes más curvos y modernos */
     text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.verificar-logo {
+    width: 130px;
+    margin-bottom: 25px;
 }
 
 .verificar-card h2 {
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 12px;
+    color: #00003f;
+    font-weight: 800;
+    font-size: 1.8rem;
 }
 
-.texto {
-    font-size: 15px;
-    color: #555;
-    margin-bottom: 20px;
-}
 
-.input-codigo {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    outline: none;
-    margin-bottom: 15px;
-}
-
-.input-codigo:focus {
-    border-color: #007bff;
-}
-
-.btn-verificar {
-    width: 100%;
-    padding: 12px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-verificar:hover {
-    background: #0056b3;
-}
-
-.btn-verificar:disabled {
-    background: #7aa7e7;
-    cursor: not-allowed;
-}
-
-.mensaje {
-    margin-top: 15px;
-    font-size: 15px;
-    color: #333;
-}
-
-.verificar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f1f1f1;
-}
-
-.verificar-card {
-    background: white;
-    padding: 30px;
-    width: 350px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
+/* Loader personalizado con tu color de acento */
 
 .loader {
-    border: 6px solid #ddd;
-    border-top: 6px solid #4CAF50;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #fcb424;
+    /* Amarillo Ámbar */
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    margin: 0 auto 20px;
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 25px;
     animation: spin 1s linear infinite;
 }
 
@@ -100,5 +66,70 @@
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+.verificar-card p {
+    font-size: 1.05rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+
+/* Botón opcional para saltar la espera */
+
+.btn-direct-login {
+    width: 100%;
+    padding: 14px;
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.25);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-direct-login:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.35);
+}
+
+
+/* Ajustes de éxito y error */
+
+.title-success {
+    color: #16a34a !important;
+}
+
+.title-error {
+    color: #dc2626 !important;
+}
+
+.verificar-footer {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.verificar-footer b {
+    color: #00003f;
+}
+
+
+/* Responsivo */
+
+@media (max-width: 480px) {
+    .verificar-card {
+        padding: 40px 25px;
+    }
+    .verificar-card h2 {
+        font-size: 1.5rem;
     }
 }

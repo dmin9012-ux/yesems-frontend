@@ -1,8 +1,11 @@
+/* LoginStyle.css - Versión Mejorada con Identidad Visual */
+
+
 /* Fondo general */
 
 .login-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #00003f, #02024f);
+    background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,19 +19,20 @@
     background: #ffffff;
     width: 100%;
     max-width: 420px;
-    padding: 40px 30px;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    padding: 45px 35px;
+    border-radius: 24px;
+    /* Bordes más curvos para look moderno */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
     text-align: center;
-    animation: fadeIn 0.6s ease-in-out;
+    animation: fadeIn 0.6s ease-out;
 }
 
 
 /* Logo */
 
 .login-logo {
-    width: 120px;
-    margin-bottom: 15px;
+    width: 140px;
+    margin-bottom: 10px;
 }
 
 
@@ -36,14 +40,16 @@
 
 .login-title {
     margin: 10px 0 5px;
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 800;
     color: #00003f;
+    /* Azul profundo */
 }
 
 .login-subtitle {
     font-size: 14px;
     color: #6b7280;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 
@@ -52,62 +58,61 @@
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 18px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
-    transition: all 0.2s ease;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 15px;
+    transition: all 0.3s ease;
 }
 
 .input-group input:focus {
     outline: none;
     border-color: #00003f;
-    box-shadow: 0 0 0 2px rgba(0, 0, 63, 0.15);
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.1);
 }
 
 
-/* Opciones */
-
-.login-options {
-    display: flex;
-    justify-content: flex-end;
-    font-size: 13px;
-}
-
-
-/* Botón */
+/* Botón Principal (Cambio a Amarillo para contraste) */
 
 .btn-login {
-    background: #00003f;
-    color: #ffffff;
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Texto en azul para legibilidad */
     border: none;
-    padding: 12px;
+    padding: 16px;
     border-radius: 12px;
-    font-size: 15px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 800;
     cursor: pointer;
-    transition: background 0.3s ease;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 10px;
 }
 
-.btn-login:hover {
-    background: #02025f;
+.btn-login:hover:not(:disabled) {
+    background: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.4);
 }
 
 .btn-login:disabled {
-    opacity: 0.7;
+    background: #d1d5db;
+    color: #9ca3af;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 
-/* Footer */
+/* Footer y Links */
 
 .login-footer {
-    margin-top: 20px;
+    margin-top: 25px;
     font-size: 14px;
     color: #374151;
     display: flex;
@@ -115,56 +120,22 @@
     gap: 6px;
 }
 
-
-/* Links */
-
 .link {
-    color: #fcb424;
-    font-weight: bold;
+    color: #00003f;
+    /* Azul para links */
+    font-weight: 700;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
 .link:hover {
-    text-decoration: underline;
-}
-
-
-/* Animación */
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* Responsive */
-
-@media (max-width: 480px) {
-    .login-card {
-        padding: 30px 20px;
-    }
-    .login-title {
-        font-size: 22px;
-    }
+    color: #fcb424;
+    /* Cambio a amarillo al pasar el mouse */
+    text-decoration: none;
 }
 
 
 /* PASSWORD CON OJO */
-
-.password-group {
-    position: relative;
-}
-
-.password-group input {
-    padding-right: 45px;
-    /* espacio para el ojo */
-}
 
 .password-eye {
     position: absolute;
@@ -174,10 +145,25 @@
     width: 22px;
     height: 22px;
     cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    opacity: 0.6;
+    transition: all 0.2s ease;
 }
 
 .password-eye:hover {
     opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+
+/* Animación */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

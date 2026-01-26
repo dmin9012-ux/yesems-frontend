@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
+import { notify } from "../../Util/toast"; // 👈 Tu utilidad centralizada
 import logo from "../../assets/logo-yesems.png";
 import "./ForgotPasswordStyle.css";
 
@@ -9,29 +10,27 @@ export default function ForgotPassword() {
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mensaje, setMensaje] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMensaje("");
 
     try {
       const res = await apiYesems.post("/usuario/password/forgot", { email });
 
-      setMensaje(
-        res.data.message ||
-          "Si el correo existe, se enviará un código de recuperación"
-      );
+      // ✅ Éxito: Notificamos con un Toast verde/azul
+      notify("success", res.data.message || "Código enviado correctamente 📧");
 
-      // ⏩ Pasar al paso 2 (verificar código)
+      // ⏩ Redirección automática tras el éxito
       setTimeout(() => {
         navigate("/verify-code", { state: { email } });
-      }, 2000);
+      }, 1500);
 
     } catch (error) {
       console.error(error);
-      setMensaje("❌ Error al enviar el código. Intenta más tarde.");
+      // ❌ Error: Toast rojo
+      const errorMsg = error.response?.data?.message || "Error al enviar el código. Intenta más tarde.";
+      notify("error", errorMsg);
     } finally {
       setLoading(false);
     }
@@ -40,36 +39,34 @@ export default function ForgotPassword() {
   return (
     <div className="forgot-container">
       <div className="forgot-card">
-
         <img src={logo} alt="yesems logo" className="forgot-logo" />
 
-        <h2>Recuperar contraseña</h2>
-        <p className="subtitle">
-          Ingresa tu correo y te enviaremos un código de 6 dígitos
+        <h2 className="forgot-title">Recuperar contraseña</h2>
+        <p className="forgot-subtitle">
+          Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
         </p>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        <form onSubmit={handleSubmit} className="forgot-form">
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="btn-forgot" disabled={loading}>
             {loading ? "Enviando..." : "Enviar código"}
           </button>
         </form>
 
-        {mensaje && <p className="mensaje">{mensaje}</p>}
-
-        <p className="footer-text">
+        <div className="forgot-footer">
           <span className="link" onClick={() => navigate("/login")}>
-            Volver al login
+            ⬅ Volver al inicio de sesión
           </span>
-        </p>
-
+        </div>
       </div>
     </div>
   );

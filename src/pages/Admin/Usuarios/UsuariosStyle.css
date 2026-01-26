@@ -1,152 +1,296 @@
-/* Contenedor general */
+/* ===================================================
+   USUARIOS STYLE - YES EMS ADMIN PANEL
+   =================================================== */
+
+.admin-page-layout {
+    min-height: 100vh;
+    background-color: #f4f7f6;
+    /* Fondo técnico claro */
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
 
 .usuarios-container {
-    padding: 80px 20px 40px 20px;
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    padding: 40px 20px;
+    animation: fadeInAdmin 0.5s ease-out;
+}
+
+@keyframes fadeInAdmin {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
-/* Botón volver */
+/* ---------------------------------------------------
+   HEADER Y CONTROLES
+   --------------------------------------------------- */
+
+.admin-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.admin-page-header h1 {
+    color: #00003f;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -1px;
+}
 
 .btn-volver {
-    margin-bottom: 20px;
+    background: transparent;
+    color: #6b7280;
+    border: 1.5px solid #d1d5db;
     padding: 8px 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: #1e1e1e;
-    color: #fff;
-    font-weight: 500;
+    border-radius: 10px;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
 }
 
 .btn-volver:hover {
-    background: #333;
+    background: #00003f;
+    color: white;
+    border-color: #00003f;
+}
+
+.table-controls {
+    margin-bottom: 25px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 14px;
+    border: 1.5px solid #e5e7eb;
+    max-width: 450px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    color: #1f2937;
 }
 
 
-/* Tabla de usuarios */
+/* ---------------------------------------------------
+   TABLA DE USUARIOS
+   --------------------------------------------------- */
+
+.table-wrapper {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
 
 .usuarios-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.usuarios-table th,
-.usuarios-table td {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    text-align: left;
 }
 
 .usuarios-table th {
-    background-color: #1e1e1e;
-    color: #fff;
-    font-weight: 600;
-}
-
-.usuarios-table td button {
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-    background: #1e1e1e;
+    background-color: #00003f;
+    /* Tu Azul Profundo */
     color: white;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+    padding: 18px 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
 }
 
-.usuarios-table td button:hover {
-    background: #333;
+.usuarios-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #4b5563;
+    font-size: 0.95rem;
+}
+
+.usuarios-table tr:hover td {
+    background-color: #f9fafb;
 }
 
 
-/* Formulario de edición */
+/* Badges y Estados */
+
+.badge-rol {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.badge-rol.admin {
+    background: #e0e7ff;
+    color: #00003f;
+}
+
+.badge-rol.usuario {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-dot.activo {
+    background-color: #10b981;
+}
+
+.status-dot.inactivo {
+    background-color: #ef4444;
+}
+
+
+/* ---------------------------------------------------
+   FORMULARIO DE EDICIÓN (EditarUsuario.jsx)
+   --------------------------------------------------- */
+
+.usuario-edit-card {
+    background: white;
+    padding: 45px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.05);
+    border: 1px solid #e5e7eb;
+    max-width: 700px;
+    margin: 0 auto;
+}
 
 .usuario-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    max-width: 450px;
-    margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    background-color: #f9f9f9;
+    gap: 25px;
 }
 
-.usuario-form label {
+.input-group-admin {
     display: flex;
     flex-direction: column;
-    font-weight: 500;
+    gap: 8px;
 }
 
-.usuario-form input,
-.usuario-form select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-top: 6px;
-    font-size: 0.95rem;
-    transition: border 0.2s, box-shadow 0.2s;
+.input-group-admin label {
+    font-weight: 800;
+    color: #00003f;
+    font-size: 0.9rem;
+    padding-left: 4px;
 }
 
-.usuario-form input:focus,
-.usuario-form select:focus {
-    border-color: #1e88e5;
-    box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+.input-group-admin input,
+.input-group-admin select {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid #f3f4f6;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: all 0.3s ease;
+}
+
+.input-group-admin input:focus,
+.input-group-admin select:focus {
     outline: none;
+    border-color: #fcb424;
+    /* Amarillo Ámbar */
+    background: white;
+    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
+}
+
+.grid-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 
-/* Botones de formulario */
+/* ---------------------------------------------------
+   BOTONES DE ACCIÓN
+   --------------------------------------------------- */
 
-.form-buttons {
+.form-actions-admin {
     display: flex;
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.btn-guardar {
-    background-color: #1e88e5;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.btn-guardar:hover {
-    background-color: #1565c0;
-}
-
-.btn-eliminar {
-    background-color: #e53935;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.btn-eliminar:hover {
-    background-color: #b71c1c;
-}
-
-
-/* Mensaje cuando no hay usuarios */
-
-.usuarios-container p {
+    gap: 15px;
     margin-top: 20px;
-    font-style: italic;
-    color: #666;
+}
+
+.btn-guardar-admin,
+.btn-accion-edit {
+    background-color: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-guardar-admin:hover,
+.btn-accion-edit:hover {
+    background-color: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
+}
+
+.btn-eliminar-admin {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-eliminar-admin:hover {
+    background-color: #fecaca;
+}
+
+
+/* ---------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .grid-form-row {
+        grid-template-columns: 1fr;
+    }
+    .admin-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .form-actions-admin {
+        flex-direction: column;
+    }
+    .usuario-edit-card {
+        padding: 30px 20px;
+    }
 }

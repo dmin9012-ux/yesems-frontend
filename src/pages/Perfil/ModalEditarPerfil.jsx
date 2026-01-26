@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { User, Image, Lock, X } from "lucide-react";
 import { actualizarMiPerfil } from "../../servicios/usuarioService";
+import { notify } from "../../Util/toast"; // 👈 Importamos la utilidad
 
 import "./ModalEditarPerfilStyle.css";
 
@@ -13,11 +14,10 @@ const ModalEditarPerfil = ({
   const [tab, setTab] = useState("perfil");
   const [nombre, setNombre] = useState(usuario.nombre || "");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const guardarPerfil = async () => {
     if (!nombre.trim()) {
-      return setError("El nombre no puede estar vacío");
+      return notify("warning", "El nombre no puede estar vacío");
     }
 
     if (nombre === usuario.nombre) {
@@ -26,17 +26,17 @@ const ModalEditarPerfil = ({
 
     try {
       setLoading(true);
-      setError("");
 
       const usuarioActualizado = await actualizarMiPerfil(nombre);
 
       // 🔁 Actualiza estado en Perfil.jsx
       setUsuario(usuarioActualizado);
-
+      
+      notify("success", "Perfil actualizado correctamente ✨");
       onClose();
     } catch (err) {
       console.error(err);
-      setError("No se pudo actualizar el perfil");
+      notify("error", "No se pudo actualizar el perfil");
     } finally {
       setLoading(false);
     }
@@ -44,76 +44,86 @@ const ModalEditarPerfil = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal modal-editar">
-        <button className="modal-close" onClick={onClose}>
-          <X />
+      <div className="modal-editar-card">
+        <button className="modal-close-btn" onClick={onClose}>
+          <X size={20} />
         </button>
 
-        {/* TABS */}
-        <div className="tabs">
+        {/* 📑 TABS CON TU IDENTIDAD VISUAL */}
+        <div className="modal-tabs">
           <button
-            className={tab === "perfil" ? "active" : ""}
+            className={tab === "perfil" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("perfil")}
           >
             <User size={16} /> Perfil
           </button>
 
           <button
-            className={tab === "foto" ? "active" : ""}
+            className={tab === "foto" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("foto")}
           >
             <Image size={16} /> Foto
           </button>
 
           <button
-            className={tab === "seguridad" ? "active" : ""}
+            className={tab === "seguridad" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("seguridad")}
           >
             <Lock size={16} /> Seguridad
           </button>
         </div>
 
-        {/* CONTENIDO */}
-        <div className="tab-content">
+        {/* 📦 CONTENIDO DINÁMICO */}
+        <div className="tab-body">
           {tab === "perfil" && (
-            <>
+            <div className="tab-pane">
               <h3>Información personal</h3>
+              <p className="tab-description">Actualiza tu nombre de usuario para tus constancias.</p>
+              
+              <div className="input-field">
+                <label>Nombre Completo</label>
+                <input
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  placeholder="Tu nombre"
+                  disabled={loading}
+                />
+              </div>
 
-              <input
-                type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Nombre"
-                disabled={loading}
-              />
-
-              {error && <p className="modal-error">{error}</p>}
-
-              <button onClick={guardarPerfil} disabled={loading}>
+              <button className="btn-save-perfil" onClick={guardarPerfil} disabled={loading}>
                 {loading ? "Guardando..." : "Guardar cambios"}
               </button>
-            </>
+            </div>
           )}
 
           {tab === "foto" && (
-            <>
+            <div className="tab-pane centered">
+              <div className="icon-circle">
+                <Image size={32} />
+              </div>
               <h3>Foto de perfil</h3>
-              <p>Próximamente podrás subir una imagen.</p>
-            </>
+              <p>Esta función estará disponible en la próxima actualización.</p>
+            </div>
           )}
 
           {tab === "seguridad" && (
-            <>
-              <h3>Seguridad de la cuenta</h3>
+            <div className="tab-pane centered">
+              <div className="icon-circle">
+                <Lock size={32} />
+              </div>
+              <h3>Seguridad</h3>
+              <p>¿Deseas cambiar tu contraseña de acceso?</p>
               <button
+                className="btn-change-pass"
                 onClick={() => {
                   onClose();
                   onChangePassword();
                 }}
               >
-                Cambiar contraseña
+                Ir a cambiar contraseña
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

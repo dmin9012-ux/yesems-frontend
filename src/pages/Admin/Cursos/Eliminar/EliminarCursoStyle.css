@@ -6,6 +6,19 @@
     max-width: 1100px;
     margin: 40px auto;
     padding: 30px;
+    font-family: 'Inter', sans-serif;
+    animation: fadeInAdmin 0.4s ease-out;
+}
+
+@keyframes fadeInAdmin {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
@@ -17,27 +30,35 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #f3f4f6;
+    padding-bottom: 20px;
 }
 
 .eliminar-header h2 {
-    font-size: 26px;
-    font-weight: 700;
-    color: #1f2937;
+    font-size: 28px;
+    font-weight: 900;
+    color: #00003f;
+    /* Azul Profundo */
+    letter-spacing: -1px;
 }
 
 .btn-volver {
-    background: #6b7280;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
+    background: #ffffff;
+    color: #6b7280;
+    border: 1.5px solid #d1d5db;
+    padding: 10px 18px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 700;
+    transition: all 0.3s ease;
 }
 
 .btn-volver:hover {
-    background: #4b5563;
+    background: #00003f;
+    color: #ffffff;
+    border-color: #00003f;
 }
 
 
@@ -47,56 +68,76 @@
 
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 
 /* ===============================
-   TARJETA DE CURSO
+   TARJETA DE CURSO (MODO ALERTA)
 ================================ */
 
 .curso-card {
     background: #ffffff;
-    padding: 22px;
-    border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.curso-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(220, 38, 38, 0.08);
+    border-color: #fee2e2;
 }
 
 .curso-card h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #00003f;
+    /* Azul Profundo */
+    margin-bottom: 12px;
 }
 
 .curso-desc {
-    font-size: 14px;
-    color: #4b5563;
-    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-bottom: 25px;
+    line-height: 1.6;
 }
 
 
 /* ===============================
-   BOTÓN ELIMINAR
+   BOTÓN ELIMINAR (REDISEÑADO)
 ================================ */
 
 .btn-delete {
-    background: #dc2626;
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
+    background: #fee2e2;
+    /* Fondo rojo muy suave */
+    color: #dc2626;
+    /* Texto rojo intenso */
+    padding: 12px;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 800;
     font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-delete:hover {
-    background: #b91c1c;
+    background: #dc2626;
+    /* Cambio a rojo sólido */
+    color: #ffffff;
+    box-shadow: 0 8px 16px rgba(220, 38, 38, 0.25);
 }
 
 
@@ -106,7 +147,8 @@
 
 .empty-text {
     text-align: center;
-    color: #6b7280;
-    margin-top: 60px;
-    font-size: 16px;
+    color: #94a3b8;
+    margin-top: 80px;
+    font-size: 18px;
+    font-weight: 600;
 }

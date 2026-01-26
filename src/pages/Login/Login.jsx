@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { notify } from "../../Util/toast"; // 👈 Importamos tu nueva utilidad
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
@@ -15,7 +16,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // 🔎 VERIFICACIÓN RÁPIDA
   useEffect(() => {
     console.log("API URL:", import.meta.env.VITE_API_URL);
   }, []);
@@ -27,21 +27,24 @@ export default function Login() {
     try {
       const res = await login({ email, password });
 
-      // ❌ Error de login
+      // ❌ Error de login (Credenciales incorrectas)
       if (!res || res.ok === false) {
-        alert("❌ " + (res && res.message ? res.message : "Credenciales incorrectas"));
+        notify("error", res?.message || "Credenciales incorrectas");
         setLoading(false);
         return;
       }
 
       const usuario = res.usuario;
 
-      // ⚠ Usuario no verificado
+      // ⚠️ Usuario no verificado
       if (usuario && usuario.verificado === false) {
-        alert("⚠ Debes verificar tu correo antes de iniciar sesión.");
+        notify("warning", "Debes verificar tu correo antes de iniciar sesión.");
         setLoading(false);
         return;
       }
+
+      // ✅ Login Exitoso
+      notify("success", `¡Bienvenido, ${usuario.nombre}!`);
 
       // 🚀 Redirección por rol
       if (usuario && usuario.rol === "admin") {
@@ -52,7 +55,7 @@ export default function Login() {
 
     } catch (error) {
       console.error("❌ Error en login:", error);
-      alert("❌ Error al conectar con el servidor");
+      notify("error", "Error al conectar con el servidor");
     } finally {
       setLoading(false);
     }
@@ -61,7 +64,6 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-
         <img src={logo} alt="yesems logo" className="login-logo" />
 
         <h2 className="login-title">Bienvenido</h2>
@@ -70,7 +72,6 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleLogin} className="login-form">
-
           <div className="input-group">
             <input
               type="email"
@@ -81,7 +82,6 @@ export default function Login() {
             />
           </div>
 
-          {/* 🔐 INPUT PASSWORD CON OJO */}
           <div className="input-group password-group">
             <input
               type={showPassword ? "text" : "password"}
@@ -90,7 +90,6 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-
             <img
               src={showPassword ? ojoAbierto : ojoCerrado}
               alt="Mostrar contraseña"
@@ -119,7 +118,6 @@ export default function Login() {
             Regístrate
           </span>
         </div>
-
       </div>
     </div>
   );
