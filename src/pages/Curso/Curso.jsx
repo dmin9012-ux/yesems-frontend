@@ -1,4 +1,3 @@
-// /yesems/src/pages/Curso/Curso.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -27,11 +26,15 @@ export default function Curso() {
 
   /* ======================================
      🔄 CARGAR CURSO + PROGRESO
+     ⚡ Solo cargar progreso si aún no está cargado
   ====================================== */
   useEffect(() => {
     const cargarCurso = async () => {
+      setCargando(true);
       try {
-        await recargarProgreso(); // 🔑 sincroniza progresos
+        if (progresoCursos.length === 0) {
+          await recargarProgreso(); // 🔑 sincroniza progresos solo si no hay
+        }
 
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
@@ -41,7 +44,7 @@ export default function Curso() {
           return;
         }
 
-        setCurso(snap.data());
+        setCurso({ id: snap.id, ...snap.data() });
       } catch (error) {
         console.error("❌ Error cargando curso:", error);
       } finally {
@@ -50,7 +53,7 @@ export default function Curso() {
     };
 
     cargarCurso();
-  }, [id]);
+  }, [id, progresoCursos.length, recargarProgreso]);
 
   /* ======================================
      🔹 FUNCION PARA CONSULTAR ACCESO A NIVEL
@@ -72,13 +75,14 @@ export default function Curso() {
 
   /* ======================================
      🔄 CONSULTAR ACCESO PARA TODOS LOS NIVELES
+     ⚡ Solo si hay niveles y progreso cargado
   ====================================== */
   useEffect(() => {
-    if (!curso?.niveles) return;
+    if (!curso?.niveles || progresoCursos.length === 0) return;
     curso.niveles.forEach((nivel) => {
       verificarAccesoNivel(Number(nivel.numero));
     });
-  }, [curso]);
+  }, [curso, progresoCursos.length]);
 
   if (cargando || loading || !curso) {
     return (
@@ -122,7 +126,6 @@ export default function Curso() {
                 leccionesCompletadasNivel.length === idsLeccionesNivel.length;
 
               const examenAprobado = nivelesAprobados.includes(nivelNumero);
-
               const nivelDesbloqueado = accesos[nivelNumero] ?? false;
 
               return (

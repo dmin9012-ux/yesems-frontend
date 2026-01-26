@@ -27,7 +27,6 @@ export default function Leccion() {
     progresoGlobal,
     nivelesAprobadosGlobal,
     actualizarProgreso,
-    recargarProgreso,
   } = useContext(ProgresoContext);
 
   const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
@@ -37,10 +36,9 @@ export default function Leccion() {
   =============================== */
   useEffect(() => {
     const cargarLeccion = async () => {
+      setCargando(true);
+      setError("");
       try {
-        setCargando(true);
-        setError("");
-
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
@@ -62,7 +60,7 @@ export default function Leccion() {
           return;
         }
 
-        setCurso(data);
+        setCurso({ id: snap.id, ...data });
         setLeccionActual({
           id: leccionId,
           titulo: leccionData.titulo,
@@ -82,23 +80,21 @@ export default function Leccion() {
     };
 
     cargarLeccion();
-  }, [id, nivelNum, numLeccion]);
+  }, [id, nivelNum, numLeccion, leccionId]);
 
   /* ===============================
-     💾 GUARDAR PROGRESO
-     ⚡ Ahora actualiza progresoGlobal y recarga local
+     💾 GUARDAR PROGRESO LOCAL + BACKEND
   =============================== */
   const guardarProgreso = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
     if (progresoCursoActual.includes(leccionId)) return true;
 
-    try {
-      setGuardando(true);
-      setError("");
+    setGuardando(true);
+    setError("");
 
+    try {
       const res = await validarLeccion({ cursoId: id, leccionId });
 
-      // si backend dice que ya estaba validada
       if (res?.ok === false && res.message?.includes("ya fue validada")) {
         actualizarProgreso(id, leccionId);
         return true;
@@ -109,7 +105,7 @@ export default function Leccion() {
         return false;
       }
 
-      actualizarProgreso(id, leccionId); // ✅ esto actualiza progresoGlobal y progresoCursos
+      actualizarProgreso(id, leccionId);
       return true;
     } catch (err) {
       console.error("Error validar lección:", err);
@@ -121,45 +117,7 @@ export default function Leccion() {
   };
 
   /* ===============================
-     🔹 RENDER DE CARGANDO / ERROR
-  =============================== */
-  if (cargando)
-    return (
-      <>
-        <TopBar />
-        <p className="cargando">Cargando lección...</p>
-      </>
-    );
-
-  if (!curso || !leccionActual)
-    return (
-      <>
-        <TopBar />
-        <p className="error-leccion">❌ {error || "No se pudo cargar la lección"}</p>
-      </>
-    );
-
-  /* ===============================
-     📊 CÁLCULO DE PROGRESO
-     🔹 Siempre usamos progresoGlobal[id] para reflejar cambios instantáneos
-  =============================== */
-  const progresoActual = progresoGlobal[id] || [];
-  const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
-
-  const totalLeccionesNivel = curso.niveles.find((n) => Number(n.numero) === nivelNum)?.lecciones.length || 0;
-  const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0);
-
-  const leccionesNivelIds =
-    curso.niveles.find((n) => Number(n.numero) === nivelNum)?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
-  const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
-
-  const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
-  const progresoCursoPct = Math.round((progresoActual.length / totalLeccionesCurso) * 100);
-
-  const leccionCompletada = progresoActual.includes(leccionId);
-
-  /* ===============================
-     ➡️ NAVEGACIÓN
+     🔹 NAVEGACIÓN ENTRE LECCIONES
   =============================== */
   const navegarAnterior = () => {
     let n = nivelNum;
@@ -180,6 +138,7 @@ export default function Leccion() {
 
     const nivelData = curso.niveles.find((nv) => Number(nv.numero) === nivelNum);
     const siguienteLeccion = numLeccion + 1;
+
     if (siguienteLeccion > (nivelData?.lecciones.length || 0)) {
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
     } else {
@@ -194,8 +153,42 @@ export default function Leccion() {
   };
 
   /* ===============================
-     🖥️ RENDER
+     🔹 CARGA / ERROR
   =============================== */
+  if (cargando)
+    return (
+      <>
+        <TopBar />
+        <p className="cargando">Cargando lección...</p>
+      </>
+    );
+
+  if (!curso || !leccionActual)
+    return (
+      <>
+        <TopBar />
+        <p className="error-leccion">❌ {error || "No se pudo cargar la lección"}</p>
+      </>
+    );
+
+  /* ===============================
+     📊 PROGRESO
+  =============================== */
+  const progresoActual = progresoGlobal[id] || [];
+  const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
+
+  const nivelData = curso.niveles.find((n) => Number(n.numero) === nivelNum);
+  const totalLeccionesNivel = nivelData?.lecciones.length || 0;
+  const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0);
+
+  const leccionesNivelIds = nivelData?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
+  const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
+
+  const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
+  const progresoCursoPct = Math.round((progresoActual.length / totalLeccionesCurso) * 100);
+
+  const leccionCompletada = progresoActual.includes(leccionId);
+
   return (
     <>
       <TopBar />

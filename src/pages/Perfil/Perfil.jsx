@@ -17,7 +17,7 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
+  const { progresoCursos, progresoGlobal, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -30,7 +30,7 @@ const Perfil = () => {
      🔄 CARGAR PERFIL Y CURSOS
   =============================== */
   useEffect(() => {
-    const cargarTodo = async () => {
+    const cargarPerfil = async () => {
       setLoading(true);
       try {
         // Traer usuario
@@ -44,28 +44,7 @@ const Perfil = () => {
           ...d.data(),
         }));
 
-        // Hacer merge con backend (progreso)
-        const cursosCompletos = cursosFirebase.map((curso) => {
-          const backend = progresoCursos.find((c) => c.cursoId === curso.id) || {};
-          const totalLecciones = curso.niveles?.reduce(
-            (acc, n) => acc + (n.lecciones?.length || 0),
-            0
-          );
-
-          // Sincronizar lecciones completadas
-          const leccionesCompletadas = backend.leccionesCompletadas || [];
-
-          return {
-            ...curso,
-            cursoId: curso.id,
-            totalLecciones,
-            leccionesCompletadas,
-            completado: leccionesCompletadas.length >= totalLecciones,
-            constanciaEmitida: backend.constanciaEmitida || false,
-          };
-        });
-
-        setCursos(cursosCompletos);
+        setCursos(cursosFirebase);
       } catch (error) {
         console.error("Error cargando perfil:", error);
         logout();
@@ -75,28 +54,28 @@ const Perfil = () => {
       }
     };
 
-    cargarTodo();
-  }, [logout, navigate, progresoCursos]);
-
-  /* ===============================
-     🔄 RECARGAR PROGRESO AL ENTRAR
-  =============================== */
-  useEffect(() => {
-    recargarProgreso();
-  }, [recargarProgreso]);
+    cargarPerfil();
+    recargarProgreso(); // sincronizar progreso al entrar
+  }, [logout, navigate, recargarProgreso]);
 
   /* ===============================
      📊 CALCULAR PROGRESO
+     🔹 Ahora usa progresoGlobal y progresoCursos
   =============================== */
   const calcularProgreso = (curso) => {
-    const completadas = curso.leccionesCompletadas || [];
-    const total = curso.totalLecciones || 0;
-    const porcentaje = total ? Math.round((completadas.length / total) * 100) : 0;
+    // Buscar curso en progresoCursos (backend sincronizado)
+    const progresoCurso = progresoCursos.find((c) => c.cursoId === curso.id) || {};
+    // Lecciones completadas locales desde progresoGlobal
+    const completadas = progresoGlobal[curso.id] || progresoCurso.leccionesCompletadas || [];
+    const totalLecciones =
+      curso.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0) || 0;
+
+    const porcentaje = totalLecciones ? Math.round((completadas.length / totalLecciones) * 100) : 0;
 
     return {
       porcentaje,
       completadas: completadas.length,
-      total,
+      total: totalLecciones,
       estado:
         porcentaje === 0
           ? "no-iniciado"
@@ -104,7 +83,7 @@ const Perfil = () => {
           ? "completado"
           : "en-progreso",
       completado: porcentaje === 100,
-      constanciaEmitida: curso.constanciaEmitida || false,
+      constanciaEmitida: progresoCurso.constanciaEmitida || false,
     };
   };
 
@@ -113,9 +92,7 @@ const Perfil = () => {
   =============================== */
   const descargarConstancia = async (cursoId, nombreCurso) => {
     try {
-      const res = await apiYesems.get(`/constancia/${cursoId}`, {
-        responseType: "blob",
-      });
+      const res = await apiYesems.get(`/constancia/${cursoId}`, { responseType: "blob" });
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -160,9 +137,7 @@ const Perfil = () => {
         {/* ================= SIDEBAR ================= */}
         <aside className="perfil-sidebar">
           <div className="perfil-avatar">{usuario.nombre.charAt(0).toUpperCase()}</div>
-
           <h3>{usuario.nombre}</h3>
-
           <p className="perfil-email">
             <Mail size={14} /> {usuario.email}
           </p>
@@ -214,10 +189,7 @@ const Perfil = () => {
                 </div>
 
                 <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${p.porcentaje}%` }}
-                  />
+                  <div className="progress-fill" style={{ width: `${p.porcentaje}%` }} />
                 </div>
 
                 <small>
@@ -227,16 +199,14 @@ const Perfil = () => {
                 {mostrarConstancia ? (
                   <button
                     className="btn-constancia"
-                    onClick={() =>
-                      descargarConstancia(curso.cursoId, curso.nombre)
-                    }
+                    onClick={() => descargarConstancia(curso.id, curso.nombre)}
                   >
                     <FileText size={16} /> Descargar constancia
                   </button>
                 ) : (
                   <button
                     className="btn-continuar"
-                    onClick={() => navigate(`/curso/${curso.cursoId}`)}
+                    onClick={() => navigate(`/curso/${curso.id}`)}
                   >
                     ▶ Continuar curso
                   </button>

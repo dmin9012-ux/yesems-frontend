@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { obtenerProgresoUsuario } from "../servicios/progresoService";
 import { useAuth } from "./AuthContext";
 
@@ -12,10 +12,8 @@ export const ProgresoProvider = ({ children }) => {
   const [progresoCursos, setProgresoCursos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* ===============================
-     🔄 Cargar progreso desde backend
-  =============================== */
-  const cargarProgreso = async () => {
+  // 🔄 Cargar progreso desde backend (memoizado para no generar loops)
+  const cargarProgreso = useCallback(async () => {
     if (!isAuthenticated || !user || user.rol === "admin") {
       setLoading(false);
       return;
@@ -26,12 +24,10 @@ export const ProgresoProvider = ({ children }) => {
     try {
       const res = await obtenerProgresoUsuario();
 
-      // 🔹 CORREGIDO: usar res.data en lugar de res.progresos
       if (res.ok && Array.isArray(res.data)) {
         const progresoObj = {};
         const nivelesObj = {};
 
-        // Mapear cada curso para progresoGlobal y nivelesAprobadosGlobal
         res.data.forEach((curso) => {
           progresoObj[curso.cursoId] = curso.leccionesCompletadas || [];
           nivelesObj[curso.cursoId] = curso.nivelesAprobados || [];
@@ -39,19 +35,16 @@ export const ProgresoProvider = ({ children }) => {
 
         setProgresoGlobal(progresoObj);
         setNivelesAprobadosGlobal(nivelesObj);
-        setProgresoCursos(res.data); // Array completo para Perfil.jsx
+        setProgresoCursos(res.data);
       }
     } catch (error) {
       console.error("❌ Error cargando progreso:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, isAuthenticated]);
 
-  /* ===============================
-     ➕ Actualizar progreso local (lección)
-     ⚡ Ahora sincroniza progresoGlobal y progresoCursos
-  =============================== */
+  // ➕ Actualizar progreso local
   const actualizarProgreso = (cursoId, leccionId) => {
     setProgresoGlobal((prev) => {
       const prevCurso = prev[cursoId] || [];
@@ -62,18 +55,15 @@ export const ProgresoProvider = ({ children }) => {
         [cursoId]: [...prevCurso, leccionId],
       };
 
-      // 🔹 Actualizar también progresoCursos
       setProgresoCursos((prevCursos) => {
-        const cursoIndex = prevCursos.findIndex((c) => c.cursoId === cursoId);
-        if (cursoIndex === -1) return prevCursos;
+        const index = prevCursos.findIndex((c) => c.cursoId === cursoId);
+        if (index === -1) return prevCursos;
 
-        const cursoPrev = prevCursos[cursoIndex];
+        const cursoPrev = prevCursos[index];
         const lecciones = cursoPrev.leccionesCompletadas || [];
-
         if (lecciones.includes(leccionId)) return prevCursos;
 
-        const totalLecciones =
-          cursoPrev.totalLecciones || (cursoPrev.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0)) || lecciones.length + 1;
+        const totalLecciones = cursoPrev.totalLecciones ?? lecciones.length + 1;
 
         const cursoActualizado = {
           ...cursoPrev,
@@ -82,7 +72,7 @@ export const ProgresoProvider = ({ children }) => {
         };
 
         const nuevosCursos = [...prevCursos];
-        nuevosCursos[cursoIndex] = cursoActualizado;
+        nuevosCursos[index] = cursoActualizado;
         return nuevosCursos;
       });
 
@@ -90,9 +80,7 @@ export const ProgresoProvider = ({ children }) => {
     });
   };
 
-  /* ===============================
-     ✅ Actualizar niveles aprobados localmente
-  =============================== */
+  // ✅ Actualizar niveles aprobados localmente
   const actualizarNivelesAprobados = (cursoId, nivelNumero) => {
     setNivelesAprobadosGlobal((prev) => {
       const prevNiveles = prev[cursoId] || [];
@@ -107,7 +95,7 @@ export const ProgresoProvider = ({ children }) => {
 
   useEffect(() => {
     cargarProgreso();
-  }, [user, isAuthenticated]);
+  }, [cargarProgreso]);
 
   return (
     <ProgresoContext.Provider
