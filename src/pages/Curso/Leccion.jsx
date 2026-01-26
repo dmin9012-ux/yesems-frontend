@@ -1,3 +1,4 @@
+// /yesems/src/pages/Leccion/Leccion.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -23,11 +24,7 @@ export default function Leccion() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
-  const {
-    progresoGlobal,
-    nivelesAprobadosGlobal,
-    actualizarProgreso,
-  } = useContext(ProgresoContext);
+  const { progresoGlobal, nivelesAprobadosGlobal, actualizarProgreso } = useContext(ProgresoContext);
 
   const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
 
@@ -177,11 +174,11 @@ export default function Leccion() {
   const progresoActual = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
 
-  const nivelData = curso.niveles.find((n) => Number(n.numero) === nivelNum);
-  const totalLeccionesNivel = nivelData?.lecciones.length || 0;
+  const nivelDataActual = curso.niveles.find((n) => Number(n.numero) === nivelNum);
+  const totalLeccionesNivel = nivelDataActual?.lecciones.length || 0;
   const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0);
 
-  const leccionesNivelIds = nivelData?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
+  const leccionesNivelIds = nivelDataActual?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
   const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
 
   const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
@@ -199,6 +196,8 @@ export default function Leccion() {
 
           {curso.niveles.map((nivelItem) => {
             const nivelNumero = Number(nivelItem.numero);
+
+            // 🔹 Primer nivel siempre desbloqueado
             const desbloqueado = nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1);
 
             return (

@@ -1,3 +1,4 @@
+// /yesems/src/pages/Curso/Curso.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -126,7 +127,9 @@ export default function Curso() {
                 leccionesCompletadasNivel.length === idsLeccionesNivel.length;
 
               const examenAprobado = nivelesAprobados.includes(nivelNumero);
-              const nivelDesbloqueado = accesos[nivelNumero] ?? false;
+
+              // 🔹 Primer nivel desbloqueado por defecto
+              const nivelDesbloqueado = accesos[nivelNumero] ?? (nivelNumero === 1);
 
               return (
                 <div
@@ -151,7 +154,9 @@ export default function Curso() {
                         >
                           {nivelDesbloqueado ? (
                             <Link
-                              to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
+                              to={`/curso/${id}/nivel/${nivelNumero}/leccion/${
+                                index + 1
+                              }`}
                               className="leccion-link"
                             >
                               Lección {index + 1}

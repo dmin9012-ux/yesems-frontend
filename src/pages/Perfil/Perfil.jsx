@@ -60,15 +60,11 @@ const Perfil = () => {
 
   /* ===============================
      📊 CALCULAR PROGRESO
-     🔹 Ahora usa progresoGlobal y progresoCursos
   =============================== */
   const calcularProgreso = (curso) => {
-    // Buscar curso en progresoCursos (backend sincronizado)
     const progresoCurso = progresoCursos.find((c) => c.cursoId === curso.id) || {};
-    // Lecciones completadas locales desde progresoGlobal
     const completadas = progresoGlobal[curso.id] || progresoCurso.leccionesCompletadas || [];
-    const totalLecciones =
-      curso.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0) || 0;
+    const totalLecciones = curso.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0) || 0;
 
     const porcentaje = totalLecciones ? Math.round((completadas.length / totalLecciones) * 100) : 0;
 
@@ -126,6 +122,27 @@ const Perfil = () => {
     }
   };
 
+  /* ===============================
+     🔹 OBTENER PRIMER LECCIÓN DESBLOQUEADA
+  =============================== */
+  const primeraLeccion = (curso) => {
+    for (let nivel of curso.niveles || []) {
+      const nivelNum = Number(nivel.numero);
+      const desbloqueado = nivelNum === 1; // Primer nivel siempre desbloqueado
+
+      if (!nivel.lecciones || nivel.lecciones.length === 0) continue;
+
+      for (let i = 0; i < nivel.lecciones.length; i++) {
+        const lid = `${curso.id}-n${nivelNum}-l${i + 1}`;
+        const completada = (progresoGlobal[curso.id] || []).includes(lid);
+        if (desbloqueado || completada) {
+          return `/curso/${curso.id}/nivel/${nivelNum}/leccion/${i + 1}`;
+        }
+      }
+    }
+    return `/curso/${curso.id}`; // fallback
+  };
+
   if (loading) return <p className="perfil-cargando">Cargando...</p>;
   if (!usuario) return null;
 
@@ -134,7 +151,6 @@ const Perfil = () => {
       <TopBar />
 
       <div className="perfil-page">
-        {/* ================= SIDEBAR ================= */}
         <aside className="perfil-sidebar">
           <div className="perfil-avatar">{usuario.nombre.charAt(0).toUpperCase()}</div>
           <h3>{usuario.nombre}</h3>
@@ -165,7 +181,6 @@ const Perfil = () => {
           </button>
         </aside>
 
-        {/* ================= MAIN ================= */}
         <main className="perfil-main">
           <h2>
             <BookOpen size={20} /> Mis Cursos
@@ -206,7 +221,7 @@ const Perfil = () => {
                 ) : (
                   <button
                     className="btn-continuar"
-                    onClick={() => navigate(`/curso/${curso.id}`)}
+                    onClick={() => navigate(primeraLeccion(curso))}
                   >
                     ▶ Continuar curso
                   </button>
