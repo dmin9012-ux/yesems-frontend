@@ -137,16 +137,37 @@ export default function Leccion() {
     const siguienteLeccion = numLeccion + 1;
 
     if (siguienteLeccion > (nivelData?.lecciones.length || 0)) {
-      navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
+      await irAExamenNivel();
     } else {
       navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${siguienteLeccion}`);
     }
   };
 
+  /* ===============================
+     🔹 IR A EXAMEN NIVEL
+  =============================== */
   const irAExamenNivel = async () => {
     const ok = await guardarProgreso();
     if (!ok) return;
-    navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `https://yesems-backend-production.up.railway.app/api/examen/${id}/nivel/${nivelNum}/puede-acceder`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+
+      if (!data.puedeAcceder) {
+        setError("No puedes acceder al examen todavía");
+        return;
+      }
+
+      navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
+    } catch (err) {
+      console.error("Error verificar examen:", err);
+      setError("Error al verificar acceso al examen");
+    }
   };
 
   /* ===============================
