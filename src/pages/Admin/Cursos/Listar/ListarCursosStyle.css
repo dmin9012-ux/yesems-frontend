@@ -1,145 +1,187 @@
 /* src/pages/Admin/Cursos/ListarCursosStyle.css */
 
-.listar-page {
-    padding: 100px 20px 40px;
-    /* Margen superior para no chocar con TopBar */
-    font-family: "Inter", "Segoe UI", sans-serif;
-    text-align: center;
-    background-color: #f4f7f6;
+.admin-page-layout {
     min-height: 100vh;
+    background-color: #f4f7f6;
 }
 
-.listar-page h1 {
+.listar-cursos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 30px 40px;
+    /* Ajustado para el TopBar */
+    font-family: "Inter", sans-serif;
+}
+
+
+/* HEADER Y TÍTULOS */
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.admin-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     font-size: 2.5rem;
-    color: #00003f;
-    /* Tu Azul Profundo */
-    margin-bottom: 30px;
     font-weight: 900;
+    color: #00003f;
+    /* Azul YES EMS */
+    margin: 0;
     letter-spacing: -1px;
 }
 
-
-/* PANEL CRUD */
-
-.crud-options {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
+.admin-header p {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-top: 5px;
 }
 
-.crud-options button {
-    padding: 12px 22px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+/* PANEL CRUD (BOTONES DE CABECERA) */
+
+.admin-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-primary,
+.btn-secondary {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
 }
 
-
-/* Botones individuales */
-
-.btn-panel {
-    background: #ffffff;
-    color: #6b7280;
-    border: 1.5px solid #d1d5db !important;
-}
-
-.btn-panel:hover {
-    background: #f3f4f6;
-    color: #00003f;
-    border-color: #00003f !important;
-    transform: translateY(-2px);
-}
-
-.btn-crear {
+.btn-primary {
     background: #fcb424;
-    /* Tu Amarillo Ámbar */
+    /* Amarillo Ámbar YES EMS */
     color: #00003f;
     box-shadow: 0 4px 12px rgba(252, 180, 36, 0.2);
 }
 
-.btn-crear:hover {
+.btn-primary:hover {
     background: #e6a91e;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.3);
+    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
+}
+
+.btn-secondary {
+    background: #ffffff;
+    color: #64748b;
+    border: 1.5px solid #e2e8f0 !important;
+}
+
+.btn-secondary:hover {
+    border-color: #00003f !important;
+    color: #00003f;
 }
 
 
 /* GRID DE CURSOS */
 
-.cursos-grid {
+.admin-cursos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 
-/* CARD DE CURSOS */
+/* CARD DE CURSOS (TU ESTRUCTURA MEJORADA) */
 
-.curso-card {
+.admin-curso-card {
     background: #ffffff;
     border-radius: 24px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     border: 1px solid #e5e7eb;
 }
 
-.curso-card:hover {
-    transform: translateY(-8px);
+.admin-curso-card:hover {
+    transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 63, 0.1);
     border-color: #fcb424;
 }
 
-.curso-card img {
-    width: 100%;
+.card-image-wrapper {
+    position: relative;
     height: 190px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.card-image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
 
-.curso-card:hover img {
-    transform: scale(1.08);
+.admin-curso-card:hover .card-image-wrapper img {
+    transform: scale(1.1);
 }
 
-.curso-card h3 {
-    font-size: 1.4rem;
-    margin: 20px 20px 10px;
-    color: #00003f;
+.badge-niveles {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 63, 0.85);
+    color: #fcb424;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
     font-weight: 800;
+}
+
+.card-body {
+    padding: 25px;
+    flex-grow: 1;
     text-align: left;
 }
 
-.curso-card p {
+.card-body h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #00003f;
+    margin: 0 0 10px 0;
+}
+
+.card-body p {
     font-size: 0.95rem;
-    margin: 0 20px 20px 20px;
-    color: #6b7280;
+    color: #64748b;
     line-height: 1.6;
-    text-align: left;
-    flex-grow: 1;
+    margin-bottom: 20px;
 }
 
 
 /* ACCIONES DE LA CARD */
 
-.card-actions {
+.card-footer {
     display: flex;
     gap: 10px;
-    padding: 0 20px 20px 20px;
+    margin-top: auto;
 }
 
-.card-actions button {
+.btn-edit,
+.btn-delete {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 10px;
     border-radius: 10px;
     border: none;
@@ -149,40 +191,34 @@
     transition: all 0.2s ease;
 }
 
-
-/* Botón Editar */
-
-.card-actions button:first-child {
+.btn-edit {
     background: #e0e7ff;
-    /* Azul muy suave */
     color: #00003f;
 }
 
-.card-actions button:first-child:hover {
+.btn-edit:hover {
     background: #c7d2fe;
 }
 
-
-/* Botón Eliminar */
-
-.card-actions button:last-child {
+.btn-delete {
     background: #fee2e2;
-    /* Rojo muy suave */
     color: #dc2626;
 }
 
-.card-actions button:last-child:hover {
+.btn-delete:hover {
     background: #fecaca;
 }
 
 
-/* RESPONSIVE */
+/* RESPONSIVO */
 
-@media (max-width: 480px) {
-    .listar-page h1 {
-        font-size: 2rem;
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
     }
-    .cursos-grid {
-        grid-template-columns: 1fr;
+    .listar-cursos-container {
+        padding-top: 60px;
     }
 }

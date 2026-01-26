@@ -1,9 +1,10 @@
+// src/pages/Admin/Cursos/ListarCursos.jsx
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../firebase/firebaseConfig";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { Plus, LayoutGrid, Edit, Trash2, ArrowLeft } from "lucide-react"; // Iconos modernos
 import TopBarAdmin from "../../../../components/TopBarAdmin/TopBarAdmin";
-import { Plus, LayoutGrid, Edit, Trash2, ArrowLeft } from "lucide-react"; // Iconos más modernos
 import "./ListarCursosStyle.css";
 
 export default function ListarCursos() {
@@ -34,10 +35,11 @@ export default function ListarCursos() {
       <TopBarAdmin />
 
       <div className="listar-cursos-container">
+        {/* HEADER FUSIONADO */}
         <header className="admin-header">
           <div className="header-info">
             <h1><LayoutGrid size={28} /> Gestión de Cursos</h1>
-            <p>Organiza, edita y publica el contenido educativo de YES EMS.</p>
+            <p>Administra el catálogo educativo de <strong>YES EMS</strong>.</p>
           </div>
 
           <div className="admin-actions">
@@ -50,9 +52,10 @@ export default function ListarCursos() {
           </div>
         </header>
 
+        {/* LISTA DE CURSOS CON TU LÓGICA DE MAPEO */}
         {cursos.length === 0 ? (
           <div className="empty-state">
-            <p>No hay cursos registrados. Comienza creando uno nuevo.</p>
+            <p>No hay cursos registrados actualmente.</p>
           </div>
         ) : (
           <div className="admin-cursos-grid">
@@ -62,12 +65,12 @@ export default function ListarCursos() {
                   {c.imagenURL ? (
                     <img src={c.imagenURL} alt={c.nombre} />
                   ) : (
-                    <div className="image-placeholder">Sin imagen</div>
+                    <div className="image-placeholder">📘</div>
                   )}
                   <div className="card-overlay">
-                     <span className="badge-niveles">
-                        {c.niveles?.length || 0} Niveles
-                     </span>
+                    <span className="badge-niveles">
+                      {c.niveles?.length || 0} Niveles
+                    </span>
                   </div>
                 </div>
 

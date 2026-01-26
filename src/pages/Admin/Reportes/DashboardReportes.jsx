@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import "./ReportesStyle.css";
 
-// Colores unificados con la marca: Azul Profundo, Ámbar, Verde Éxito y Gris Suave
+// Paleta YES EMS: Azul Profundo, Ámbar, Verde Éxito y Gris Suave
 const COLORS = ["#00003f", "#fcb424", "#10b981", "#9ca3af"];
 
 export default function DashboardReportes() {
@@ -20,6 +20,7 @@ export default function DashboardReportes() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
+        // Carga paralela para optimizar tiempos
         const [usuariosData, cursosData] = await Promise.all([
           obtenerUsuarios(),
           obtenerCursos()
@@ -27,7 +28,8 @@ export default function DashboardReportes() {
         setUsuarios(usuariosData);
         setCursos(cursosData);
       } catch (error) {
-        notify("error", "No se pudieron cargar las métricas.");
+        console.error("Error al cargar reportes:", error);
+        notify("error", "No se pudieron sincronizar las métricas.");
       } finally {
         setLoading(false);
       }
@@ -38,20 +40,22 @@ export default function DashboardReportes() {
   if (loading) return (
     <div className="admin-loading-container">
       <div className="spinner"></div>
-      <p>Generando reportes estadísticos...</p>
+      <p>Procesando analíticas de YES EMS...</p>
     </div>
   );
 
-  // Lógica de métricas
+  /* ===============================
+     LÓGICA DE PROCESAMIENTO
+  =============================== */
   const totalUsuarios = usuarios.length;
   const activos = usuarios.filter(u => u.estado === "activo").length;
   const inactivos = totalUsuarios - activos;
   const totalAdmins = usuarios.filter(u => u.rol === "admin").length;
-  const totalNormales = totalUsuarios - totalAdmins;
+  const totalEstudiantes = totalUsuarios - totalAdmins;
 
   const rolesData = [
     { name: "Admins", value: totalAdmins },
-    { name: "Estudiantes", value: totalNormales }
+    { name: "Estudiantes", value: totalEstudiantes }
   ];
 
   const estadoData = [
@@ -60,9 +64,9 @@ export default function DashboardReportes() {
   ];
 
   const metricsCursos = cursos.map(curso => ({
-    nombre: curso.nombre.length > 15 ? curso.nombre.substring(0, 12) + "..." : curso.nombre,
-    completados: usuarios.filter(u => u.cursosCompletados?.includes(curso.id)).length,
-    lecciones: usuarios.reduce((acc, u) => {
+    nombre: curso.nombre.length > 12 ? curso.nombre.substring(0, 10) + "..." : curso.nombre,
+    graduados: usuarios.filter(u => u.cursosCompletados?.includes(curso.id)).length,
+    progreso: usuarios.reduce((acc, u) => {
       const lv = u.leccionesValidadas?.filter(l => l.startsWith(curso.id)) || [];
       return acc + lv.length;
     }, 0)
@@ -71,20 +75,21 @@ export default function DashboardReportes() {
   return (
     <div className="admin-page-layout">
       <TopBarAdmin />
+      
       <div className="reportes-container">
         <header className="reportes-header">
           <h1>Análisis de Plataforma</h1>
-          <p>Métricas generales de usuarios y rendimiento de cursos.</p>
+          <p>Métricas de rendimiento y participación estudiantil.</p>
         </header>
 
-        {/* Tarjetas de Resumen */}
+        {/* INDICADORES CLAVE (KPIs) */}
         <div className="stats-grid">
           <div className="stat-card">
             <span className="stat-label">Total Usuarios</span>
             <span className="stat-value">{totalUsuarios}</span>
           </div>
           <div className="stat-card">
-            <span className="stat-label">Cursos Activos</span>
+            <span className="stat-label">Cursos en Catálogo</span>
             <span className="stat-value">{cursos.length}</span>
           </div>
           <div className="stat-card highlight">
@@ -98,12 +103,20 @@ export default function DashboardReportes() {
         </div>
 
         <div className="charts-main-grid">
-          {/* Gráficas Circulares */}
+          {/* DISTRIBUCIÓN POR ROL */}
           <div className="chart-box">
             <h3>Distribución de Roles</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={rolesData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                <Pie 
+                  data={rolesData} 
+                  dataKey="value" 
+                  nameKey="name" 
+                  cx="50%" 
+                  cy="50%" 
+                  outerRadius={80} 
+                  label
+                >
                   {rolesData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />
@@ -111,11 +124,20 @@ export default function DashboardReportes() {
             </ResponsiveContainer>
           </div>
 
+          {/* ESTADO DE CUENTAS */}
           <div className="chart-box">
             <h3>Estado de Cuentas</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={estadoData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                <Pie 
+                  data={estadoData} 
+                  dataKey="value" 
+                  nameKey="name" 
+                  cx="50%" 
+                  cy="50%" 
+                  outerRadius={80} 
+                  label
+                >
                   {estadoData.map((_, i) => <Cell key={i} fill={COLORS[(i + 1) % COLORS.length]} />)}
                 </Pie>
                 <Tooltip />
@@ -123,17 +145,29 @@ export default function DashboardReportes() {
             </ResponsiveContainer>
           </div>
 
-          {/* Gráfica de Barras completa */}
+          {/* RENDIMIENTO POR CURSO */}
           <div className="chart-box wide">
-            <h3>Rendimiento por Curso (Completados vs Lecciones)</h3>
+            <h3>Participación por Curso (Graduados vs Lecciones Vistas)</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={metricsCursos}>
-                <XAxis dataKey="nombre" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="completados" fill="#fcb424" name="Usuarios Graduados" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="lecciones" fill="#00003f" name="Lecciones Vistas" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="nombre" stroke="#64748b" fontSize={12} />
+                <YAxis stroke="#64748b" fontSize={12} />
+                <Tooltip cursor={{fill: '#f1f5f9'}} />
+                <Legend verticalAlign="top" height={36}/>
+                <Bar 
+                  dataKey="graduados" 
+                  fill="#fcb424" 
+                  name="Usuarios Graduados" 
+                  radius={[4, 4, 0, 0]} 
+                  barSize={30}
+                />
+                <Bar 
+                  dataKey="progreso" 
+                  fill="#00003f" 
+                  name="Lecciones Validadas" 
+                  radius={[4, 4, 0, 0]} 
+                  barSize={30}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

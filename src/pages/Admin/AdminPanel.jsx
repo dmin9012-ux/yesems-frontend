@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Users, BarChart3, Settings } from "lucide-react"; // Iconos más pro
+import { BookOpen, Users, BarChart3, ShieldCheck } from "lucide-react"; // Iconos modernos
 import TopBarAdmin from "../../components/TopBarAdmin/TopBarAdmin";
 import "./AdminPanelStyle.css";
 
@@ -8,23 +8,23 @@ export default function AdminPanel() {
   const navigate = useNavigate();
 
   return (
-    <div className="admin-layout">
+    <div className="admin-layout-wrapper">
       <TopBarAdmin />
 
       <div className="admin-container">
-        {/* SIDEBAR ADMINISTRATIVO */}
+        {/* SIDEBAR CON TU LÓGICA DE NAVEGACIÓN */}
         <aside className="admin-sidebar">
           <div className="sidebar-header">
-            <Settings size={20} />
-            <h2 className="sidebar-title">Gestión</h2>
+            <ShieldCheck size={20} color="#fcb424" />
+            <h2 className="sidebar-title">Panel Admin</h2>
           </div>
 
           <ul className="sidebar-menu">
             <li onClick={() => navigate("/admin/cursos")} className="menu-item">
-              <BookOpen size={18} /> <span>Cursos</span>
+              <BookOpen size={18} /> <span>Gestionar Cursos</span>
             </li>
             <li onClick={() => navigate("/admin/usuarios")} className="menu-item">
-              <Users size={18} /> <span>Usuarios</span>
+              <Users size={18} /> <span>Gestionar Usuarios</span>
             </li>
             <li onClick={() => navigate("/admin/reportes")} className="menu-item">
               <BarChart3 size={18} /> <span>Reportes</span>
@@ -32,45 +32,48 @@ export default function AdminPanel() {
           </ul>
         </aside>
 
-        {/* CONTENIDO PRINCIPAL */}
+        {/* CONTENIDO PRINCIPAL FUSIONADO */}
         <main className="admin-main">
-          <header className="admin-main-header">
+          <div className="admin-welcome-section">
             <h1 className="admin-title">Panel de Administración</h1>
             <p className="admin-subtitle">
-              Bienvenido al centro de control de <strong>YES EMS</strong>.
+              Bienvenido al centro de control. Selecciona una opción para comenzar.
             </p>
-          </header>
+          </div>
 
-          <div className="admin-cards-grid">
-            <div className="admin-card-action" onClick={() => navigate("/admin/cursos")}>
-              <div className="card-icon icon-blue">
+          <div className="admin-cards">
+            {/* CARD CURSOS */}
+            <div className="admin-card" onClick={() => navigate("/admin/cursos")}>
+              <div className="card-icon-box icon-blue">
                 <BookOpen size={32} />
               </div>
               <div className="card-info">
-                <h3>Gestionar Cursos</h3>
-                <p>Crear lecciones, subir videos y configurar exámenes.</p>
+                <h3>Cursos</h3>
+                <p>Crear, editar o eliminar cursos del catálogo.</p>
               </div>
               <div className="card-arrow">→</div>
             </div>
 
-            <div className="admin-card-action" onClick={() => navigate("/admin/usuarios")}>
-              <div className="card-icon icon-amber">
+            {/* CARD USUARIOS */}
+            <div className="admin-card" onClick={() => navigate("/admin/usuarios")}>
+              <div className="card-icon-box icon-amber">
                 <Users size={32} />
               </div>
               <div className="card-info">
-                <h3>Control de Usuarios</h3>
-                <p>Administrar roles, permisos y ver progreso de estudiantes.</p>
+                <h3>Usuarios</h3>
+                <p>Administrar cuentas de estudiantes y administradores.</p>
               </div>
               <div className="card-arrow">→</div>
             </div>
 
-            <div className="admin-card-action" onClick={() => navigate("/admin/reportes")}>
-              <div className="card-icon icon-green">
+            {/* CARD REPORTES */}
+            <div className="admin-card" onClick={() => navigate("/admin/reportes")}>
+              <div className="card-icon-box icon-green">
                 <BarChart3 size={32} />
               </div>
               <div className="card-info">
-                <h3>Métricas y Reportes</h3>
-                <p>Estadísticas de aprobación y analíticas generales.</p>
+                <h3>Reportes</h3>
+                <p>Ver estadísticas de rendimiento y uso del sistema.</p>
               </div>
               <div className="card-arrow">→</div>
             </div>

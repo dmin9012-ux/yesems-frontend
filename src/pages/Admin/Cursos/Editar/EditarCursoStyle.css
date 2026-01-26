@@ -61,8 +61,12 @@ h1 {
     color: var(--text-muted);
     font-weight: 700;
     margin-bottom: 30px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 8px 0;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .btn-regresar:hover {
@@ -71,10 +75,11 @@ h1 {
 
 
 /* ===============================
-   SECCIONES Y TARJETAS
+   TARJETAS Y BLOQUES (Cards)
 =============================== */
 
-.card {
+.card,
+.card-admin-section {
     background: var(--bg-card);
     padding: 35px;
     border-radius: var(--radius-lg);
@@ -84,30 +89,38 @@ h1 {
 }
 
 
-/* NIVEL: El contenedor principal de contenido */
+/* NIVELES: El contenedor principal con acento lateral */
+
+.nivel-card {
+    border-top: 5px solid var(--yes-amber);
+}
 
 .nivel-titulo {
     font-size: 24px;
     font-weight: 800;
     color: var(--yes-blue);
-    border-left: 5px solid var(--yes-amber);
     padding-left: 15px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 
-/* LECCIÓN: Color azul suave para enfoque */
+/* LECCIONES: Fondo azul suave con etiqueta */
 
-.leccion-card {
+.leccion-card,
+.leccion-block {
     background: #f8fafc;
     border-radius: var(--radius-md);
     padding: 25px;
     margin: 25px 0;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     position: relative;
 }
 
-.leccion-card::before {
+.leccion-card::before,
+.leccion-block::before {
     content: "LECCIÓN";
     position: absolute;
     top: -10px;
@@ -121,9 +134,10 @@ h1 {
 }
 
 
-/* PREGUNTA: Color ámbar suave para exámenes */
+/* PREGUNTAS: Tono ámbar para evaluaciones */
 
-.pregunta-card {
+.pregunta-card,
+.pregunta-block {
     background: #fffbeb;
     border-radius: var(--radius-md);
     padding: 25px;
@@ -132,9 +146,10 @@ h1 {
 }
 
 
-/* MATERIAL: Color verde suave */
+/* MATERIAL: Verde éxito suave */
 
-.material-card {
+.material-card,
+.material-row {
     background: #f0fdf4;
     border-radius: var(--radius-sm);
     padding: 18px;
@@ -178,7 +193,15 @@ select:focus {
     box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
 
-.inline-row {
+.input-grid-2,
+.opciones-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.inline-row,
+.dynamic-row {
     display: flex;
     gap: 12px;
     align-items: center;
@@ -187,7 +210,7 @@ select:focus {
 
 
 /* ===============================
-   BOTONES
+   BOTONES (Buttons)
 =============================== */
 
 button {
@@ -196,12 +219,16 @@ button {
     font-weight: 700;
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 
-/* El botón maestro de Guardar */
+/* Botón Guardar (Master) */
 
-.btn-guardar {
+.btn-guardar,
+.btn-guardar-master {
     width: 100%;
     background: var(--yes-amber);
     color: var(--yes-blue);
@@ -209,51 +236,55 @@ button {
     padding: 18px;
     margin-top: 40px;
     font-weight: 800;
+    justify-content: center;
     box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
 }
 
-.btn-guardar:hover {
+.btn-guardar:hover,
+.btn-guardar-master:hover {
     background: #e6a91e;
     transform: translateY(-2px);
 }
 
 
-/* Botones de Agregar (+) */
+/* Botones Agregar (+) */
 
-button[onClick*="add"],
-button:contains("Agregar") {
-    background: var(--yes-blue) !important;
-    color: white !important;
+button[class*="btn-add"],
+button:contains("➕") {
+    background: var(--yes-blue);
+    color: white;
     padding: 10px 16px;
     font-size: 13px;
     margin-top: 15px;
 }
 
-button[onClick*="add"]:hover {
-    background: #00005a !important;
-    transform: scale(1.02);
+.btn-add-nivel-master {
+    width: 100%;
+    justify-content: center;
+    background: var(--yes-blue);
+    color: white;
+    padding: 15px;
+    margin-top: 20px;
 }
 
 
-/* Botones de Eliminar (X) */
+/* Botones Eliminar (X) */
 
-button[onClick*="remove"] {
+.btn-icon-remove,
+.btn-remove-nivel,
+.btn-delete-leccion,
+button[class*="remove"],
+button:contains("❌") {
     background: #fee2e2;
     color: #dc2626;
     padding: 8px 12px;
 }
 
-button[onClick*="remove"]:hover {
+.btn-icon-remove:hover,
+.btn-delete-leccion:hover,
+button[class*="remove"]:hover {
     background: #dc2626;
     color: white;
-}
-
-
-/* Especial para botones dentro de inline-row */
-
-.inline-row button {
-    padding: 14px;
-    margin-top: 0;
 }
 
 
@@ -268,7 +299,12 @@ button[onClick*="remove"]:hover {
     h1 {
         font-size: 28px;
     }
-    .card {
+    .card,
+    .card-admin-section {
         padding: 20px;
+    }
+    .input-grid-2,
+    .opciones-grid {
+        grid-template-columns: 1fr;
     }
 }

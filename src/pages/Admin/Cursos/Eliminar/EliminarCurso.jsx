@@ -1,10 +1,11 @@
+// src/pages/Admin/Cursos/Eliminar/EliminarCurso.jsx
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { notify, confirmDialog } from "../../../../Util/toast"; // 👈 Integrando tus utilidades
+import { Trash2, AlertTriangle, ArrowLeft } from "lucide-react"; // Iconos profesionales
 import TopBarAdmin from "../../../../components/TopBarAdmin/TopBarAdmin";
-import { notify, confirmDialog } from "../../../../Util/toast"; // 👈 Integración de tus utilidades
-import { AlertTriangle, Trash2, ArrowLeft } from "lucide-react";
 import "./EliminarCursoStyle.css";
 
 export default function EliminarCurso() {
@@ -20,24 +21,25 @@ export default function EliminarCurso() {
         }))
       );
     });
+
     return () => unsub();
   }, []);
 
   const eliminar = async (id, nombre) => {
-    // Usamos el confirmDialog que configuramos para SweetAlert2
+    // Fusión: Usamos tu lógica de validación pero con el confirmDialog premium
     const result = await confirmDialog(
-      `¿Eliminar "${nombre}"?`,
-      "Esta acción borrará el curso y todo el progreso de los alumnos vinculados. ¡No se puede deshacer!",
+      `¿Seguro que deseas eliminar el curso "${nombre}"?`,
+      "Esta acción borrará permanentemente el curso y no se puede deshacer.",
       "warning"
     );
 
     if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, "cursos", id));
-        notify("success", "Curso eliminado definitivamente 🗑️");
+        notify("success", "Curso eliminado correctamente ✅");
       } catch (error) {
         console.error("Error al eliminar curso:", error);
-        notify("error", "Hubo un error al intentar eliminar el curso.");
+        notify("error", "No se pudo eliminar el curso. Inténtalo de nuevo.");
       }
     }
   };
@@ -47,19 +49,23 @@ export default function EliminarCurso() {
       <TopBarAdmin />
 
       <div className="eliminar-container">
+        {/* HEADER FUSIONADO */}
         <header className="eliminar-header">
           <div className="header-title-zone">
-            <h1><AlertTriangle color="#dc2626" /> Gestión de Bajas</h1>
-            <p>Ten precaución: eliminar un curso es una acción permanente.</p>
+            <h1><AlertTriangle size={32} color="#dc2626" /> Gestión de Bajas</h1>
+            <p>Ten precaución: las eliminaciones son definitivas e irreversibles.</p>
           </div>
-          <button className="btn-volver-admin" onClick={() => navigate("/admin/cursos")}>
+          <button
+            className="btn-volver-admin"
+            onClick={() => navigate("/admin/cursos")}
+          >
             <ArrowLeft size={18} /> Volver a Cursos
           </button>
         </header>
 
         {cursos.length === 0 ? (
           <div className="empty-state-admin">
-            <p>No se encontraron cursos para gestionar.</p>
+            <p>No hay cursos registrados para eliminar.</p>
           </div>
         ) : (
           <div className="eliminar-grid">
@@ -67,9 +73,13 @@ export default function EliminarCurso() {
               <div className="eliminar-card" key={curso.id}>
                 <div className="eliminar-card-content">
                   <h3>{curso.nombre}</h3>
-                  <p>{curso.descripcion?.substring(0, 80)}...</p>
+                  {curso.descripcion && (
+                    <p className="curso-desc">
+                        {curso.descripcion.substring(0, 100)}...
+                    </p>
+                  )}
                 </div>
-                
+
                 <button
                   className="btn-danger-action"
                   onClick={() => eliminar(curso.id, curso.nombre)}

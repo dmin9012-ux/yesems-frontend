@@ -10,11 +10,11 @@ body {
     margin: 0;
 }
 
-.crear-curso-container,
-.editar-curso-container {
-    max-width: 1100px;
-    margin: 90px auto 50px;
-    padding: 30px;
+.crear-curso-main,
+.editar-curso-main {
+    max-width: 1200px;
+    margin: 100px auto 50px;
+    padding: 0 20px;
     animation: fadeIn 0.4s ease-out;
 }
 
@@ -31,79 +31,113 @@ body {
 
 
 /* ===============================
-   TITULOS (Branding YES EMS)
+   ESTRUCTURA DE DOS COLUMNAS
 =============================== */
 
-h1 {
-    font-size: 36px;
-    font-weight: 800;
+.editor-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+
+/* Header Sticky para tener el botón Guardar siempre a mano */
+
+.admin-header-sticky {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(244, 247, 250, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+    margin-bottom: 20px;
+}
+
+.title-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-back-circle {
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     color: #00003f;
-    /* Azul Profundo */
-    margin-bottom: 30px;
-    letter-spacing: -1px;
 }
 
 
 /* ===============================
-   CARDS (NIVELES, LECCIONES)
+   CARDS Y BLOQUES
 =============================== */
 
-.card {
+.admin-card,
+.nivel-block {
     background: #ffffff;
-    padding: 35px;
+    padding: 30px;
     border-radius: 24px;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     box-shadow: 0 10px 25px rgba(0, 0, 63, 0.05);
     border: 1px solid #e5e7eb;
 }
 
+.nivel-block {
+    border-top: 6px solid #fcb424;
+    /* Acento Ámbar */
+}
 
-/* LECCIONES: Enfoque Profesional */
-
-.leccion-card {
+.leccion-editor-card {
     background: #f8fafc;
     border-radius: 18px;
-    padding: 25px;
-    margin: 25px 0;
-    border-left: 6px solid #00003f;
+    padding: 20px;
+    margin-bottom: 20px;
     border: 1px solid #e2e8f0;
-    border-left: 6px solid #00003f;
 }
 
-
-/* PREGUNTAS: Enfoque de Evaluación */
-
-.pregunta-card {
+.pregunta-editor-card {
     background: #fffbeb;
     border-radius: 18px;
-    padding: 25px;
-    margin: 20px 0;
+    padding: 20px;
+    margin-bottom: 20px;
     border-left: 6px solid #fcb424;
-    /* Amarillo Ámbar */
-}
-
-
-/* MATERIALES: Enfoque de Recursos */
-
-.material-card {
-    background: #f0fdf4;
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 12px;
-    border-left: 6px solid #10b981;
 }
 
 
 /* ===============================
-   LABELS E INPUTS
+   INPUTS Y TEXTO
 =============================== */
+
+h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #00003f;
+    margin: 0;
+}
+
+h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    color: #00003f;
+    margin-bottom: 20px;
+}
 
 label {
     display: block;
     margin-top: 15px;
     font-weight: 700;
     color: #00003f;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
 }
 
@@ -111,12 +145,11 @@ input,
 textarea,
 select {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     margin-top: 8px;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1.5px solid #e5e7eb;
-    font-size: 15px;
-    background: #fff;
+    font-size: 14px;
     transition: all 0.3s;
 }
 
@@ -132,99 +165,59 @@ textarea:focus {
    BOTONES
 =============================== */
 
-button {
-    padding: 12px 20px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
-/* BOTÓN GUARDAR (EL MÁS IMPORTANTE) */
-
-.btn-guardar {
-    width: 100%;
+.btn-save-master {
     background: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
-    font-size: 18px;
     font-weight: 800;
-    padding: 18px;
-    margin-top: 30px;
-    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
+    padding: 12px 25px;
+    box-shadow: 0 8px 20px rgba(252, 180, 36, 0.3);
 }
 
-.btn-guardar:hover {
-    background: #e6a91e;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(252, 180, 36, 0.3);
-}
-
-
-/* BOTONES AGREGAR (AZULES) */
-
-button.add-btn,
-button[type="button"]:contains("➕") {
+.btn-add-section-blue {
     background: #00003f;
     color: white;
-    font-size: 0.85rem;
+    width: 100%;
+    margin-top: 10px;
 }
 
-button.add-btn:hover {
-    background: #00005a;
-    transform: scale(1.03);
+.btn-add-section-amber {
+    background: #fcb424;
+    color: #00003f;
+    width: 100%;
+    margin-top: 10px;
 }
 
+.btn-add-nivel-master {
+    background: #00003f;
+    color: white;
+    width: 100%;
+    padding: 18px;
+    font-size: 1.1rem;
+}
 
-/* BOTONES ELIMINAR (ROJOS) */
-
-button.delete-btn,
-button:contains("❌") {
+.btn-del-item,
+.btn-del-nivel {
     background: #fee2e2;
     color: #dc2626;
+    padding: 6px 12px;
+    font-size: 0.8rem;
 }
 
-button.delete-btn:hover {
+.btn-del-item:hover {
     background: #dc2626;
     color: white;
 }
 
 
 /* ===============================
-   FORMULARIOS DINÁMICOS
+   RESPONSIVO
 =============================== */
 
-.inline-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-    align-items: center;
-}
-
-.nivel-titulo {
-    font-size: 24px;
-    font-weight: 800;
-    color: #00003f;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #f3f4f6;
-    padding-bottom: 10px;
-}
-
-
-/* ===============================
-   RESPONSIVE
-=============================== */
-
-@media (max-width: 768px) {
-    .crear-curso-container {
-        padding: 80px 15px 30px;
+@media (max-width: 1024px) {
+    .editor-grid {
+        grid-template-columns: 1fr;
     }
-    h1 {
-        font-size: 26px;
-    }
-    .card {
-        padding: 20px;
+    .editor-aside {
+        position: static;
     }
 }
