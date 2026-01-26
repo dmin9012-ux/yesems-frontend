@@ -1,11 +1,11 @@
-// /yesems/src/pages/Curso/Curso.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { ProgresoContext } from "../../context/ProgresoContext";
+import apiYesems from "../../api/apiYesems"; // Usamos tu instancia de Axios configurada
 
 import "./CursoStyle.css";
 
@@ -15,37 +15,39 @@ export default function Curso() {
 
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
-  const [accesos, setAccesos] = useState({}); // track de acceso a cada nivel
+  const [accesos, setAccesos] = useState({});
 
   const {
     progresoGlobal,
     nivelesAprobadosGlobal,
     progresoCursos,
     recargarProgreso,
-    loading,
+    loading: progresoLoading,
   } = useContext(ProgresoContext);
 
   /* ======================================
-     🔄 CARGAR CURSO + PROGRESO
-     ⚡ Solo cargar progreso si aún no está cargado
+      🔄 CARGAR CURSO
   ====================================== */
   useEffect(() => {
-    const cargarCurso = async () => {
+    const cargarDatosCurso = async () => {
       setCargando(true);
       try {
-        if (progresoCursos.length === 0) {
-          await recargarProgreso(); // 🔑 sincroniza progresos solo si no hay
-        }
-
+        // Cargar el curso desde Firestore
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
           console.error("❌ Curso no encontrado");
+          navigate("/principal");
           return;
         }
 
         setCurso({ id: snap.id, ...snap.data() });
+
+        // Sincronizar progreso si el contexto está vacío
+        if (progresoCursos.length === 0) {
+          await recargarProgreso();
+        }
       } catch (error) {
         console.error("❌ Error cargando curso:", error);
       } finally {
@@ -53,70 +55,74 @@ export default function Curso() {
       }
     };
 
-    cargarCurso();
-  }, [id, progresoCursos.length, recargarProgreso]);
+    cargarDatosCurso();
+  }, [id, recargarProgreso]); // Eliminamos progresoCursos.length de aquí para evitar bucles
 
   /* ======================================
-     🔹 FUNCION PARA CONSULTAR ACCESO A NIVEL
+      🔹 VERIFICAR ACCESOS (Optimizado)
   ====================================== */
-  const verificarAccesoNivel = async (nivelNumero) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(
-        `https://yesems-backend-production.up.railway.app/api/examen/${id}/nivel/${nivelNumero}/puede-acceder`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const data = await res.json();
-      setAccesos((prev) => ({ ...prev, [nivelNumero]: data.puedeAcceder }));
-    } catch (error) {
-      console.error(error);
-      setAccesos((prev) => ({ ...prev, [nivelNumero]: false }));
-    }
-  };
-
-  /* ======================================
-     🔄 CONSULTAR ACCESO PARA TODOS LOS NIVELES
-     ⚡ Solo si hay niveles y progreso cargado
-  ====================================== */
-  useEffect(() => {
-    if (!curso?.niveles || progresoCursos.length === 0) return;
-    curso.niveles.forEach((nivel) => {
-      verificarAccesoNivel(Number(nivel.numero));
+  const verificarTodosLosAccesos = useCallback(async (niveles) => {
+    const nuevosAccesos = {};
+    
+    // Ejecutamos las verificaciones en paralelo para mayor velocidad
+    const promesas = niveles.map(async (nivel) => {
+      const num = Number(nivel.numero);
+      if (num === 1) {
+        nuevosAccesos[num] = true;
+        return;
+      }
+      try {
+        const res = await apiYesems.get(`/examen/${id}/nivel/${num}/puede-acceder`);
+        nuevosAccesos[num] = res.data.puedeAcceder;
+      } catch (error) {
+        nuevosAccesos[num] = false;
+      }
     });
-  }, [curso, progresoCursos.length]);
 
-  if (cargando || loading || !curso) {
+    await Promise.all(promesas);
+    setAccesos(nuevosAccesos);
+  }, [id]);
+
+  useEffect(() => {
+    if (curso?.niveles && !progresoLoading) {
+      verificarTodosLosAccesos(curso.niveles);
+    }
+  }, [curso, progresoLoading, verificarTodosLosAccesos]);
+
+  if (cargando || progresoLoading || !curso) {
     return (
       <>
         <TopBar />
-        <p className="cargando">Cargando curso...</p>
+        <div className="cargando-container">
+          <p className="cargando">Cargando contenido del curso...</p>
+        </div>
       </>
     );
   }
 
   /* ======================================
-     📊 PROGRESO DESDE BACKEND
+      📊 DATOS DE PROGRESO
   ====================================== */
   const leccionesCompletadas = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
-  const progresoCurso = progresoCursos.find((p) => p.cursoId === id);
-  const cursoFinalizado = progresoCurso?.completado === true;
+  const progresoActual = progresoCursos.find((p) => p.cursoId === id);
+  const cursoFinalizado = progresoActual?.completado === true;
 
   return (
     <>
       <TopBar />
 
       <div className="curso-contenedor-sidebar">
-        {/* SIDEBAR */}
         <aside className="sidebar">
           <h3>{curso.nombre}</h3>
 
           {Array.isArray(curso.niveles) &&
-            curso.niveles.map((nivel) => {
+            curso.niveles.sort((a,b) => a.numero - b.numero).map((nivel) => {
               const nivelNumero = Number(nivel.numero);
 
+              // Generar IDs de lecciones (Asegúrate de que coincidan con los del backend)
               const idsLeccionesNivel = nivel.lecciones.map(
-                (_, idx) => id + "-n" + nivelNumero + "-l" + (idx + 1)
+                (_, idx) => `${id}-n${nivelNumero}-l${idx + 1}`
               );
 
               const leccionesCompletadasNivel = idsLeccionesNivel.filter((lid) =>
@@ -124,48 +130,37 @@ export default function Curso() {
               );
 
               const nivelCompletado =
-                leccionesCompletadasNivel.length === idsLeccionesNivel.length;
+                leccionesCompletadasNivel.length === idsLeccionesNivel.length && idsLeccionesNivel.length > 0;
 
               const examenAprobado = nivelesAprobados.includes(nivelNumero);
-
-              // 🔹 Primer nivel desbloqueado por defecto
-              // 🔹 Niveles siguientes desbloqueados si examen del nivel anterior aprobado
-              const nivelDesbloqueado =
-                accesos[nivelNumero] ?? (nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1));
+              const nivelDesbloqueado = accesos[nivelNumero] ?? (nivelNumero === 1);
 
               return (
                 <div
                   key={nivel.numero}
-                  className={`nivel-sidebar ${
-                    !nivelDesbloqueado ? "nivel-bloqueado" : ""
-                  }`}
+                  className={`nivel-sidebar ${!nivelDesbloqueado ? "nivel-bloqueado" : ""}`}
                 >
-                  <p>
+                  <p className="nivel-titulo">
                     Nivel {nivel.numero}: {nivel.titulo}
                   </p>
 
                   <ul>
-                    {nivel.lecciones.map((leccion, index) => {
-                      const lid = id + "-n" + nivelNumero + "-l" + (index + 1);
+                    {nivel.lecciones.map((_, index) => {
+                      const lid = `${id}-n${nivelNumero}-l${index + 1}`;
                       const estaCompletada = leccionesCompletadas.includes(lid);
 
                       return (
-                        <li
-                          key={lid}
-                          className={estaCompletada ? "completada" : ""}
-                        >
+                        <li key={lid} className={estaCompletada ? "completada" : ""}>
                           {nivelDesbloqueado ? (
                             <Link
-                              to={`/curso/${id}/nivel/${nivelNumero}/leccion/${
-                                index + 1
-                              }`}
+                              to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}
                               className="leccion-link"
                             >
-                              {leccion.titulo}
+                              {estaCompletada ? "✅" : "📖"} Lección {index + 1}
                             </Link>
                           ) : (
                             <span className="leccion-bloqueada">
-                              🔒 {leccion.titulo}
+                              🔒 Lección {index + 1}
                             </span>
                           )}
                         </li>
@@ -173,49 +168,44 @@ export default function Curso() {
                     })}
                   </ul>
 
-                  {/* 📝 BOTÓN EXAMEN */}
                   {nivelDesbloqueado && nivelCompletado && !examenAprobado && (
                     <button
                       className="btn-examen-sidebar"
-                      onClick={() =>
-                        navigate(`/curso/${id}/nivel/${nivelNumero}/examen`)
-                      }
+                      onClick={() => navigate(`/curso/${id}/nivel/${nivelNumero}/examen`)}
                     >
-                      📝 Presentar examen
+                      📝 Realizar Examen
                     </button>
                   )}
 
                   {examenAprobado && (
-                    <p className="nivel-aprobado">✅ Nivel aprobado</p>
+                    <p className="nivel-aprobado">⭐ Nivel Superado</p>
                   )}
                 </div>
               );
             })}
 
-          {/* 🎓 BOTÓN FINALIZAR CURSO */}
           {cursoFinalizado && (
-            <button
-              className="btn-finalizar-curso"
-              onClick={() => navigate("/perfil")}
-            >
-              🎓 Finalizar curso
-            </button>
+            <div className="curso-completado-seccion">
+              <p>🎉 ¡Curso terminado!</p>
+              <button className="btn-finalizar-curso" onClick={() => navigate("/perfil")}>
+                Ver mi Constancia
+              </button>
+            </div>
           )}
 
-          <button
-            className="btn-regresar-sidebar"
-            onClick={() => navigate("/principal")}
-          >
-            ⬅ Regresar
+          <button className="btn-regresar-sidebar" onClick={() => navigate("/principal")}>
+            ⬅ Mis Cursos
           </button>
         </aside>
 
-        {/* MAIN */}
         <main className="contenido">
           <h2 className="curso-titulo">{curso.nombre}</h2>
-          <p className="curso-descripcion">
-            {curso.descripcion || "No hay descripción disponible"}
-          </p>
+          <div className="curso-info-card">
+            <p className="curso-descripcion">
+              {curso.descripcion || "Bienvenido a este curso. Completa todas las lecciones de cada nivel para habilitar el examen."}
+            </p>
+          </div>
+          {/* Aquí podrías añadir un gráfico de progreso visual */}
         </main>
       </div>
     </>

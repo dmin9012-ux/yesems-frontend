@@ -1,6 +1,5 @@
-// /yesems/src/pages/Leccion/Leccion.jsx
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "../../firebase/firebaseConfig";
@@ -24,12 +23,17 @@ export default function Leccion() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
-  const { progresoGlobal, nivelesAprobadosGlobal, actualizarProgreso } = useContext(ProgresoContext);
+  const {
+    progresoGlobal,
+    nivelesAprobadosGlobal,
+    actualizarProgreso,
+    recargarProgreso // 🔑 Importante para sincronizar
+  } = useContext(ProgresoContext);
 
   const leccionId = `${id}-n${nivelNum}-l${numLeccion}`;
 
   /* ===============================
-     📥 CARGAR LECCIÓN
+      📥 CARGAR LECCIÓN
   =============================== */
   useEffect(() => {
     const cargarLeccion = async () => {
@@ -46,6 +50,7 @@ export default function Leccion() {
 
         const data = snap.data();
         const nivelData = data.niveles?.find((n) => Number(n.numero) === nivelNum);
+        
         if (!nivelData) {
           setError("Nivel no encontrado");
           return;
@@ -61,7 +66,7 @@ export default function Leccion() {
         setLeccionActual({
           id: leccionId,
           titulo: leccionData.titulo,
-          videoURL: leccionData.videoURL || "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          videoURL: leccionData.videoURL || "",
           contenidoHTML: leccionData.contenidoHTML || "",
           materiales: leccionData.materiales || [],
           nivelTitulo: nivelData.titulo,
@@ -70,7 +75,7 @@ export default function Leccion() {
         setEsUltimaLeccion(numLeccion === nivelData.lecciones.length);
       } catch (err) {
         console.error("Error cargando lección:", err);
-        setError("Error al cargar la lección");
+        setError("Error al conectar con la base de datos");
       } finally {
         setCargando(false);
       }
@@ -80,33 +85,28 @@ export default function Leccion() {
   }, [id, nivelNum, numLeccion, leccionId]);
 
   /* ===============================
-     💾 GUARDAR PROGRESO LOCAL + BACKEND
+      💾 GUARDAR PROGRESO
   =============================== */
-  const guardarProgreso = async () => {
+  const guardarProgresoReal = async () => {
     const progresoCursoActual = progresoGlobal[id] || [];
+    
+    // Si ya está marcada como completada localmente, no llamamos al API
     if (progresoCursoActual.includes(leccionId)) return true;
 
     setGuardando(true);
-    setError("");
-
     try {
       const res = await validarLeccion({ cursoId: id, leccionId });
 
-      if (res?.ok === false && res.message?.includes("ya fue validada")) {
+      if (res?.ok) {
+        // Actualizamos el contexto global
         actualizarProgreso(id, leccionId);
         return true;
-      }
-
-      if (res?.ok === false) {
-        setError(res.message || "Error al guardar progreso");
+      } else {
+        setError(res.message || "No se pudo guardar el progreso");
         return false;
       }
-
-      actualizarProgreso(id, leccionId);
-      return true;
     } catch (err) {
       console.error("Error validar lección:", err);
-      setError("Error al guardar progreso");
       return false;
     } finally {
       setGuardando(false);
@@ -114,118 +114,72 @@ export default function Leccion() {
   };
 
   /* ===============================
-     🔹 NAVEGACIÓN ENTRE LECCIONES
+      🔹 NAVEGACIÓN
   =============================== */
-  const navegarAnterior = () => {
-    let n = nivelNum;
-    let l = numLeccion - 1;
-
-    if (l < 1) {
-      n--;
-      if (n < 1) return;
-      l = curso.niveles.find((nv) => Number(nv.numero) === n)?.lecciones.length || 1;
-    }
-
-    navigate(`/curso/${id}/nivel/${n}/leccion/${l}`);
-  };
-
   const navegarSiguiente = async () => {
-    const ok = await guardarProgreso();
+    const ok = await guardarProgresoReal();
     if (!ok) return;
 
     const nivelData = curso.niveles.find((nv) => Number(nv.numero) === nivelNum);
-    const siguienteLeccion = numLeccion + 1;
-
-    if (siguienteLeccion > (nivelData?.lecciones.length || 0)) {
+    
+    if (numLeccion >= (nivelData?.lecciones.length || 0)) {
+      // Si era la última lección, vamos al examen
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
     } else {
-      navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${siguienteLeccion}`);
+      navigate(`/curso/${id}/nivel/${nivelNum}/leccion/${numLeccion + 1}`);
     }
   };
 
   const irAExamenNivel = async () => {
-    const ok = await guardarProgreso();
-    if (!ok) return;
-    navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
+    const ok = await guardarProgresoReal();
+    if (ok) navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
   };
 
-  /* ===============================
-     🔹 CARGA / ERROR
-  =============================== */
-  if (cargando)
-    return (
-      <>
-        <TopBar />
-        <p className="cargando">Cargando lección...</p>
-      </>
-    );
+  if (cargando) return <><TopBar /><div className="cargando">Cargando lección...</div></>;
 
-  if (!curso || !leccionActual)
-    return (
-      <>
-        <TopBar />
-        <p className="error-leccion">❌ {error || "No se pudo cargar la lección"}</p>
-      </>
-    );
+  if (error || !leccionActual) return (
+    <><TopBar /><div className="error-container">
+      <p className="error-leccion">❌ {error || "Lección no disponible"}</p>
+      <button onClick={() => navigate(`/curso/${id}`)}>Volver al curso</button>
+    </div></>
+  );
 
-  /* ===============================
-     📊 PROGRESO
-  =============================== */
   const progresoActual = progresoGlobal[id] || [];
   const nivelesAprobados = nivelesAprobadosGlobal[id] || [];
-
-  const nivelDataActual = curso.niveles.find((n) => Number(n.numero) === nivelNum);
-  const totalLeccionesNivel = nivelDataActual?.lecciones.length || 0;
-  const totalLeccionesCurso = curso.niveles.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0);
-
-  const leccionesNivelIds = nivelDataActual?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
+  const nivelData = curso.niveles.find((n) => Number(n.numero) === nivelNum);
+  
+  // Cálculos de progreso
+  const totalLeccionesNivel = nivelData?.lecciones.length || 0;
+  const leccionesNivelIds = nivelData?.lecciones.map((_, idx) => `${id}-n${nivelNum}-l${idx + 1}`) || [];
   const completadasNivel = leccionesNivelIds.filter((l) => progresoActual.includes(l)).length;
-
   const progresoNivelPct = Math.round((completadasNivel / totalLeccionesNivel) * 100);
-  const progresoCursoPct = Math.round((progresoActual.length / totalLeccionesCurso) * 100);
-
-  const leccionCompletada = progresoActual.includes(leccionId);
 
   return (
     <>
       <TopBar />
-
       <div className="leccion-contenedor-sidebar">
         <aside className="sidebar">
           <h3>{curso.nombre}</h3>
-
           {curso.niveles.map((nivelItem) => {
-            const nivelNumero = Number(nivelItem.numero);
-
-            // 🔹 Primer nivel siempre desbloqueado
-            const desbloqueado = nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1);
+            const nNum = Number(nivelItem.numero);
+            const desbloqueado = nNum === 1 || nivelesAprobados.includes(nNum - 1);
 
             return (
-              <div
-                key={nivelItem.numero}
-                className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}
-              >
-                <p>
-                  Nivel {nivelItem.numero}: {nivelItem.titulo}
-                </p>
-
+              <div key={nNum} className={`nivel-sidebar ${!desbloqueado ? "nivel-bloqueado" : ""}`}>
+                <p>Nivel {nNum}: {nivelItem.titulo}</p>
                 <ul>
-                  {nivelItem.lecciones.map((_, index) => {
-                    const lid = `${id}-n${nivelNumero}-l${index + 1}`;
-                    const esActual = nivelNumero === nivelNum && index + 1 === numLeccion;
+                  {nivelItem.lecciones.map((_, idx) => {
+                    const lid = `${id}-n${nNum}-l${idx + 1}`;
+                    const esActual = nNum === nivelNum && (idx + 1) === numLeccion;
                     const completada = progresoActual.includes(lid);
-
                     return (
-                      <li
-                        key={lid}
-                        className={`${esActual ? "active " : ""}${completada ? "completada" : ""}`}
-                      >
+                      <li key={lid} className={`${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
                         {desbloqueado ? (
-                          <Link to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}>
-                            Lección {index + 1}
+                          <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`}>
+                            {completada ? "✅" : "📖"} Lección {idx + 1}
                           </Link>
                         ) : (
-                          <span>🔒 Lección {index + 1}</span>
+                          <span>🔒 Lección {idx + 1}</span>
                         )}
                       </li>
                     );
@@ -237,51 +191,36 @@ export default function Leccion() {
         </aside>
 
         <main className="contenido">
-          {error && <p className="error-leccion">❌ {error}</p>}
-
-          <div className="indicador-leccion">
-            Nivel {nivelNum} · Lección {numLeccion} de {totalLeccionesNivel}
+          <div className="header-leccion">
+            <span className="badge-nivel">Nivel {nivelNum}</span>
+            <h1>{leccionActual.titulo}</h1>
           </div>
 
-          <div className="barra-progreso">
-            <p>Progreso del nivel</p>
-            <progress value={progresoNivelPct} max="100" />
-            <span>{progresoNivelPct}%</span>
+          <div className="progreso-mini">
+            <span>Progreso del nivel: {progresoNivelPct}%</span>
+            <div className="barra"><div className="llenado" style={{width: `${progresoNivelPct}%`}}></div></div>
           </div>
 
-          <div className="barra-progreso">
-            <p>Progreso del curso</p>
-            <progress value={progresoCursoPct} max="100" />
-            <span>{progresoCursoPct}%</span>
-          </div>
-
-          <h1>{leccionActual.titulo}</h1>
-          <h3>{leccionActual.nivelTitulo}</h3>
-
-          {leccionCompletada && <p className="leccion-completada">✔️ Lección completada</p>}
-
-          <div className="video-container">
-            <iframe src={leccionActual.videoURL} title={leccionActual.titulo} allowFullScreen />
+          <div className="video-wrapper">
+            {leccionActual.videoURL ? (
+               <iframe src={leccionActual.videoURL} title="Video lección" allowFullScreen />
+            ) : <div className="no-video">No hay video disponible para esta lección</div>}
           </div>
 
           {leccionActual.contenidoHTML && (
-            <div className="contenido-html" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
+            <div className="lectura-container" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
 
-          <div className="navegacion-lecciones">
-            <button onClick={navegarAnterior} className="btn-nav">
-              ⬅ Anterior
-            </button>
-
-            {!esUltimaLeccion && (
-              <button onClick={navegarSiguiente} className="btn-nav" disabled={guardando}>
-                Siguiente ➝
+          <div className="footer-navegacion">
+            <button onClick={() => navigate(-1)} className="btn-secundario">Volver</button>
+            
+            {esUltimaLeccion ? (
+              <button onClick={irAExamenNivel} className="btn-principal" disabled={guardando}>
+                {guardando ? "Guardando..." : "Ir al Examen 📝"}
               </button>
-            )}
-
-            {esUltimaLeccion && (
-              <button onClick={irAExamenNivel} className="btn-nav btn-finalizar" disabled={guardando}>
-                📝 Presentar examen del nivel
+            ) : (
+              <button onClick={navegarSiguiente} className="btn-principal" disabled={guardando}>
+                {guardando ? "Guardando..." : "Siguiente Lección ➝"}
               </button>
             )}
           </div>

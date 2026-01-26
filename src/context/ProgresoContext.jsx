@@ -12,14 +12,15 @@ export const ProgresoProvider = ({ children }) => {
   const [progresoCursos, setProgresoCursos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Cargar progreso desde backend (memoizado para no generar loops)
+  /* ===============================
+      🔄 Cargar progreso desde backend
+  =============================== */
+  // Usamos useCallback para que pueda ser usado de forma segura en useEffects de otros componentes
   const cargarProgreso = useCallback(async () => {
     if (!isAuthenticated || !user || user.rol === "admin") {
       setLoading(false);
       return;
     }
-
-    setLoading(true);
 
     try {
       const res = await obtenerProgresoUsuario();
@@ -35,62 +36,43 @@ export const ProgresoProvider = ({ children }) => {
 
         setProgresoGlobal(progresoObj);
         setNivelesAprobadosGlobal(nivelesObj);
-        setProgresoCursos(res.data);
+        setProgresoCursos(res.data); 
       }
     } catch (error) {
       console.error("❌ Error cargando progreso:", error);
     } finally {
       setLoading(false);
     }
-  }, [user, isAuthenticated]);
+  }, [isAuthenticated, user]);
 
-  // ➕ Actualizar progreso local
+  /* ===============================
+      ➕ Actualizar progreso (Optimista)
+  =============================== */
   const actualizarProgreso = (cursoId, leccionId) => {
+    // Actualizamos el estado local para que la UI responda instantáneamente
     setProgresoGlobal((prev) => {
-      const prevCurso = prev[cursoId] || [];
-      if (prevCurso.includes(leccionId)) return prev;
-
-      const nuevoProgresoGlobal = {
-        ...prev,
-        [cursoId]: [...prevCurso, leccionId],
-      };
-
-      setProgresoCursos((prevCursos) => {
-        const index = prevCursos.findIndex((c) => c.cursoId === cursoId);
-        if (index === -1) return prevCursos;
-
-        const cursoPrev = prevCursos[index];
-        const lecciones = cursoPrev.leccionesCompletadas || [];
-        if (lecciones.includes(leccionId)) return prevCursos;
-
-        const totalLecciones = cursoPrev.totalLecciones ?? lecciones.length + 1;
-
-        const cursoActualizado = {
-          ...cursoPrev,
-          leccionesCompletadas: [...lecciones, leccionId],
-          completado: lecciones.length + 1 >= totalLecciones,
-        };
-
-        const nuevosCursos = [...prevCursos];
-        nuevosCursos[index] = cursoActualizado;
-        return nuevosCursos;
-      });
-
-      return nuevoProgresoGlobal;
+      const actuales = prev[cursoId] || [];
+      if (actuales.includes(leccionId)) return prev;
+      return { ...prev, [cursoId]: [...actuales, leccionId] };
     });
+
+    // IMPORTANTE: Después de una actualización local, es buena idea 
+    // disparar una recarga silenciosa del backend para asegurar sincronía
+    // cargarProgreso(); 
   };
 
-  // ✅ Actualizar niveles aprobados localmente
+  /* ===============================
+      ✅ Actualizar niveles aprobados
+  =============================== */
   const actualizarNivelesAprobados = (cursoId, nivelNumero) => {
     setNivelesAprobadosGlobal((prev) => {
-      const prevNiveles = prev[cursoId] || [];
-      if (prevNiveles.includes(nivelNumero)) return prev;
-
-      return {
-        ...prev,
-        [cursoId]: [...prevNiveles, nivelNumero],
-      };
+      const actuales = prev[cursoId] || [];
+      if (actuales.includes(nivelNumero)) return prev;
+      return { ...prev, [cursoId]: [...actuales, nivelNumero] };
     });
+    
+    // Al aprobar un nivel, forzamos recarga para obtener el nuevo estado de "completado"
+    cargarProgreso();
   };
 
   useEffect(() => {
@@ -105,7 +87,7 @@ export const ProgresoProvider = ({ children }) => {
         progresoCursos,
         actualizarProgreso,
         actualizarNivelesAprobados,
-        recargarProgreso: cargarProgreso,
+        recargarProgreso: cargarProgreso, // Esta es la que llama Perfil.jsx
         loading,
       }}
     >

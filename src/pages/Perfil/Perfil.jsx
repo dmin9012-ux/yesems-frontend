@@ -17,7 +17,9 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { progresoCursos, progresoGlobal, recargarProgreso } = useContext(ProgresoContext);
+  
+  // Extraemos recargarProgreso para asegurar datos frescos
+  const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -27,64 +29,81 @@ const Perfil = () => {
   const [showEditarPerfil, setShowEditarPerfil] = useState(false);
 
   /* ===============================
-     🔄 CARGAR PERFIL Y CURSOS
+      🔄 CARGAR PERFIL Y CURSOS
   =============================== */
   useEffect(() => {
-    const cargarPerfil = async () => {
+    const cargarDatosIniciales = async () => {
       setLoading(true);
       try {
-        // Traer usuario
+        // 1. Traer datos del usuario
         const perfilRes = await apiYesems.get("/usuario/perfil/me");
         setUsuario(perfilRes.data.usuario);
 
-        // Traer cursos desde Firebase
+        // 2. Traer info de cursos desde Firebase
         const snap = await getDocs(collection(db, "cursos"));
         const cursosFirebase = snap.docs.map((d) => ({
           id: d.id,
           ...d.data(),
         }));
-
         setCursos(cursosFirebase);
+
+        // 3. Forzar recarga de progreso desde el Backend
+        // Esto traerá los cambios que hicimos con 'markModified'
+        await recargarProgreso();
+
       } catch (error) {
         console.error("Error cargando perfil:", error);
-        logout();
-        navigate("/login");
+        // Solo redirigir si el error es de autenticación (401/403)
+        if (error.response?.status === 401) {
+          logout();
+          navigate("/login");
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    cargarPerfil();
-    recargarProgreso(); // sincronizar progreso al entrar
-  }, [logout, navigate, recargarProgreso]);
+    cargarDatosIniciales();
+  }, []); // Se ejecuta una vez al montar
 
   /* ===============================
-     📊 CALCULAR PROGRESO
+      📊 CALCULAR PROGRESO
   =============================== */
   const calcularProgreso = (curso) => {
-    const progresoCurso = progresoCursos.find((c) => c.cursoId === curso.id) || {};
-    const completadas = progresoGlobal[curso.id] || progresoCurso.leccionesCompletadas || [];
-    const totalLecciones = curso.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0) || 0;
+    // Buscamos el progreso que viene del backend (ya actualizado tras el examen)
+    const progresoDB = progresoCursos.find((c) => c.cursoId === curso.id);
+    
+    // Si no hay progreso en DB, el avance es 0
+    const leccionesCompletadas = progresoDB ? progresoDB.leccionesCompletadas : [];
+    
+    // Sumar total de lecciones configuradas en el curso de Firebase
+    const totalLecciones =
+      curso.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0) || 0;
 
-    const porcentaje = totalLecciones ? Math.round((completadas.length / totalLecciones) * 100) : 0;
+    const porcentaje = totalLecciones > 0 
+      ? Math.round((leccionesCompletadas.length / totalLecciones) * 100) 
+      : 0;
+
+    // Un curso está realmente completado si el backend dice 'completado: true'
+    const cursoCompletadoDB = progresoDB?.completado || false;
 
     return {
       porcentaje,
-      completadas: completadas.length,
+      completadas: leccionesCompletadas.length,
       total: totalLecciones,
       estado:
         porcentaje === 0
           ? "no-iniciado"
-          : porcentaje === 100
+          : cursoCompletadoDB
           ? "completado"
           : "en-progreso",
-      completado: porcentaje === 100,
-      constanciaEmitida: progresoCurso.constanciaEmitida || false,
+      completado: cursoCompletadoDB,
+      constanciaEmitida: progresoDB?.constanciaEmitida || false,
     };
   };
 
   /* ===============================
-     📄 DESCARGAR CONSTANCIA
+      📄 DESCARGAR CONSTANCIA
   =============================== */
   const descargarConstancia = async (cursoId, nombreCurso) => {
     try {
@@ -98,12 +117,12 @@ const Perfil = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error descargando constancia:", error);
-      alert("No se pudo descargar la constancia");
+      alert("La constancia aún se está procesando o no está disponible.");
     }
   };
 
   /* ===============================
-     🗑 ELIMINAR CUENTA
+      🗑 ELIMINAR CUENTA
   =============================== */
   const eliminarCuenta = async () => {
     const confirmar = window.confirm(
@@ -122,108 +141,47 @@ const Perfil = () => {
     }
   };
 
-  /* ===============================
-     🔹 OBTENER PRIMER LECCIÓN DESBLOQUEADA
-  =============================== */
-  const primeraLeccion = (curso) => {
-    for (let nivel of curso.niveles || []) {
-      const nivelNum = Number(nivel.numero);
-      const desbloqueado = nivelNum === 1; // Primer nivel siempre desbloqueado
-
-      if (!nivel.lecciones || nivel.lecciones.length === 0) continue;
-
-      for (let i = 0; i < nivel.lecciones.length; i++) {
-        const lid = `${curso.id}-n${nivelNum}-l${i + 1}`;
-        const completada = (progresoGlobal[curso.id] || []).includes(lid);
-        if (desbloqueado || completada) {
-          return `/curso/${curso.id}/nivel/${nivelNum}/leccion/${i + 1}`;
-        }
-      }
-    }
-    return `/curso/${curso.id}`; // fallback
-  };
-
-  if (loading) return <p className="perfil-cargando">Cargando...</p>;
+  if (loading) return <div className="perfil-cargando">Cargando tu progreso...</div>;
   if (!usuario) return null;
 
   return (
     <>
       <TopBar />
-
       <div className="perfil-page">
         <aside className="perfil-sidebar">
-          <div className="perfil-avatar">{usuario.nombre.charAt(0).toUpperCase()}</div>
+          <div className="perfil-avatar">{usuario.nombre?.charAt(0).toUpperCase()}</div>
           <h3>{usuario.nombre}</h3>
-          <p className="perfil-email">
-            <Mail size={14} /> {usuario.email}
-          </p>
-
-          <button onClick={() => setShowEditarPerfil(true)}>
-            <Edit size={16} /> Editar Perfil
-          </button>
-
-          <button onClick={() => setShowPasswordModal(true)}>
-            <Lock size={16} /> Cambiar Contraseña
-          </button>
-
-          <button className="danger" onClick={eliminarCuenta}>
-            <Trash2 size={16} /> Eliminar Cuenta
-          </button>
-
-          <button
-            className="logout"
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
-          >
-            <LogOut size={16} /> Cerrar sesión
-          </button>
+          <p className="perfil-email"><Mail size={14} /> {usuario.email}</p>
+          <button onClick={() => setShowEditarPerfil(true)}><Edit size={16} /> Editar Perfil</button>
+          <button onClick={() => setShowPasswordModal(true)}><Lock size={16} /> Cambiar Contraseña</button>
+          <button className="danger" onClick={eliminarCuenta}><Trash2 size={16} /> Eliminar Cuenta</button>
+          <button className="logout" onClick={() => { logout(); navigate("/login"); }}><LogOut size={16} /> Cerrar sesión</button>
         </aside>
 
         <main className="perfil-main">
-          <h2>
-            <BookOpen size={20} /> Mis Cursos
-          </h2>
-
+          <h2><BookOpen size={20} /> Mis Cursos</h2>
+          {cursos.length === 0 && <p>No hay cursos disponibles actualmente.</p>}
           {cursos.map((curso) => {
             const p = calcularProgreso(curso);
-            const mostrarConstancia = p.completado && p.constanciaEmitida;
-
             return (
               <div key={curso.id} className={`curso-card ${p.estado}`}>
                 <div className="curso-header">
                   <strong>{curso.nombre}</strong>
                   <span>
-                    {p.estado === "completado"
-                      ? "✅ Completado"
-                      : p.estado === "en-progreso"
-                      ? "🕒 En progreso"
-                      : "⚪ No iniciado"}
+                    {p.completado ? "✅ Completado" : p.porcentaje > 0 ? "🕒 En progreso" : "⚪ No iniciado"}
                   </span>
                 </div>
-
                 <div className="progress-bar">
                   <div className="progress-fill" style={{ width: `${p.porcentaje}%` }} />
                 </div>
-
-                <small>
-                  {p.completadas}/{p.total} lecciones ({p.porcentaje}%)
-                </small>
-
-                {mostrarConstancia ? (
-                  <button
-                    className="btn-constancia"
-                    onClick={() => descargarConstancia(curso.id, curso.nombre)}
-                  >
+                <small>{p.completadas}/{p.total} lecciones ({p.porcentaje}%)</small>
+                {p.completado && p.constanciaEmitida ? (
+                  <button className="btn-constancia" onClick={() => descargarConstancia(curso.id, curso.nombre)}>
                     <FileText size={16} /> Descargar constancia
                   </button>
                 ) : (
-                  <button
-                    className="btn-continuar"
-                    onClick={() => navigate(primeraLeccion(curso))}
-                  >
-                    ▶ Continuar curso
+                  <button className="btn-continuar" onClick={() => navigate(`/curso/${curso.id}`)}>
+                    ▶ {p.porcentaje > 0 ? "Continuar" : "Empezar"} curso
                   </button>
                 )}
               </div>
@@ -231,11 +189,7 @@ const Perfil = () => {
           })}
         </main>
       </div>
-
-      {showPasswordModal && (
-        <ModalPassword onClose={() => setShowPasswordModal(false)} />
-      )}
-
+      {showPasswordModal && <ModalPassword onClose={() => setShowPasswordModal(false)} />}
       {showEditarPerfil && (
         <ModalEditarPerfil
           usuario={usuario}
