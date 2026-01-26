@@ -1,14 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Mail,
-  Lock,
-  Trash2,
-  Edit,
-  LogOut,
-  BookOpen,
-  FileText,
-} from "lucide-react";
+import { Mail, Lock, Trash2, Edit, LogOut, BookOpen, FileText } from "lucide-react";
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
@@ -25,7 +17,6 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-
   const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
@@ -40,6 +31,7 @@ const Perfil = () => {
   =============================== */
   useEffect(() => {
     const cargarTodo = async () => {
+      setLoading(true);
       try {
         // Traer usuario
         const perfilRes = await apiYesems.get("/usuario/perfil/me");
@@ -55,11 +47,22 @@ const Perfil = () => {
         // Hacer merge con backend (progreso)
         const cursosCompletos = cursosFirebase.map((curso) => {
           const backend = progresoCursos.find((c) => c.cursoId === curso.id) || {};
-          const totalLecciones = curso.niveles.reduce(
+          const totalLecciones = curso.niveles?.reduce(
             (acc, n) => acc + (n.lecciones?.length || 0),
             0
           );
-          return { ...curso, cursoId: curso.id, totalLecciones, ...backend };
+
+          // Sincronizar lecciones completadas
+          const leccionesCompletadas = backend.leccionesCompletadas || [];
+
+          return {
+            ...curso,
+            cursoId: curso.id,
+            totalLecciones,
+            leccionesCompletadas,
+            completado: leccionesCompletadas.length >= totalLecciones,
+            constanciaEmitida: backend.constanciaEmitida || false,
+          };
         });
 
         setCursos(cursosCompletos);
@@ -113,15 +116,12 @@ const Perfil = () => {
       const res = await apiYesems.get(`/constancia/${cursoId}`, {
         responseType: "blob",
       });
-
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
       link.href = url;
       link.download = `Constancia-${nombreCurso}.pdf`;
       link.click();
-
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error descargando constancia:", error);
@@ -136,7 +136,6 @@ const Perfil = () => {
     const confirmar = window.confirm(
       "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer."
     );
-
     if (!confirmar) return;
 
     try {
@@ -160,9 +159,7 @@ const Perfil = () => {
       <div className="perfil-page">
         {/* ================= SIDEBAR ================= */}
         <aside className="perfil-sidebar">
-          <div className="perfil-avatar">
-            {usuario.nombre.charAt(0).toUpperCase()}
-          </div>
+          <div className="perfil-avatar">{usuario.nombre.charAt(0).toUpperCase()}</div>
 
           <h3>{usuario.nombre}</h3>
 

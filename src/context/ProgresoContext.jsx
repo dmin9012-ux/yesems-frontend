@@ -26,20 +26,20 @@ export const ProgresoProvider = ({ children }) => {
     try {
       const res = await obtenerProgresoUsuario();
 
-      // Adaptar según backend: res.progresos viene del backend
-      if (res.ok && Array.isArray(res.progresos)) {
+      // 🔹 CORREGIDO: usar res.data en lugar de res.progresos
+      if (res.ok && Array.isArray(res.data)) {
         const progresoObj = {};
         const nivelesObj = {};
 
         // Mapear cada curso para progresoGlobal y nivelesAprobadosGlobal
-        res.progresos.forEach((curso) => {
+        res.data.forEach((curso) => {
           progresoObj[curso.cursoId] = curso.leccionesCompletadas || [];
           nivelesObj[curso.cursoId] = curso.nivelesAprobados || [];
         });
 
         setProgresoGlobal(progresoObj);
         setNivelesAprobadosGlobal(nivelesObj);
-        setProgresoCursos(res.progresos); // Array completo para Perfil.jsx
+        setProgresoCursos(res.data); // Array completo para Perfil.jsx
       }
     } catch (error) {
       console.error("❌ Error cargando progreso:", error);
@@ -72,7 +72,8 @@ export const ProgresoProvider = ({ children }) => {
 
         if (lecciones.includes(leccionId)) return prevCursos;
 
-        const totalLecciones = cursoPrev.totalLecciones || lecciones.length + 1;
+        const totalLecciones =
+          cursoPrev.totalLecciones || (cursoPrev.niveles?.reduce((acc, n) => acc + (n.lecciones?.length || 0), 0)) || lecciones.length + 1;
 
         const cursoActualizado = {
           ...cursoPrev,
