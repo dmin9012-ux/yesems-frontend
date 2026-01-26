@@ -129,7 +129,9 @@ export default function Curso() {
               const examenAprobado = nivelesAprobados.includes(nivelNumero);
 
               // 🔹 Primer nivel desbloqueado por defecto
-              const nivelDesbloqueado = accesos[nivelNumero] ?? (nivelNumero === 1);
+              // 🔹 Niveles siguientes desbloqueados si examen del nivel anterior aprobado
+              const nivelDesbloqueado =
+                accesos[nivelNumero] ?? (nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1));
 
               return (
                 <div
@@ -143,7 +145,7 @@ export default function Curso() {
                   </p>
 
                   <ul>
-                    {nivel.lecciones.map((_, index) => {
+                    {nivel.lecciones.map((leccion, index) => {
                       const lid = id + "-n" + nivelNumero + "-l" + (index + 1);
                       const estaCompletada = leccionesCompletadas.includes(lid);
 
@@ -159,11 +161,11 @@ export default function Curso() {
                               }`}
                               className="leccion-link"
                             >
-                              Lección {index + 1}
+                              {leccion.titulo}
                             </Link>
                           ) : (
                             <span className="leccion-bloqueada">
-                              🔒 Lección {index + 1}
+                              🔒 {leccion.titulo}
                             </span>
                           )}
                         </li>

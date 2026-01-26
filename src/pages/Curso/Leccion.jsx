@@ -197,7 +197,7 @@ export default function Leccion() {
           {curso.niveles.map((nivelItem) => {
             const nivelNumero = Number(nivelItem.numero);
 
-            // 🔹 Primer nivel siempre desbloqueado
+            // 🔹 Primer nivel desbloqueado o si nivel anterior aprobado
             const desbloqueado = nivelNumero === 1 || nivelesAprobados.includes(nivelNumero - 1);
 
             return (
@@ -210,7 +210,7 @@ export default function Leccion() {
                 </p>
 
                 <ul>
-                  {nivelItem.lecciones.map((_, index) => {
+                  {nivelItem.lecciones.map((leccion, index) => {
                     const lid = `${id}-n${nivelNumero}-l${index + 1}`;
                     const esActual = nivelNumero === nivelNum && index + 1 === numLeccion;
                     const completada = progresoActual.includes(lid);
@@ -222,10 +222,10 @@ export default function Leccion() {
                       >
                         {desbloqueado ? (
                           <Link to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`}>
-                            Lección {index + 1}
+                            {leccion.titulo} {esActual && "▶"}
                           </Link>
                         ) : (
-                          <span>🔒 Lección {index + 1}</span>
+                          <span>🔒 {leccion.titulo}</span>
                         )}
                       </li>
                     );
@@ -240,7 +240,7 @@ export default function Leccion() {
           {error && <p className="error-leccion">❌ {error}</p>}
 
           <div className="indicador-leccion">
-            Nivel {nivelNum} · Lección {numLeccion} de {totalLeccionesNivel}
+            Nivel {nivelNum} · Lección {numLeccion} de {totalLeccionesNivel} ({leccionActual.titulo})
           </div>
 
           <div className="barra-progreso">
