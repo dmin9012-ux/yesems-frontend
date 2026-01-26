@@ -1,158 +1,212 @@
 /* ===============================
-   CONTENEDOR GENERAL
-=============================== */
+   CONTENEDOR Y LAYOUT
+================================ */
 
 .examen-contenedor {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 20px;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
 }
 
-.examen-contenedor h1 {
+.examen-header {
     text-align: center;
+    margin-bottom: 40px;
+}
+
+.examen-header h1 {
+    color: #0d47a1;
+    font-size: 2.5rem;
     margin-bottom: 10px;
 }
 
-.examen-instrucciones {
-    text-align: center;
-    color: #555;
-    margin-bottom: 30px;
+.examen-header p {
+    color: #666;
+    font-size: 1.1rem;
 }
 
 
 /* ===============================
-   PREGUNTAS
-=============================== */
+   TARJETAS DE PREGUNTAS
+================================ */
 
 .pregunta-card {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    border: 1px solid #eee;
+}
+
+.pregunta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .pregunta-card h3 {
-    margin-bottom: 15px;
-    font-size: 18px;
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.n-pregunta {
+    color: #1e88e5;
+    font-weight: 800;
+    margin-right: 10px;
 }
 
 
 /* ===============================
-   OPCIONES
-=============================== */
+   OPCIONES (LISTA)
+================================ */
 
-.opciones {
+.opciones-lista {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
-.opciones li {
+.opcion-item {
     margin-bottom: 12px;
+    border: 2px solid #f0f0f0;
+    border-radius: 10px;
+    transition: all 0.2s ease;
 }
 
-.opciones label {
+.opcion-item label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    padding: 15px;
     cursor: pointer;
-    background: #f7f7f7;
-    padding: 10px 14px;
-    border-radius: 8px;
-    transition: background 0.2s ease;
+    width: 100%;
 }
 
-.opciones label:hover {
-    background: #eaeaea;
+.opcion-item input[type="radio"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
-.opciones input[type="radio"] {
-    accent-color: #2563eb;
+.opcion-texto {
+    font-size: 1rem;
+    color: #444;
+}
+
+
+/* Estado seleccionada */
+
+.opcion-item.seleccionada {
+    border-color: #1e88e5;
+    background-color: #e3f2fd;
+}
+
+.opcion-item.seleccionada .opcion-texto {
+    color: #0d47a1;
+    font-weight: 600;
+}
+
+.opcion-item:hover:not(.seleccionada) {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+}
+
+
+/* ===============================
+   RESULTADOS
+================================ */
+
+.resultado-examen {
+    max-width: 600px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.resultado-header {
+    padding: 40px;
+    color: white;
+}
+
+.resultado-header.aprobado {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+}
+
+.resultado-header.reprobado {
+    background: linear-gradient(135deg, #c62828, #e53935);
+}
+
+.resultado-header h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.porcentaje {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 10px 0;
+}
+
+.resultado-acciones {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 
 /* ===============================
    BOTONES
-=============================== */
+================================ */
 
-.examen-acciones {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-}
-
-.btn-volver,
-.btn-enviar {
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 15px;
-    cursor: pointer;
+.btn-enviar,
+.btn-examen {
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
     border: none;
-    transition: background 0.2s ease, opacity 0.2s ease;
-}
-
-.btn-volver {
-    background: #e5e7eb;
-    color: #111827;
-}
-
-.btn-volver:hover {
-    background: #d1d5db;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-enviar {
-    background: #2563eb;
-    color: #ffffff;
+    background: #0d47a1;
+    color: white;
+    margin-top: 20px;
 }
 
 .btn-enviar:hover {
-    background: #1e40af;
+    background: #1565c0;
+    transform: translateY(-2px);
 }
 
-.btn-enviar:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.btn-examen.aprobado {
+    background: #1e88e5;
+    color: white;
 }
 
-
-/* ===============================
-   ESTADOS
-=============================== */
-
-.cargando {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 18px;
-}
-
-.examen-error {
-    max-width: 600px;
-    margin: 60px auto;
-    text-align: center;
-}
-
-.examen-error p {
-    color: #dc2626;
-    margin-bottom: 20px;
-    font-weight: bold;
+.btn-examen.reprobado {
+    background: #f4f4f4;
+    color: #333;
 }
 
 
 /* ===============================
    RESPONSIVE
-=============================== */
+================================ */
 
-@media (max-width: 768px) {
-    .examen-contenedor {
+@media (max-width: 600px) {
+    .examen-header h1 {
+        font-size: 1.8rem;
+    }
+    .pregunta-card {
         padding: 15px;
-    }
-    .examen-acciones {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .btn-volver,
-    .btn-enviar {
-        width: 100%;
     }
 }
