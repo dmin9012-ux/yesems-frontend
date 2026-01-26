@@ -26,11 +26,7 @@ const Perfil = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const {
-    progresoGlobal,
-    progresoCursos,
-    recargarProgreso,
-  } = useContext(ProgresoContext);
+  const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
   const [cursos, setCursos] = useState([]);
@@ -45,16 +41,28 @@ const Perfil = () => {
   useEffect(() => {
     const cargarTodo = async () => {
       try {
+        // Traer usuario
         const perfilRes = await apiYesems.get("/usuario/perfil/me");
         setUsuario(perfilRes.data.usuario);
 
+        // Traer cursos desde Firebase
         const snap = await getDocs(collection(db, "cursos"));
         const cursosFirebase = snap.docs.map((d) => ({
           id: d.id,
           ...d.data(),
         }));
 
-        setCursos(cursosFirebase);
+        // Hacer merge con backend (progreso)
+        const cursosCompletos = cursosFirebase.map((curso) => {
+          const backend = progresoCursos.find((c) => c.cursoId === curso.id) || {};
+          const totalLecciones = curso.niveles.reduce(
+            (acc, n) => acc + (n.lecciones?.length || 0),
+            0
+          );
+          return { ...curso, cursoId: curso.id, totalLecciones, ...backend };
+        });
+
+        setCursos(cursosCompletos);
       } catch (error) {
         console.error("Error cargando perfil:", error);
         logout();
@@ -65,7 +73,7 @@ const Perfil = () => {
     };
 
     cargarTodo();
-  }, [logout, navigate]);
+  }, [logout, navigate, progresoCursos]);
 
   /* ===============================
      🔄 RECARGAR PROGRESO AL ENTRAR
@@ -75,26 +83,12 @@ const Perfil = () => {
   }, [recargarProgreso]);
 
   /* ===============================
-     📊 CALCULAR PROGRESO (CORREGIDO)
+     📊 CALCULAR PROGRESO
   =============================== */
   const calcularProgreso = (curso) => {
-    // ✅ Fuente única de lecciones completadas
-    const completadas = progresoGlobal[curso.id] || [];
-
-    // total de lecciones del curso
-    const total = curso.niveles.reduce(
-      (acc, n) => acc + (n.lecciones?.length || 0),
-      0
-    );
-
-    const porcentaje = total
-      ? Math.round((completadas.length / total) * 100)
-      : 0;
-
-    // 🔹 info extra SOLO del backend
-    const progresoBackend = progresoCursos.find(
-      (pc) => pc.cursoId === curso.id
-    );
+    const completadas = curso.leccionesCompletadas || [];
+    const total = curso.totalLecciones || 0;
+    const porcentaje = total ? Math.round((completadas.length / total) * 100) : 0;
 
     return {
       porcentaje,
@@ -107,7 +101,7 @@ const Perfil = () => {
           ? "completado"
           : "en-progreso",
       completado: porcentaje === 100,
-      constanciaEmitida: progresoBackend?.constanciaEmitida || false,
+      constanciaEmitida: curso.constanciaEmitida || false,
     };
   };
 
@@ -237,7 +231,7 @@ const Perfil = () => {
                   <button
                     className="btn-constancia"
                     onClick={() =>
-                      descargarConstancia(curso.id, curso.nombre)
+                      descargarConstancia(curso.cursoId, curso.nombre)
                     }
                   >
                     <FileText size={16} /> Descargar constancia
@@ -245,7 +239,7 @@ const Perfil = () => {
                 ) : (
                   <button
                     className="btn-continuar"
-                    onClick={() => navigate(`/curso/${curso.id}`)}
+                    onClick={() => navigate(`/curso/${curso.cursoId}`)}
                   >
                     ▶ Continuar curso
                   </button>
