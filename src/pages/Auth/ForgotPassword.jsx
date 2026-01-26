@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Tu utilidad centralizada
+import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
+import { Mail, Send, ArrowLeft } from "lucide-react"; // Iconos consistentes
 import "./ForgotPasswordStyle.css";
 
 export default function ForgotPassword() {
@@ -18,7 +19,7 @@ export default function ForgotPassword() {
     try {
       const res = await apiYesems.post("/usuario/password/forgot", { email });
 
-      // ✅ Éxito: Notificamos con un Toast verde/azul
+      // ✅ Éxito
       notify("success", res.data.message || "Código enviado correctamente 📧");
 
       // ⏩ Redirección automática tras el éxito
@@ -28,7 +29,6 @@ export default function ForgotPassword() {
 
     } catch (error) {
       console.error(error);
-      // ❌ Error: Toast rojo
       const errorMsg = error.response?.data?.message || "Error al enviar el código. Intenta más tarde.";
       notify("error", errorMsg);
     } finally {
@@ -37,17 +37,19 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="forgot-container">
+    <div className="forgot-page">
       <div className="forgot-card">
-        <img src={logo} alt="yesems logo" className="forgot-logo" />
-
-        <h2 className="forgot-title">Recuperar contraseña</h2>
-        <p className="forgot-subtitle">
-          Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
-        </p>
+        <header className="forgot-header">
+          <img src={logo} alt="yesems logo" className="forgot-logo" />
+          <h2 className="forgot-title">Recuperar contraseña</h2>
+          <p className="forgot-subtitle">
+            Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
+          </p>
+        </header>
 
         <form onSubmit={handleSubmit} className="forgot-form">
-          <div className="input-group">
+          <div className="input-group-auth">
+            <Mail className="input-icon" size={20} />
             <input
               type="email"
               placeholder="Correo electrónico"
@@ -57,16 +59,27 @@ export default function ForgotPassword() {
             />
           </div>
 
-          <button type="submit" className="btn-forgot" disabled={loading}>
-            {loading ? "Enviando..." : "Enviar código"}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="forgot-actions">
+            <button type="submit" className="btn-forgot-submit" disabled={loading}>
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>Enviar código</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
-        <div className="forgot-footer">
-          <span className="link" onClick={() => navigate("/login")}>
-            ⬅ Volver al inicio de sesión
-          </span>
-        </div>
+        <footer className="forgot-footer">
+          <button className="link-back" onClick={() => navigate("/login")}>
+            <ArrowLeft size={16} />
+            <span>Volver al inicio de sesión</span>
+          </button>
+        </footer>
       </div>
     </div>
   );

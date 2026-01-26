@@ -1,7 +1,6 @@
-/* LoginStyle.css - Versión Mejorada con Identidad Visual */
-
-
-/* Fondo general */
+/* ===============================
+   FONDO Y LAYOUT GENERAL
+=============================== */
 
 .login-page {
     min-height: 100vh;
@@ -10,148 +9,190 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    font-family: 'Inter', sans-serif;
 }
 
 
-/* Card */
+/* ===============================
+   CARD DE LOGIN
+=============================== */
 
 .login-card {
     background: #ffffff;
     width: 100%;
     max-width: 420px;
     padding: 45px 35px;
-    border-radius: 24px;
-    /* Bordes más curvos para look moderno */
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 28px;
+    /* Bordes más curvos y modernos */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
     animation: fadeIn 0.6s ease-out;
 }
 
-
-/* Logo */
-
 .login-logo {
-    width: 140px;
-    margin-bottom: 10px;
+    width: 130px;
+    margin-bottom: 15px;
 }
-
-
-/* Textos */
 
 .login-title {
     margin: 10px 0 5px;
-    font-size: 28px;
-    font-weight: 800;
+    font-size: 30px;
+    font-weight: 900;
     color: #00003f;
-    /* Azul profundo */
+    letter-spacing: -1px;
 }
 
 .login-subtitle {
     font-size: 14px;
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 30px;
 }
 
 
-/* Formulario */
+/* ===============================
+   INPUTS CON ICONOS
+=============================== */
 
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
 }
 
-.input-group input {
+.input-group-auth {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-auth .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+}
+
+.input-group-auth input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 14px 16px 14px 45px;
+    /* Espacio para el icono izquierdo */
     border-radius: 12px;
-    border: 1.5px solid #e5e7eb;
+    border: 2px solid #e2e8f0;
     font-size: 15px;
+    background-color: #f8fafc;
     transition: all 0.3s ease;
 }
 
-.input-group input:focus {
+.input-group-auth input:focus {
     outline: none;
     border-color: #00003f;
-    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.1);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
 
 
-/* Botón Principal (Cambio a Amarillo para contraste) */
+/* Ojo de contraseña */
 
-.btn-login {
-    background: #fcb424;
-    /* Amarillo Ámbar */
-    color: #00003f;
-    /* Texto en azul para legibilidad */
-    border: none;
-    padding: 16px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 800;
+.password-eye {
+    position: absolute;
+    right: 14px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
-    transition: all 0.3s ease;
-    margin-top: 10px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
 }
 
-.btn-login:hover:not(:disabled) {
-    background: #e6a91e;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.4);
-}
-
-.btn-login:disabled {
-    background: #d1d5db;
-    color: #9ca3af;
-    cursor: not-allowed;
-    box-shadow: none;
+.password-eye:hover {
+    opacity: 1;
 }
 
 
-/* Footer y Links */
+/* ===============================
+   OPCIONES Y LINKS
+=============================== */
 
-.login-footer {
-    margin-top: 25px;
-    font-size: 14px;
-    color: #374151;
-    display: flex;
-    justify-content: center;
-    gap: 6px;
+.login-options {
+    text-align: right;
+    margin-top: -5px;
 }
 
-.link {
+.link-forgot,
+.link-register {
     color: #00003f;
-    /* Azul para links */
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.link:hover {
+.link-forgot:hover,
+.link-register:hover {
     color: #fcb424;
-    /* Cambio a amarillo al pasar el mouse */
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 
-/* PASSWORD CON OJO */
+/* ===============================
+   CONTENEDOR DEL BOTÓN (CENTRADO)
+=============================== */
 
-.password-eye {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
+.login-actions {
+    display: flex;
+    justify-content: center;
+    /* ESTO CENTRA EL BOTÓN */
+    width: 100%;
+    margin-top: 15px;
+}
+
+.btn-login-submit {
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+    border: none;
+    padding: 16px 40px;
+    /* Ancho cómodo pero centrado */
+    width: 80%;
+    /* No ocupa todo el ancho, se ve más elegante */
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
     cursor: pointer;
-    opacity: 0.6;
-    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.password-eye:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
+.btn-login-submit:hover:not(:disabled) {
+    background: #e6a91e;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+}
+
+.btn-login-submit:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* ===============================
+   FOOTER
+=============================== */
+
+.login-footer {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #64748b;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
 }
 
 

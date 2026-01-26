@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { notify } from "../../Util/toast"; // 👈 Importamos tu nueva utilidad
+import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
+import { LogIn, Mail, Lock } from "lucide-react"; // Iconos para mejorar la UI
 import "./LoginStyle.css";
 
 export default function Login() {
@@ -17,6 +18,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Verificación de entorno (opcional)
     console.log("API URL:", import.meta.env.VITE_API_URL);
   }, []);
 
@@ -64,15 +66,18 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <img src={logo} alt="yesems logo" className="login-logo" />
-
-        <h2 className="login-title">Bienvenido</h2>
-        <p className="login-subtitle">
-          Inicia sesión en <strong>YES EMS</strong>
-        </p>
+        <header className="login-header">
+          <img src={logo} alt="yesems logo" className="login-logo" />
+          <h2 className="login-title">Bienvenido</h2>
+          <p className="login-subtitle">
+            Inicia sesión en <strong>YES EMS</strong>
+          </p>
+        </header>
 
         <form onSubmit={handleLogin} className="login-form">
-          <div className="input-group">
+          {/* GRUPO EMAIL */}
+          <div className="input-group-auth">
+            <Mail className="input-icon" size={20} />
             <input
               type="email"
               placeholder="Correo electrónico"
@@ -82,7 +87,9 @@ export default function Login() {
             />
           </div>
 
-          <div className="input-group password-group">
+          {/* GRUPO PASSWORD */}
+          <div className="input-group-auth password-group">
+            <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Contraseña"
@@ -100,24 +107,34 @@ export default function Login() {
 
           <div className="login-options">
             <span
-              className="link"
+              className="link-forgot"
               onClick={() => navigate("/forgot-password")}
             >
               ¿Olvidaste tu contraseña?
             </span>
           </div>
 
-          <button type="submit" className="btn-login" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="login-actions">
+            <button type="submit" className="btn-login-submit" disabled={loading}>
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <LogIn size={18} />
+                  <span>Entrar</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
-        <div className="login-footer">
+        <footer className="login-footer">
           <span>¿No tienes cuenta?</span>
-          <span className="link" onClick={() => navigate("/register")}>
-            Regístrate
+          <span className="link-register" onClick={() => navigate("/register")}>
+            Regístrate aquí
           </span>
-        </div>
+        </footer>
       </div>
     </div>
   );

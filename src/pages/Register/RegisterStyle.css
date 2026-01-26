@@ -1,26 +1,189 @@
-/* RegisterStyle.css – Versión Consolidada */
+/* ===============================
+   FONDO Y LAYOUT (Consistente con Login)
+=============================== */
 
+.register-page,
 .register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* Gradiente radial para mayor profundidad */
     background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
     font-family: "Inter", "Segoe UI", sans-serif;
     padding: 20px;
 }
 
+
+/* ===============================
+   CARD DE REGISTRO
+=============================== */
+
 .register-card {
     background: #ffffff;
     padding: 45px 35px;
-    border-radius: 24px;
-    /* Bordes más modernos */
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 28px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.register-logo {
+    width: 130px;
+    margin-bottom: 15px;
+}
+
+.register-card h2 {
+    margin: 10px 0 5px;
+    color: #00003f;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+
+/* ===============================
+   INPUTS CON ICONOS
+=============================== */
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-group-auth {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-auth .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    z-index: 10;
+}
+
+.input-group-auth input {
+    width: 100%;
+    padding: 14px 16px 14px 45px;
+    /* Espacio para el icono */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    outline: none;
+    font-size: 15px;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.input-group-auth input:focus {
+    border-color: #00003f;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
+}
+
+
+/* Estilo especial para foco en contraseña (Opcional) */
+
+.password-group input:focus {
+    border-color: #fcb424;
+}
+
+
+/* ===============================
+   CONTENEDOR DEL BOTÓN (CENTRADO)
+=============================== */
+
+.register-actions {
+    display: flex;
+    justify-content: center;
+    /* ESTO CENTRA EL BOTÓN */
+    width: 100%;
+    margin-top: 15px;
+}
+
+.btn-register-submit {
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+    border: none;
+    padding: 16px 40px;
+    width: 85%;
+    /* Ancho estético, no total */
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-register-submit:hover:not(:disabled) {
+    background: #e6a91e;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+}
+
+.btn-register-submit:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* ===============================
+   ELEMENTOS ADICIONALES
+=============================== */
+
+.password-eye {
+    position: absolute;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.password-eye:hover {
+    opacity: 1;
+}
+
+.register-footer {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #64748b;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}
+
+.link-login {
+    color: #00003f;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.link-login:hover {
+    color: #fcb424;
+    text-decoration: underline;
 }
 
 @keyframes fadeIn {
@@ -32,121 +195,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.register-logo {
-    width: 140px;
-    margin-bottom: 10px;
-}
-
-.register-card h2 {
-    margin: 10px 0 5px;
-    color: #00003f;
-    font-size: 28px;
-    font-weight: 800;
-}
-
-.subtitle {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 30px;
-}
-
-
-/* Agrupación de inputs para consistencia */
-
-.register-card input {
-    width: 100%;
-    padding: 14px 16px;
-    margin: 8px 0;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 12px;
-    outline: none;
-    font-size: 15px;
-    transition: all 0.3s ease;
-}
-
-.register-card input:focus {
-    border-color: #00003f;
-    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.1);
-}
-
-
-/* El foco en amarillo para el campo de contraseña resalta la seguridad */
-
-.password-group input:focus {
-    border-color: #fcb424;
-    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.15);
-}
-
-.btn-register {
-    width: 100%;
-    padding: 16px;
-    margin-top: 20px;
-    background: #fcb424;
-    /* Amarillo Ámbar */
-    color: #00003f;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-register:hover:not(:disabled) {
-    background: #e6a91e;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(252, 180, 36, 0.4);
-}
-
-.btn-register:disabled {
-    background: #d1d5db;
-    color: #9ca3af;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-.footer-text {
-    margin-top: 25px;
-    font-size: 14px;
-    color: #374151;
-}
-
-.link {
-    color: #00003f;
-    cursor: pointer;
-    font-weight: 700;
-    transition: color 0.2s;
-}
-
-.link:hover {
-    color: #fcb424;
-    text-decoration: none;
-}
-
-
-/* PASSWORD CON OJO */
-
-.password-group {
-    position: relative;
-    width: 100%;
-}
-
-.password-eye {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: all 0.2s ease;
-}
-
-.password-eye:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
 }

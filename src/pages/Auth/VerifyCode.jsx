@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Tu utilidad centralizada
+import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
+import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; // Iconos consistentes
 import "./VerifyCodeStyle.css";
 
 export default function VerifyCode() {
@@ -33,7 +34,6 @@ export default function VerifyCode() {
 
       if (res.data.ok) {
         notify("success", "Código verificado correctamente ✅");
-        // ⏩ Código correcto → ir a reset password
         navigate("/reset-password", {
           state: { email, codigo },
         });
@@ -48,22 +48,24 @@ export default function VerifyCode() {
   };
 
   return (
-    <div className="verify-container">
+    <div className="verify-page">
       <div className="verify-card">
-        <img src={logo} alt="yesems logo" className="verify-logo" />
-
-        <h2 className="verify-title">Verificar código</h2>
-        <p className="subtitle">
-          Ingresa el código de 6 dígitos enviado a: <br />
-          <strong>{email}</strong>
-        </p>
+        <header className="verify-header">
+          <img src={logo} alt="yesems logo" className="verify-logo" />
+          <h2 className="verify-title">Verificar código</h2>
+          <p className="subtitle">
+            Ingresa el código de 6 dígitos enviado a: <br />
+            <strong className="email-highlight">{email}</strong>
+          </p>
+        </header>
 
         <form onSubmit={handleSubmit} className="verify-form">
-          <div className="input-group">
+          <div className="input-group-auth verify-input-box">
+            <KeyRound className="input-icon" size={20} />
             <input
               type="text"
               placeholder="000000"
-              className="input-codigo"
+              className="input-codigo-style"
               value={codigo}
               onChange={(e) =>
                 setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))
@@ -73,20 +75,31 @@ export default function VerifyCode() {
             />
           </div>
 
-          <button 
-            type="submit" 
-            className="btn-verify"
-            disabled={loading || codigo.length !== 6}
-          >
-            {loading ? "Verificando..." : "Verificar código"}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="verify-actions">
+            <button 
+              type="submit" 
+              className="btn-verify-submit"
+              disabled={loading || codigo.length !== 6}
+            >
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <CheckCircle2 size={18} />
+                  <span>Verificar código</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
-        <div className="verify-footer">
-          <span className="link" onClick={() => navigate("/forgot-password")}>
-            ⬅ Cambiar correo
-          </span>
-        </div>
+        <footer className="verify-footer">
+          <button className="link-back-verify" onClick={() => navigate("/forgot-password")}>
+            <ArrowLeft size={16} />
+            <span>Cambiar correo</span>
+          </button>
+        </footer>
       </div>
     </div>
   );

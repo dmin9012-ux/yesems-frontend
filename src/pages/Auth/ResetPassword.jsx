@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Tu utilidad de Toasts
+import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
+import { Lock, Save, ShieldCheck } from "lucide-react"; // Iconos consistentes
 import "./ResetPasswordStyle.css";
 
 export default function ResetPassword() {
@@ -62,16 +63,18 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="reset-container">
+    <div className="reset-page">
       <div className="reset-card">
-        <img src={logo} alt="YES EMS logo" className="reset-logo" />
-
-        <h2 className="reset-title">Restablecer contraseña</h2>
-        <p className="subtitle">Crea una nueva contraseña segura para tu cuenta</p>
+        <header className="reset-header">
+          <img src={logo} alt="YES EMS logo" className="reset-logo" />
+          <h2 className="reset-title">Restablecer contraseña</h2>
+          <p className="subtitle">Crea una nueva contraseña segura para tu cuenta</p>
+        </header>
 
         <form onSubmit={handleSubmit} className="reset-form">
           {/* 🔐 NUEVA CONTRASEÑA */}
-          <div className="password-group">
+          <div className="input-group-auth password-group">
+            <Lock className="input-icon" size={20} />
             <input
               type={showPasswordNueva ? "text" : "password"}
               placeholder="Nueva contraseña"
@@ -88,7 +91,8 @@ export default function ResetPassword() {
           </div>
 
           {/* 🔐 CONFIRMAR CONTRASEÑA */}
-          <div className="password-group">
+          <div className="input-group-auth password-group">
+            <ShieldCheck className="input-icon" size={20} />
             <input
               type={showConfirmarPassword ? "text" : "password"}
               placeholder="Confirmar contraseña"
@@ -104,9 +108,19 @@ export default function ResetPassword() {
             />
           </div>
 
-          <button type="submit" className="btn-reset" disabled={loading}>
-            {loading ? "Restableciendo..." : "Restablecer contraseña"}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="reset-actions">
+            <button type="submit" className="btn-reset-submit" disabled={loading}>
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <Save size={18} />
+                  <span>Restablecer contraseña</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

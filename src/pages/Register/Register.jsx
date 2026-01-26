@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { registerRequest } from "../../servicios/authService";
 import { useNavigate } from "react-router-dom";
-import { notify } from "../../Util/toast"; // 👈 Cambiamos toast por tu utilidad
+import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
+import { User, Mail, Lock, UserPlus } from "lucide-react"; // Iconos consistentes
 import "./RegisterStyle.css";
 
 export default function Register() {
@@ -34,10 +35,8 @@ export default function Register() {
         return;
       }
 
-      // Éxito: Notificamos al usuario
       notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
 
-      // Limpiar campos
       setNombre("");
       setEmail("");
       setPassword("");
@@ -52,15 +51,17 @@ export default function Register() {
   };
 
   return (
-    <div className="register-container">
+    <div className="register-page">
       <div className="register-card">
-        <img src={logo} alt="yesems logo" className="register-logo" />
+        <header className="register-header">
+          <img src={logo} alt="yesems logo" className="register-logo" />
+          <h2>Crear Cuenta</h2>
+          <p className="subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
+        </header>
 
-        <h2>Crear Cuenta</h2>
-        <p className="subtitle">Únete a la plataforma YES EMS</p>
-
-        <form onSubmit={handleRegister}>
-          <div className="input-group">
+        <form onSubmit={handleRegister} className="register-form">
+          <div className="input-group-auth">
+            <User className="input-icon" size={20} />
             <input
               type="text"
               placeholder="Nombre completo"
@@ -70,7 +71,8 @@ export default function Register() {
             />
           </div>
 
-          <div className="input-group">
+          <div className="input-group-auth">
+            <Mail className="input-icon" size={20} />
             <input
               type="email"
               placeholder="Correo electrónico"
@@ -80,7 +82,8 @@ export default function Register() {
             />
           </div>
 
-          <div className="password-group input-group">
+          <div className="input-group-auth password-group">
+            <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Contraseña (mínimo 6 caracteres)"
@@ -96,17 +99,27 @@ export default function Register() {
             />
           </div>
 
-          <button className="btn-register" type="submit" disabled={loading}>
-            {loading ? "Registrando..." : "Registrarme"}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="register-actions">
+            <button className="btn-register-submit" type="submit" disabled={loading}>
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <UserPlus size={18} />
+                  <span>Registrarme</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
-        <p className="footer-text">
-          ¿Ya tienes cuenta?{" "}
-          <span className="link" onClick={() => navigate("/login")}>
+        <footer className="register-footer">
+          <span>¿Ya tienes cuenta?</span>
+          <span className="link-login" onClick={() => navigate("/login")}>
             Inicia sesión
           </span>
-        </p>
+        </footer>
       </div>
     </div>
   );
