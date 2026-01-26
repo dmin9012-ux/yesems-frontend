@@ -17,10 +17,8 @@
 .sidebar {
     width: 320px;
     background: #ffffff;
-    /* Cambiado a blanco para que las letras negras resalten */
     border-right: 1px solid #e5e7eb;
     padding: 35px 20px;
-    /* MANTENER POSICIÓN FIJA */
     position: sticky;
     top: 0;
     height: 100vh;
@@ -34,9 +32,7 @@
     font-size: 1.4rem;
     font-weight: 800;
     color: #00003f;
-    /* Azul profundo */
     border-bottom: 2px solid #fcb424;
-    /* Línea Ámbar */
     padding-bottom: 15px;
     text-align: center;
 }
@@ -45,15 +41,11 @@
     margin-bottom: 30px;
 }
 
-
-/* Títulos de Nivel en Negro */
-
 .nivel-titulo {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: #000000;
-    /* LETRAS NEGRAS */
     font-size: 11px;
     margin-bottom: 15px;
     padding-left: 10px;
@@ -68,9 +60,6 @@
     margin-bottom: 6px;
 }
 
-
-/* TEXTO DE LECCIONES EN NEGRO */
-
 .nivel-sidebar li a,
 .leccion-link {
     display: flex;
@@ -78,7 +67,6 @@
     padding: 12px 15px;
     border-radius: 12px;
     color: #1a1a1a;
-    /* NEGRO CASI PURO */
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
@@ -92,28 +80,37 @@
 }
 
 
-/* Lección Actual (Resaltada en Azul con texto Ámbar) */
+/* ===============================
+    LECCIÓN ACTUAL (INDICADOR AMARILLO)
+=============================== */
 
 .nivel-sidebar li.active a,
 .leccion-item.active .leccion-link {
-    background: #00003f;
-    color: #fcb424;
-    /* Texto Ámbar sobre fondo azul */
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 63, 0.2);
+    background: #fcb424;
+    /* Fondo Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+    font-weight: 800;
+    box-shadow: 0 4px 15px rgba(252, 180, 36, 0.3);
 }
 
 
-/* Lección Completada (Texto en Verde) */
+/* Icono específico para la lección activa */
+
+.leccion-item.active .leccion-link .icon {
+    color: #00003f;
+}
+
+
+/* ===============================
+    LECCIÓN COMPLETADA Y BLOQUEADA
+=============================== */
 
 .nivel-sidebar li.completada a,
 .leccion-item.completada .leccion-link {
     color: #16a34a;
     font-weight: 700;
 }
-
-
-/* Lección Bloqueada */
 
 .leccion-bloqueada {
     display: flex;

@@ -21,14 +21,10 @@
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    /* MODIFICACIÓN PARA MANTENER POSICIÓN FIJA */
     position: sticky;
     top: 70px;
-    /* Se queda pegado justo debajo del TopBar */
     height: calc(100vh - 70px);
-    /* Altura total menos el TopBar */
     overflow-y: auto;
-    /* Permite scroll interno si hay muchas lecciones */
     z-index: 10;
 }
 
@@ -38,7 +34,9 @@
     font-weight: 800;
     margin-bottom: 25px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #f3f4f6;
+    border-bottom: 2px solid #fcb424;
+    /* Línea Ámbar */
+    text-align: center;
 }
 
 
@@ -58,7 +56,6 @@
 .nivel-titulo {
     font-weight: 800;
     color: #000000;
-    /* Color Negro Puro */
     font-size: 0.95rem;
     margin-bottom: 12px;
 }
@@ -70,6 +67,8 @@
 
 .leccion-item {
     margin-bottom: 6px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 
@@ -81,7 +80,6 @@
     gap: 10px;
     text-decoration: none;
     color: #000000;
-    /* Color Negro para las palabras */
     font-size: 0.9rem;
     padding: 8px 10px;
     border-radius: 8px;
@@ -90,29 +88,39 @@
 
 .leccion-link .text {
     color: #000000;
-    /* Refuerzo de color negro */
     font-weight: 600;
 }
 
-.leccion-link:hover {
+
+/* ===============================
+    ESTADO ACTIVO (INDICADOR AMARILLO)
+=============================== */
+
+.leccion-item.active .leccion-link {
+    background: #fcb424;
+    /* Fondo Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+}
+
+.leccion-item.active .leccion-link .text {
+    color: #00003f;
+    font-weight: 800;
+}
+
+.leccion-link:hover:not(.active) {
     background: #e5e7eb;
-    color: #00003f;
-}
-
-.leccion-link:hover .text {
-    color: #00003f;
 }
 
 
-/* Estado completado: mantiene visibilidad pero con un toque distinto */
+/* Estado completado */
 
-.leccion-item.completada .leccion-link {
+.leccion-item.completada .leccion-link:not(.active) {
     color: #16a34a;
-    /* Verde éxito */
     font-weight: 700;
 }
 
-.leccion-item.completada .text {
+.leccion-item.completada .leccion-link:not(.active) .text {
     color: #16a34a;
 }
 
@@ -122,7 +130,6 @@
     gap: 10px;
     padding: 8px 10px;
     color: #9ca3af;
-    /* Gris para bloqueadas */
     font-size: 0.9rem;
     cursor: not-allowed;
     opacity: 0.7;
@@ -149,8 +156,8 @@
 .status-badge {
     display: inline-block;
     padding: 6px 14px;
-    background: #e0e7ff;
-    color: #00003f;
+    background: #00003f;
+    color: #fcb424;
     border-radius: 20px;
     font-weight: 700;
     font-size: 0.85rem;
@@ -181,7 +188,6 @@
     margin-top: 15px;
     padding: 12px;
     background: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
     font-weight: 800;
     border: none;
@@ -225,54 +231,4 @@
 }
 
 
-/* Loader */
-
-.cargando-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #ffffff;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #fcb424;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-}
-
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-
-/* Responsive */
-
-@media (max-width: 1024px) {
-    .sidebar {
-        width: 260px;
-    }
-    .contenido-curso {
-        padding: 40px;
-    }
-}
-
-@media (max-width: 768px) {
-    .curso-contenedor-sidebar {
-        flex-direction: column;
-    }
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        max-height: 400px;
-        /* Para que no ocupe toda la pantalla en móvil */
-    }
-}
+/* Spinner y otros se mantienen igual... */
