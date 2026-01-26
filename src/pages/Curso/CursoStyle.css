@@ -5,11 +5,13 @@
     min-height: 100vh;
     background: #f8f9fa;
     font-family: 'Inter', sans-serif;
+    padding-top: 70px;
+    /* Ajuste para el TopBar */
 }
 
 
 /* ===============================
-   ⬅️ SIDEBAR DEL CURSO
+    ⬅️ SIDEBAR DEL CURSO (FIJO)
 =============================== */
 
 .sidebar {
@@ -19,10 +21,15 @@
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    /* MODIFICACIÓN PARA MANTENER POSICIÓN FIJA */
     position: sticky;
-    top: 0;
+    top: 70px;
+    /* Se queda pegado justo debajo del TopBar */
+    height: calc(100vh - 70px);
+    /* Altura total menos el TopBar */
     overflow-y: auto;
+    /* Permite scroll interno si hay muchas lecciones */
+    z-index: 10;
 }
 
 .sidebar h3 {
@@ -45,9 +52,13 @@
     border: 1px solid #f0f0f0;
 }
 
+
+/* TITULO DE NIVEL EN NEGRO */
+
 .nivel-titulo {
     font-weight: 800;
-    color: #00003f;
+    color: #000000;
+    /* Color Negro Puro */
     font-size: 0.95rem;
     margin-bottom: 12px;
 }
@@ -61,16 +72,26 @@
     margin-bottom: 6px;
 }
 
+
+/* TEXTO DE LECCIONES EN NEGRO */
+
 .leccion-link {
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
-    color: #4b5563;
+    color: #000000;
+    /* Color Negro para las palabras */
     font-size: 0.9rem;
     padding: 8px 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
+}
+
+.leccion-link .text {
+    color: #000000;
+    /* Refuerzo de color negro */
+    font-weight: 600;
 }
 
 .leccion-link:hover {
@@ -78,9 +99,21 @@
     color: #00003f;
 }
 
+.leccion-link:hover .text {
+    color: #00003f;
+}
+
+
+/* Estado completado: mantiene visibilidad pero con un toque distinto */
+
 .leccion-item.completada .leccion-link {
     color: #16a34a;
+    /* Verde éxito */
     font-weight: 700;
+}
+
+.leccion-item.completada .text {
+    color: #16a34a;
 }
 
 .leccion-bloqueada {
@@ -89,13 +122,15 @@
     gap: 10px;
     padding: 8px 10px;
     color: #9ca3af;
+    /* Gris para bloqueadas */
     font-size: 0.9rem;
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
 
 /* ===============================
-   📦 CONTENIDO PRINCIPAL
+    📦 CONTENIDO PRINCIPAL
 =============================== */
 
 .contenido-curso {
@@ -138,7 +173,7 @@
 
 
 /* ===============================
-   🔘 BOTONES Y ESTADOS
+    🔘 BOTONES Y ESTADOS
 =============================== */
 
 .btn-examen-sidebar {
@@ -173,8 +208,7 @@
 
 .btn-regresar-sidebar {
     width: 100%;
-    margin-top: auto;
-    /* Empuja al final del sidebar */
+    margin-top: 20px;
     padding: 12px;
     background: #f3f4f6;
     color: #4b5563;
@@ -238,5 +272,7 @@
         width: 100%;
         height: auto;
         position: static;
+        max-height: 400px;
+        /* Para que no ocupe toda la pantalla en móvil */
     }
 }

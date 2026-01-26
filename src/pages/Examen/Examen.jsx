@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck } from "lucide-react";
+import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck, Send } from "lucide-react";
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
 import { enviarExamenNivel, puedeAccederNivel } from "../../servicios/examenService";
 import { ProgresoContext } from "../../context/ProgresoContext";
+import { notify } from "../../Util/toast"; // 👈 Importamos tu utilidad
 
 import "./ExamenStyle.css";
 
@@ -27,7 +28,7 @@ export default function Examen() {
   const { recargarProgreso, actualizarNivelesAprobados } = useContext(ProgresoContext);
 
   const [examen, setExamen] = useState({ preguntas: [] });
-  const [respuestas, setRespuestas] = useState({}); // <--- Este es el que limpiaremos
+  const [respuestas, setRespuestas] = useState({}); 
   const [resultado, setResultado] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
@@ -40,8 +41,6 @@ export default function Examen() {
       setError("");
       setBloqueado(false);
       setResultado(null);
-      
-      // ✅ LA SOLUCIÓN: Limpiamos las respuestas al cargar o reintentar
       setRespuestas({}); 
 
       const acceso = await puedeAccederNivel({ cursoId, nivel: nivelNumero });
@@ -60,6 +59,7 @@ export default function Examen() {
       setExamen({ ...res.data, preguntas: shuffleArray(res.data.preguntas) });
     } catch (err) {
       setError("Error al conectar con el servidor.");
+      notify("error", "Error al cargar la evaluación.");
     } finally {
       setCargando(false);
     }
@@ -79,8 +79,9 @@ export default function Examen() {
       respuesta: respuestas[p.id] 
     }));
 
+    // ❌ Cambio de alert a notify.warning
     if (respuestasArray.some((r) => r.respuesta === undefined)) {
-      alert("❗ Responde todas las preguntas antes de finalizar.");
+      notify("warning", "Por favor, responde todas las preguntas antes de finalizar.");
       return;
     }
 
@@ -89,14 +90,20 @@ export default function Examen() {
       const res = await enviarExamenNivel({ cursoId, nivel: nivelNumero, respuestas: respuestasArray });
 
       if (res.aprobado) {
+        // ✅ Éxito profesional
+        notify("success", `¡Excelente! Has aprobado con ${res.porcentaje}%`);
         actualizarNivelesAprobados(cursoId, nivelNumero);
+      } else {
+        // ❌ Error suave (intentar de nuevo)
+        notify("error", `Puntaje insuficiente (${res.porcentaje}%). ¡Sigue intentándolo!`);
       }
       
       await recargarProgreso();
       setResultado(res);
 
     } catch (err) {
-      alert("Error al enviar el examen.");
+      // ❌ Error de servidor
+      notify("error", "Error crítico al procesar el examen.");
     } finally {
       setEnviando(false);
     }
@@ -190,7 +197,17 @@ export default function Examen() {
             onClick={enviarExamen} 
             disabled={enviando}
           >
-            {enviando ? "Enviando respuestas..." : "Finalizar Evaluación"}
+            {enviando ? (
+                <div className="loader-container">
+                    <div className="spinner-mini"></div>
+                    <span>Procesando...</span>
+                </div>
+            ) : (
+                <>
+                    <Send size={18} />
+                    <span>Finalizar Evaluación</span>
+                </>
+            )}
           </button>
         </footer>
       </div>
