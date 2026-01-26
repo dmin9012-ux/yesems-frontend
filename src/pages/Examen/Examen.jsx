@@ -79,9 +79,12 @@ export default function Examen() {
   const enviarExamen = async () => {
     if (!examen?.preguntas?.length) return;
 
-    const respuestasArray = examen.preguntas.map((p) => ({ preguntaId: p.id, respuesta: respuestas[p.id] }));
+    const respuestasArray = examen.preguntas.map((p) => ({
+      preguntaId: p.id,
+      respuesta: respuestas[p.id] ?? null
+    }));
 
-    if (respuestasArray.some((r) => r.respuesta === undefined)) {
+    if (respuestasArray.some((r) => r.respuesta === null)) {
       alert("❗ Debes responder todas las preguntas");
       return;
     }
@@ -117,7 +120,14 @@ export default function Examen() {
   /* ===============================
      Renderizado
   =============================== */
-  if (cargando) return <><TopBar /><p className="cargando">Cargando examen...</p></>;
+  if (cargando) return (
+    <>
+      <TopBar />
+      <div className="loader-contenedor">
+        <p>Cargando examen...</p>
+      </div>
+    </>
+  );
 
   if (bloqueado) return (
     <>
@@ -144,7 +154,16 @@ export default function Examen() {
             <button className="btn-examen aprobado" onClick={() => navigate(`/curso/${cursoId}`)}>Volver al curso</button>
           )
         ) : (
-          <button className="btn-examen reprobado" onClick={cargarExamen}>Reintentar examen</button>
+          <button
+            className="btn-examen reprobado"
+            onClick={() => {
+              setRespuestas({});
+              setResultado(null);
+              cargarExamen();
+            }}
+          >
+            Reintentar examen
+          </button>
         )}
       </div>
     </>
@@ -170,6 +189,7 @@ export default function Examen() {
                       name={pregunta.id}
                       checked={respuestas[pregunta.id] === i}
                       onChange={() => seleccionarRespuesta(pregunta.id, i)}
+                      aria-label={`Opción ${i + 1}: ${opcion}`}
                     />
                     {opcion}
                   </label>
