@@ -18,7 +18,7 @@
     width: 320px;
     background: #ffffff;
     border-right: 1px solid #e5e7eb;
-    padding: 35px 20px;
+    padding: 70px 20px;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -130,7 +130,7 @@
 .contenido-leccion,
 .contenido {
     flex: 1;
-    padding: 50px;
+    padding: 75px;
     max-width: 1000px;
     margin: 0 auto;
 }
