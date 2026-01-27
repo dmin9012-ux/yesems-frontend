@@ -10,12 +10,45 @@
 .reportes-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 70px 30px;
+    padding: 100px 30px 50px;
+    /* Ajustado el top para no chocar con TopBarAdmin */
     font-family: 'Inter', sans-serif;
 }
 
 .reportes-header {
     margin-bottom: 40px;
+}
+
+
+/* CONTENEDOR DEL BOTÓN DE REGRESO */
+
+.header-top-nav {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 25px;
+}
+
+.btn-back-admin {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    color: #00003f;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back-admin:hover {
+    background-color: #f1f5f9;
+    border-color: #00003f;
+    transform: translateX(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 63, 0.1);
 }
 
 .reportes-header h1 {
@@ -34,7 +67,7 @@
 
 /* ===============================
    TARJETAS KPI (STATS GRID)
-================================ */
+=============================== */
 
 .stats-grid {
     display: grid;
@@ -108,9 +141,6 @@
     text-align: left;
 }
 
-
-/* Gráfica de Barras Ancha */
-
 .chart-box.wide {
     grid-column: span 2;
 }
@@ -151,7 +181,7 @@
 
 /* ===============================
    RESPONSIVO
-================================ */
+=============================== */
 
 @media (max-width: 1024px) {
     .charts-main-grid {
@@ -164,7 +194,7 @@
 
 @media (max-width: 768px) {
     .reportes-container {
-        padding: 30px 20px;
+        padding: 80px 20px 30px;
     }
     .stat-value {
         font-size: 2rem;

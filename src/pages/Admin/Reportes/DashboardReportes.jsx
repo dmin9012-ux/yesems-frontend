@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarios } from "../../../servicios/usuarioAdminService";
 import { obtenerCursos } from "../../../servicios/cursosService";
 import { notify } from "../../../Util/toast";
+import { ArrowLeft } from "lucide-react"; 
 import {
   PieChart, Pie, Cell, Tooltip,
   BarChart, Bar, XAxis, YAxis, Legend, ResponsiveContainer
 } from "recharts";
 import "./ReportesStyle.css";
 
-// Paleta YES EMS: Azul Profundo, Ámbar, Verde Éxito y Gris Suave
 const COLORS = ["#00003f", "#fcb424", "#10b981", "#9ca3af"];
 
 export default function DashboardReportes() {
+  const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,6 @@ export default function DashboardReportes() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        // Carga paralela para optimizar tiempos
         const [usuariosData, cursosData] = await Promise.all([
           obtenerUsuarios(),
           obtenerCursos()
@@ -44,18 +45,16 @@ export default function DashboardReportes() {
     </div>
   );
 
-  /* ===============================
-     LÓGICA DE PROCESAMIENTO
-  =============================== */
+  /* LÓGICA DE PROCESAMIENTO ACTUALIZADA */
   const totalUsuarios = usuarios.length;
   const activos = usuarios.filter(u => u.estado === "activo").length;
   const inactivos = totalUsuarios - activos;
   const totalAdmins = usuarios.filter(u => u.rol === "admin").length;
-  const totalEstudiantes = totalUsuarios - totalAdmins;
+  const totalUsuariosGeneral = totalUsuarios - totalAdmins; // Antes totalEstudiantes
 
   const rolesData = [
-    { name: "Admins", value: totalAdmins },
-    { name: "Estudiantes", value: totalEstudiantes }
+    { name: "Administradores", value: totalAdmins },
+    { name: "Usuarios", value: totalUsuariosGeneral } // Cambio aquí
   ];
 
   const estadoData = [
@@ -78,11 +77,16 @@ export default function DashboardReportes() {
       
       <div className="reportes-container">
         <header className="reportes-header">
+          <div className="header-top-nav">
+             <button className="btn-back-admin" onClick={() => navigate("/admin")}>
+                <ArrowLeft size={18} />
+                <span>Volver al Panel</span>
+             </button>
+          </div>
           <h1>Análisis de Plataforma</h1>
-          <p>Métricas de rendimiento y participación estudiantil.</p>
+          <p>Métricas de rendimiento y participación de usuarios.</p> {/* Cambio aquí */}
         </header>
 
-        {/* INDICADORES CLAVE (KPIs) */}
         <div className="stats-grid">
           <div className="stat-card">
             <span className="stat-label">Total Usuarios</span>
@@ -103,7 +107,6 @@ export default function DashboardReportes() {
         </div>
 
         <div className="charts-main-grid">
-          {/* DISTRIBUCIÓN POR ROL */}
           <div className="chart-box">
             <h3>Distribución de Roles</h3>
             <ResponsiveContainer width="100%" height={250}>
@@ -124,7 +127,6 @@ export default function DashboardReportes() {
             </ResponsiveContainer>
           </div>
 
-          {/* ESTADO DE CUENTAS */}
           <div className="chart-box">
             <h3>Estado de Cuentas</h3>
             <ResponsiveContainer width="100%" height={250}>
@@ -145,7 +147,6 @@ export default function DashboardReportes() {
             </ResponsiveContainer>
           </div>
 
-          {/* RENDIMIENTO POR CURSO */}
           <div className="chart-box wide">
             <h3>Participación por Curso (Graduados vs Lecciones Vistas)</h3>
             <ResponsiveContainer width="100%" height={300}>
