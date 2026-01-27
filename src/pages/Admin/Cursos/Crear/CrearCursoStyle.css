@@ -221,3 +221,76 @@ textarea:focus {
         position: static;
     }
 }
+
+
+/* ===============================
+   ESTILO PARA MATERIALES (NUEVO)
+=============================== */
+
+.material-box-admin {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.material-box-admin:hover {
+    border-color: #00003f;
+    box-shadow: 0 5px 15px rgba(0, 0, 63, 0.05);
+}
+
+.material-box-admin .input-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon svg {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+.input-with-icon input {
+    padding-left: 38px;
+    /* Espacio para el icono */
+    font-size: 0.85rem;
+    background: #f8fafc;
+}
+
+.btn-remove-material {
+    margin-top: 12px;
+    background: transparent;
+    color: #ef4444;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 0;
+}
+
+.btn-remove-material:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+}
+
+
+/* Ajuste para inputs pequeños dentro de lecciones */
+
+.leccion-block input::placeholder {
+    color: #94a3b8;
+    font-style: italic;
+}

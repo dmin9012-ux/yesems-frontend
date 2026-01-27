@@ -6,7 +6,10 @@ import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { validarLeccion } from "../../servicios/progresoService";
 import { ProgresoContext } from "../../context/ProgresoContext";
-import { notify } from "../../Util/toast"; // 👈 Importamos tus Toasts
+import { notify } from "../../Util/toast"; 
+
+// 1. Importamos iconos para los materiales
+import { FileText, Download, ExternalLink, Paperclip } from "lucide-react";
 
 import "./LeccionStyle.css";
 
@@ -22,6 +25,9 @@ export default function Leccion() {
   const [esUltimaLeccion, setEsUltimaLeccion] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [cargando, setCargando] = useState(true);
+
+  // Estado para el modal o vista previa del PDF (Opcional)
+  const [previewPDF, setPreviewPDF] = useState(null);
 
   const {
     progresoGlobal,
@@ -65,7 +71,7 @@ export default function Leccion() {
           titulo: leccionData.titulo,
           videoURL: leccionData.videoURL || "",
           contenidoHTML: leccionData.contenidoHTML || "",
-          materiales: leccionData.materiales || [],
+          materiales: leccionData.materiales || [], // Aseguramos que existan
           nivelTitulo: nivelData.titulo,
         });
 
@@ -90,7 +96,7 @@ export default function Leccion() {
       const res = await validarLeccion({ cursoId: id, leccionId });
       if (res?.ok) {
         actualizarProgreso(id, leccionId);
-        notify("success", "Progreso guardado ✨"); // 👈 Toast de éxito
+        notify("success", "Progreso guardado ✨");
         return true;
       } else {
         notify("error", res.message || "No se pudo guardar el progreso");
@@ -140,6 +146,7 @@ export default function Leccion() {
     <>
       <TopBar />
       <div className="leccion-contenedor-sidebar">
+        {/* SIDEBAR (Sin cambios) */}
         <aside className="sidebar">
           <div className="sidebar-header">
             <h3>{curso.nombre}</h3>
@@ -188,6 +195,7 @@ export default function Leccion() {
           
           <h1 className="leccion-titulo">{leccionActual.titulo}</h1>
 
+          {/* VIDEO */}
           <div className="video-wrapper">
             {leccionActual.videoURL ? (
                <iframe 
@@ -199,9 +207,56 @@ export default function Leccion() {
             ) : <div className="no-video">El material audiovisual no está disponible.</div>}
           </div>
 
+          {/* CONTENIDO HTML */}
           {leccionActual.contenidoHTML && (
             <div className="contenido-html-rich" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
+
+          {/* --- NUEVA SECCIÓN: MATERIALES Y PDF EMBEBIDO --- */}
+          {leccionActual.materiales && leccionActual.materiales.length > 0 && (
+            <div className="seccion-recursos">
+              <h3 className="recursos-titulo"><Paperclip size={20} /> Recursos de la lección</h3>
+              <div className="grid-materiales">
+                {leccionActual.materiales.map((mat) => (
+                  <div key={mat.id} className="material-card-estudiante">
+                    <div className="material-info">
+                      <FileText size={24} className="icon-pdf" />
+                      <div>
+                        <p className="material-nombre">{mat.titulo || "Documento de apoyo"}</p>
+                        <p className="material-tipo">Archivo PDF</p>
+                      </div>
+                    </div>
+                    <div className="material-acciones">
+                      {mat.urlPreview && (
+                        <button 
+                          className="btn-preview" 
+                          onClick={() => setPreviewPDF(previewPDF === mat.urlPreview ? null : mat.urlPreview)}
+                        >
+                          <ExternalLink size={16} /> {previewPDF === mat.urlPreview ? "Cerrar Vista" : "Ver en línea"}
+                        </button>
+                      )}
+                      <a href={mat.urlDownload} target="_blank" rel="noopener noreferrer" className="btn-download">
+                        <Download size={16} /> Descargar
+                      </a>
+                    </div>
+                    
+                    {/* Visualización Embebida (Aparece al dar clic en Ver en línea) */}
+                    {previewPDF === mat.urlPreview && (
+                      <div className="pdf-embed-container">
+                        <iframe 
+                          src={mat.urlPreview} 
+                          width="100%" 
+                          height="500px" 
+                          title="Vista previa PDF"
+                        ></iframe>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* --- FIN SECCIÓN MATERIALES --- */}
 
           <div className="navegacion-footer">
             <button onClick={() => navigate(-1)} className="btn-secundario">

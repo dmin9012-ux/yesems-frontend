@@ -4,11 +4,11 @@ import { db } from "../../../../firebase/firebaseConfig";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import TopBarAdmin from "../../../../components/TopBarAdmin/TopBarAdmin";
 import { notify } from "../../../../Util/toast"; 
-import { Save, Plus, Trash2, ArrowLeft, Video, HelpCircle, FileText, Paperclip, Target, ClipboardList } from "lucide-react";
+import { Save, Plus, Trash2, ArrowLeft, Video, HelpCircle, FileText, Paperclip, Target, ClipboardList, Eye } from "lucide-react"; // Añadido Eye
 import "./CrearCursoStyle.css";
 
 /* ===============================
-    📦 ESTRUCTURA BASE (Tu Lógica)
+    📦 ESTRUCTURA BASE
 ================================ */
 const emptyCurso = () => ({
   id: "",
@@ -41,7 +41,7 @@ export default function CrearCurso() {
   const navigate = useNavigate();
 
   /* ===============================
-      🔧 HELPERS (Tu Lógica)
+      🔧 HELPERS
   =============================== */
   const updateDeep = (path, value) => {
     const copy = JSON.parse(JSON.stringify(curso));
@@ -65,9 +65,6 @@ export default function CrearCurso() {
 
   const generarIdLeccion = (ni, li) => `${curso.id}-n${ni + 1}-l${li + 1}`;
 
-  /* ===============================
-      📚 NIVELES / LECCIONES
-  =============================== */
   const addNivel = () =>
     setCurso((prev) => ({
       ...prev,
@@ -114,9 +111,6 @@ export default function CrearCurso() {
     setCurso(copy);
   };
 
-  /* ===============================
-      💾 GUARDAR CURSO
-  =============================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!curso.id || !curso.nombre) {
@@ -229,20 +223,43 @@ export default function CrearCurso() {
                     <div className="materiales-section">
                       <h5><Paperclip size={14} /> Materiales PDF</h5>
                       {lec.materiales.map((mat, mi) => (
-                        <div key={mat.id} className="material-row">
-                          <input placeholder="Título PDF" value={mat.titulo} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.titulo`, e.target.value)} />
-                          <input placeholder="URL Descarga" value={mat.urlDownload} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlDownload`, e.target.value)} />
-                          <button type="button" className="btn-icon-remove" onClick={() => removeMaterial(ni, li, mi)}>❌</button>
+                        <div key={mat.id} className="material-box-admin">
+                          <input 
+                            placeholder="Título PDF (ej: Guía de Introducción)" 
+                            value={mat.titulo} 
+                            onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.titulo`, e.target.value)} 
+                          />
+                          <div className="input-grid-2">
+                            <div className="input-with-icon">
+                               <Eye size={14} />
+                               <input 
+                                 placeholder="URL Visualización (Embed)" 
+                                 value={mat.urlPreview} 
+                                 onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlPreview`, e.target.value)} 
+                               />
+                            </div>
+                            <div className="input-with-icon">
+                               <Paperclip size={14} />
+                               <input 
+                                 placeholder="URL Descarga Directa" 
+                                 value={mat.urlDownload} 
+                                 onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlDownload`, e.target.value)} 
+                               />
+                            </div>
+                          </div>
+                          <button type="button" className="btn-remove-material" onClick={() => removeMaterial(ni, li, mi)}>
+                             <Trash2 size={14} /> Eliminar Material
+                          </button>
                         </div>
                       ))}
-                      <button type="button" className="btn-add-sub" onClick={() => addMaterial(ni, li)}><Plus size={14} /> Material</button>
+                      <button type="button" className="btn-add-sub" onClick={() => addMaterial(ni, li)}><Plus size={14} /> Añadir Material</button>
                     </div>
                   </div>
                 ))}
                 <button type="button" className="btn-add-leccion-master" onClick={() => addLeccion(ni)}><Plus size={18} /> Nueva Lección</button>
               </div>
 
-              {/* PREGUNTAS */}
+              {/* EXAMEN */}
               <div className="examen-section">
                 <h4><ClipboardList size={18} /> Preguntas del Examen</h4>
                 {nivel.preguntas?.map((preg, pi) => (

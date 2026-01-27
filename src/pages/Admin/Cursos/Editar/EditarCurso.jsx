@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../../../../firebase/firebaseConfig";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import TopBarAdmin from "../../../../components/TopBarAdmin/TopBarAdmin";
-import { notify } from "../../../../Util/toast"; // Integración de notificaciones
-import { Save, ArrowLeft, Plus, Trash2, FileText, Video, HelpCircle, Paperclip } from "lucide-react";
+import { notify } from "../../../../Util/toast";
+import { Save, ArrowLeft, Plus, Trash2, FileText, Video, HelpCircle, Paperclip, Eye } from "lucide-react"; // Añadido Eye
 import "./EditarCursoStyle.css";
 
 export default function EditarCurso() {
@@ -13,9 +13,6 @@ export default function EditarCurso() {
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* ===============================
-      🔄 CARGAR CURSO (Tu Lógica)
-  =============================== */
   useEffect(() => {
     const load = async () => {
       const ref = doc(db, "cursos", id);
@@ -34,9 +31,6 @@ export default function EditarCurso() {
     load();
   }, [id, navigate]);
 
-  /* ===============================
-      🔧 HELPERS (Tu Lógica)
-  =============================== */
   const updateDeep = (path, value) => {
     const copy = JSON.parse(JSON.stringify(curso));
     const parts = path.split(".");
@@ -58,9 +52,6 @@ export default function EditarCurso() {
     setCurso({ ...curso, [field]: copy });
   };
 
-  /* ===============================
-      📚 NIVELES / LECCIONES
-  =============================== */
   const addNivel = () =>
     setCurso((prev) => ({
       ...prev,
@@ -97,16 +88,13 @@ export default function EditarCurso() {
     setCurso(copy);
   };
 
-  /* ===============================
-      📎 MATERIALES
-  =============================== */
   const addMaterial = (ni, li) => {
     const copy = JSON.parse(JSON.stringify(curso));
     copy.niveles[ni].lecciones[li].materiales.push({
       id: crypto.randomUUID(),
       titulo: "",
       tipo: "pdf",
-      urlPreview: "",
+      urlPreview: "", // Aseguramos que el campo exista al añadir
       urlDownload: ""
     });
     setCurso(copy);
@@ -118,9 +106,6 @@ export default function EditarCurso() {
     setCurso(copy);
   };
 
-  /* ===============================
-      ❓ PREGUNTAS
-  =============================== */
   const addPregunta = (ni) => {
     const copy = JSON.parse(JSON.stringify(curso));
     copy.niveles[ni].preguntas.push({
@@ -138,9 +123,6 @@ export default function EditarCurso() {
     setCurso(copy);
   };
 
-  /* ===============================
-      💾 GUARDAR
-  =============================== */
   const handleSave = async () => {
     try {
       await setDoc(doc(db, "cursos", id), {
@@ -229,14 +211,37 @@ export default function EditarCurso() {
                   <input placeholder="URL del Video" value={lec.videoURL} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.videoURL`, e.target.value)} />
                   <textarea placeholder="Contenido HTML o Descripción" value={lec.contenidoHTML} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.contenidoHTML`, e.target.value)} />
 
-                  {/* MATERIALES */}
+                  {/* MATERIALES ACTUALIZADO */}
                   <div className="materiales-section">
-                    <h5><Paperclip size={14} /> Materiales Descargables</h5>
+                    <h5><Paperclip size={14} /> Materiales PDF</h5>
                     {lec.materiales.map((mat, mi) => (
-                      <div key={mat.id} className="material-row">
-                        <input placeholder="Nombre del PDF" value={mat.titulo} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.titulo`, e.target.value)} />
-                        <input placeholder="URL Descarga" value={mat.urlDownload} onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlDownload`, e.target.value)} />
-                        <button className="btn-icon-remove" onClick={() => removeMaterial(ni, li, mi)}><Trash2 size={14} /></button>
+                      <div key={mat.id} className="material-box-admin">
+                        <input 
+                          placeholder="Nombre del PDF" 
+                          value={mat.titulo} 
+                          onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.titulo`, e.target.value)} 
+                        />
+                        <div className="input-grid-2">
+                          <div className="input-with-icon">
+                            <Eye size={14} />
+                            <input 
+                              placeholder="URL Visualización (Embed)" 
+                              value={mat.urlPreview || ""} 
+                              onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlPreview`, e.target.value)} 
+                            />
+                          </div>
+                          <div className="input-with-icon">
+                            <Paperclip size={14} />
+                            <input 
+                              placeholder="URL Descarga Directa" 
+                              value={mat.urlDownload} 
+                              onChange={(e) => updateDeep(`niveles.${ni}.lecciones.${li}.materiales.${mi}.urlDownload`, e.target.value)} 
+                            />
+                          </div>
+                        </div>
+                        <button type="button" className="btn-remove-material" onClick={() => removeMaterial(ni, li, mi)}>
+                          <Trash2 size={14} /> Eliminar Material
+                        </button>
                       </div>
                     ))}
                     <button className="btn-add-sub" onClick={() => addMaterial(ni, li)}><Plus size={14} /> Material</button>

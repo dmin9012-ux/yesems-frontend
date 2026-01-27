@@ -235,3 +235,160 @@
         border-bottom: 1px solid #e5e7eb;
     }
 }
+
+
+/* ===============================
+    SECCIÓN DE RECURSOS (PDF)
+=============================== */
+
+.seccion-recursos {
+    margin-top: 40px;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
+}
+
+.recursos-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #00003f;
+    margin-bottom: 25px;
+}
+
+.grid-materiales {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.material-card-estudiante {
+    border: 1.5px solid #f1f5f9;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 18px;
+    transition: all 0.3s ease;
+}
+
+.material-card-estudiante:hover {
+    border-color: #fcb424;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.material-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.icon-pdf {
+    color: #ef4444;
+    /* Rojo PDF */
+    background: white;
+    padding: 8px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.material-nombre {
+    font-weight: 800;
+    color: #00003f;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.material-tipo {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+/* BOTONES DE ACCIÓN */
+
+.material-acciones {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-preview,
+.btn-download {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-preview {
+    background: #00003f;
+    color: white;
+}
+
+.btn-preview:hover {
+    background: #000066;
+    box-shadow: 0 4px 12px rgba(0, 0, 63, 0.2);
+}
+
+.btn-download {
+    background: #fcb424;
+    color: #00003f;
+}
+
+.btn-download:hover {
+    background: #e6a91e;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
+}
+
+
+/* CONTENEDOR DE VISUALIZACIÓN PDF */
+
+.pdf-embed-container {
+    margin-top: 20px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid #00003f;
+    background: #000;
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 800px;
+    }
+}
+
+.pdf-embed-container iframe {
+    display: block;
+    background: white;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 600px) {
+    .material-acciones {
+        flex-direction: column;
+    }
+    .btn-preview,
+    .btn-download {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -308,3 +308,89 @@ button[class*="remove"]:hover {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ===============================
+    ESTILOS PARA MATERIALES (PRO)
+   =============================== */
+
+.material-box-admin {
+    background: #ffffff;
+    /* Fondo blanco para resaltar dentro del verde suave */
+    border: 1.5px solid #dcfce7;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin-top: 15px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.material-box-admin:hover {
+    border-color: var(--yes-blue);
+    box-shadow: var(--shadow-md);
+}
+
+.material-box-admin .input-grid-2 {
+    margin-top: 15px;
+    gap: 15px;
+}
+
+
+/* Contenedor para Input con Icono */
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon svg {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.input-with-icon input {
+    padding-left: 42px;
+    /* Espacio para el icono de Lucide */
+    background: #fdfdfd;
+    font-size: 14px;
+}
+
+
+/* Botón eliminar material estilizado */
+
+.btn-remove-material {
+    margin-top: 12px;
+    background: transparent !important;
+    color: #ef4444 !important;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 5px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-remove-material:hover {
+    color: #b91c1c !important;
+    text-decoration: underline;
+}
+
+
+/* Ajuste para que los materiales no se vean apretados en la lección */
+
+.materiales-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--border);
+}
+
+.materiales-section h5 {
+    color: var(--yes-blue);
+    font-weight: 800;
+    margin-bottom: 10px;
+}
