@@ -104,7 +104,7 @@ export default function EditarUsuario() {
               <div className="input-group-admin">
                 <label>Rol de Acceso</label>
                 <select name="rol" value={usuario.rol} onChange={handleChange}>
-                  <option value="usuario">Estudiante</option>
+                  <option value="usuario">Usuario</option>
                   <option value="admin">Administrador</option>
                 </select>
               </div>
