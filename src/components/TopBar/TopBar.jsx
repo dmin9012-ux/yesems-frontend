@@ -27,7 +27,7 @@ const TopBar = () => {
           <span className="logo-user-text">YESEMS</span>
           <span className="user-role-badge">
             <GraduationCap size={12} />
-            ESTUDIANTE
+            USUARIO
           </span>
         </div>
       </div>
