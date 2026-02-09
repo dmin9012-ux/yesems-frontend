@@ -1,7 +1,3 @@
-/* ===================================================
-   MENU - ESTILOS OPTIMIZADOS
-   =================================================== */
-
 .menu-section {
     width: 100%;
     max-width: 1200px;
@@ -24,17 +20,11 @@
     font-size: 1.1rem;
 }
 
-
-/* GRID */
-
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
 }
-
-
-/* CARDS */
 
 .course-card {
     background: #ffffff;
@@ -49,12 +39,9 @@
 
 .course-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 63, 0.1), 0 10px 10px -5px rgba(0, 0, 63, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 63, 0.1);
     border-color: #fcb424;
 }
-
-
-/* IMAGEN */
 
 .course-card-image {
     width: 100%;
@@ -69,17 +56,6 @@
     object-fit: cover;
 }
 
-.course-image-placeholder {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #cbd5e1;
-}
-
-
-/* BADGE */
-
 .course-status-badge {
     position: absolute;
     top: 12px;
@@ -93,11 +69,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
 }
-
-
-/* CUERPO */
 
 .course-card-body {
     padding: 20px;
@@ -111,24 +83,18 @@
     font-weight: 800;
     color: #00003f;
     margin-bottom: 10px;
-    line-height: 1.3;
 }
 
 .course-card-info {
     font-size: 0.95rem;
     color: #64748b;
-    line-height: 1.5;
     margin-bottom: 20px;
     flex-grow: 1;
     display: -webkit-box;
     -webkit-line-clamp: 3;
-    /* Limita a 3 líneas */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
-
-/* BOTÓN ACCIÓN */
 
 .course-action-btn {
     width: 100%;
@@ -142,48 +108,37 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.course-card:hover .course-action-btn {
-    background: #00003f;
-    color: white;
 }
 
 
-/* ESTADO COMPLETADO */
-
-.status-completed {
-    border-left: 5px solid #10b981;
-}
-
-
-/* EMPTY STATE */
-
-.menu-empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: #64748b;
-}
-
-.empty-icon-wrapper {
-    margin-bottom: 20px;
-    color: #cbd5e1;
-}
-
-
-/* RESPONSIVO */
+/* --- ESTILOS MÓVIL: SCROLL HORIZONTAL --- */
 
 @media (max-width: 768px) {
-    .menu-section-title {
-        font-size: 1.6rem;
-    }
     .menu-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        display: flex !important;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 16px;
+        padding: 10px 10px 30px 10px;
+        margin: 0 -10px;
+        -webkit-overflow-scrolling: touch;
     }
-    .course-card:hover {
-        transform: none;
-        /* Evita saltos visuales en touch */
+    .menu-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .course-card {
+        min-width: 285px;
+        max-width: 285px;
+        scroll-snap-align: center;
+        flex-shrink: 0;
+        transform: none !important;
+        /* Evita saltos en móvil */
+    }
+    .menu-section-title {
+        font-size: 1.5rem;
+    }
+    .menu-section-subtitle {
+        font-size: 0.95rem;
     }
 }

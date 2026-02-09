@@ -1,17 +1,11 @@
-/* ===============================
-   CONTENEDOR BASE
-   =============================== */
-
 .principal-container {
     min-height: 100vh;
     background-color: #f1f5f9;
-    /* Color de fondo más suave para lectura */
     font-family: "Inter", sans-serif;
 }
 
 .principal-content {
     padding-top: 100px;
-    /* Espacio para TopBar Desktop */
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -19,11 +13,6 @@
     max-width: 1300px;
     margin: 0 auto;
 }
-
-
-/* ===============================
-   HEADER SECCIÓN
-   =============================== */
 
 .principal-header {
     text-align: center;
@@ -48,9 +37,7 @@
 }
 
 
-/* ===============================
-   LOADER
-   =============================== */
+/* LOADER */
 
 .loader-container {
     min-height: 40vh;
@@ -70,66 +57,31 @@
     margin-bottom: 20px;
 }
 
-.loader-text {
-    color: #00003f;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
 
-
-/* ===============================
-   ESTADO VACÍO (EMPTY STATE)
-   =============================== */
-
-.empty-state-card {
-    background: white;
-    padding: 60px 30px;
-    border-radius: 24px;
-    text-align: center;
-    color: #94a3b8;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    max-width: 400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.empty-state-card p {
-    color: #475569;
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-
-/* ===============================
-   RESPONSIVO
-   =============================== */
+/* MEDIA QUERIES MÓVIL */
 
 @media (max-width: 768px) {
     .principal-content {
-        padding-top: 85px;
-        /* Espacio para TopBar Móvil */
+        padding-top: 80px;
         padding-left: 15px;
         padding-right: 15px;
+        overflow-x: hidden;
+        /* Evita rebotes laterales extra */
     }
     .principal-title {
-        font-size: 2rem;
-        letter-spacing: -0.5px;
+        font-size: 1.8rem;
+        text-align: left;
     }
     .principal-subtitle {
-        font-size: 1rem;
-        padding: 0 10px;
+        font-size: 0.95rem;
+        text-align: left;
+        margin: 0;
     }
     .principal-header {
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+        padding: 0 5px;
     }
 }
-
-
-/* ANIMACIONES */
 
 @keyframes spin {
     to {

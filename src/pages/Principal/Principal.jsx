@@ -4,7 +4,7 @@ import TopBar from "../../components/TopBar/TopBar";
 import { obtenerCursos } from "../../servicios/cursosService";
 import { obtenerProgresoUsuario } from "../../servicios/progresoService";
 import { notify } from "../../Util/toast";
-import { BookOpen } from "lucide-react"; // Icono para el estado vacío
+import { BookOpen } from "lucide-react";
 import "./PrincipalStyle.css";
 
 const Principal = () => {
@@ -14,7 +14,6 @@ const Principal = () => {
 
   useEffect(() => {
     let mounted = true;
-
     const cargarDatos = async () => {
       try {
         const [cursosFirebase, progresoRes] = await Promise.all([
@@ -22,13 +21,8 @@ const Principal = () => {
           obtenerProgresoUsuario()
         ]);
 
-        if (!Array.isArray(cursosFirebase)) {
-          throw new Error("No se pudieron obtener los cursos.");
-        }
-
-        if (!progresoRes?.ok) {
-          throw new Error(progresoRes?.message || "Error al cargar progreso");
-        }
+        if (!Array.isArray(cursosFirebase)) throw new Error("No se pudieron obtener los cursos.");
+        if (!progresoRes?.ok) throw new Error(progresoRes?.message || "Error al cargar progreso");
 
         if (mounted) {
           setCursos(cursosFirebase);
@@ -41,7 +35,6 @@ const Principal = () => {
         if (mounted) setCargando(false);
       }
     };
-
     cargarDatos();
     return () => { mounted = false; };
   }, []);
@@ -49,7 +42,6 @@ const Principal = () => {
   return (
     <div className="principal-container">
       <TopBar />
-
       <main className="principal-content">
         <header className="principal-header">
           <h1 className="principal-title">Bienvenido a YES EMS</h1>
@@ -65,9 +57,9 @@ const Principal = () => {
           </div>
         ) : cursos.length > 0 ? (
           <div className="menu-wrapper">
-             <Menu
-                cursos={cursos}
-                cursosCompletados={cursosCompletados}
+             <Menu 
+                cursos={cursos} 
+                cursosCompletados={cursosCompletados} 
               />
           </div>
         ) : (
