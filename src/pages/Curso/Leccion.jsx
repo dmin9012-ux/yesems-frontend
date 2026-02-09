@@ -8,8 +8,7 @@ import { validarLeccion } from "../../servicios/progresoService";
 import { ProgresoContext } from "../../context/ProgresoContext";
 import { notify } from "../../Util/toast"; 
 
-// 1. Importamos iconos para los materiales
-import { FileText, Download, ExternalLink, Paperclip } from "lucide-react";
+import { FileText, Download, ExternalLink, Paperclip, Menu, X } from "lucide-react";
 
 import "./LeccionStyle.css";
 
@@ -25,8 +24,8 @@ export default function Leccion() {
   const [esUltimaLeccion, setEsUltimaLeccion] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [cargando, setCargando] = useState(true);
+  const [menuAbierto, setMenuAbierto] = useState(false); // 👈 Estado para móvil
 
-  // Estado para el modal o vista previa del PDF (Opcional)
   const [previewPDF, setPreviewPDF] = useState(null);
 
   const {
@@ -71,7 +70,7 @@ export default function Leccion() {
           titulo: leccionData.titulo,
           videoURL: leccionData.videoURL || "",
           contenidoHTML: leccionData.contenidoHTML || "",
-          materiales: leccionData.materiales || [], // Aseguramos que existan
+          materiales: leccionData.materiales || [], 
           nivelTitulo: nivelData.titulo,
         });
 
@@ -85,6 +84,7 @@ export default function Leccion() {
     };
 
     cargarLeccion();
+    setMenuAbierto(false); // Cerrar menú al cambiar de lección
   }, [id, nivelNum, numLeccion, leccionId, navigate]);
 
   const guardarProgresoReal = async () => {
@@ -113,7 +113,6 @@ export default function Leccion() {
   const navegarSiguiente = async () => {
     const ok = await guardarProgresoReal();
     if (!ok) return;
-
     const nivelData = curso.niveles.find((nv) => Number(nv.numero) === nivelNum);
     if (numLeccion >= (nivelData?.lecciones.length || 0)) {
       navigate(`/curso/${id}/nivel/${nivelNum}/examen`);
@@ -145,9 +144,14 @@ export default function Leccion() {
   return (
     <>
       <TopBar />
+      
+      {/* 🔘 Botón de menú para móvil */}
+      <button className="btn-movil-sidebar" onClick={() => setMenuAbierto(!menuAbierto)}>
+        {menuAbierto ? <X size={28} /> : <Menu size={28} />}
+      </button>
+
       <div className="leccion-contenedor-sidebar">
-        {/* SIDEBAR (Sin cambios) */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${menuAbierto ? "active" : ""}`}>
           <div className="sidebar-header">
             <h3>{curso.nombre}</h3>
           </div>
@@ -167,7 +171,7 @@ export default function Leccion() {
                       return (
                         <li key={lid} className={`leccion-item ${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
                           {desbloqueado ? (
-                            <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`} className="leccion-link">
+                            <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`} className="leccion-link" onClick={() => setMenuAbierto(false)}>
                               <span className="icon">{completada ? "✅" : "📖"}</span>
                               <span className="text">{lecc.titulo || `Lección ${idx + 1}`}</span>
                             </Link>
@@ -195,7 +199,6 @@ export default function Leccion() {
           
           <h1 className="leccion-titulo">{leccionActual.titulo}</h1>
 
-          {/* VIDEO */}
           <div className="video-wrapper">
             {leccionActual.videoURL ? (
                <iframe 
@@ -207,12 +210,10 @@ export default function Leccion() {
             ) : <div className="no-video">El material audiovisual no está disponible.</div>}
           </div>
 
-          {/* CONTENIDO HTML */}
           {leccionActual.contenidoHTML && (
             <div className="contenido-html-rich" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
 
-          {/* --- NUEVA SECCIÓN: MATERIALES Y PDF EMBEBIDO --- */}
           {leccionActual.materiales && leccionActual.materiales.length > 0 && (
             <div className="seccion-recursos">
               <h3 className="recursos-titulo"><Paperclip size={20} /> Recursos de la lección</h3>
@@ -240,15 +241,9 @@ export default function Leccion() {
                       </a>
                     </div>
                     
-                    {/* Visualización Embebida (Aparece al dar clic en Ver en línea) */}
                     {previewPDF === mat.urlPreview && (
                       <div className="pdf-embed-container">
-                        <iframe 
-                          src={mat.urlPreview} 
-                          width="100%" 
-                          height="500px" 
-                          title="Vista previa PDF"
-                        ></iframe>
+                        <iframe src={mat.urlPreview} width="100%" height="500px" title="Vista previa PDF"></iframe>
                       </div>
                     )}
                   </div>
@@ -256,7 +251,6 @@ export default function Leccion() {
               </div>
             </div>
           )}
-          {/* --- FIN SECCIÓN MATERIALES --- */}
 
           <div className="navegacion-footer">
             <button onClick={() => navigate(-1)} className="btn-secundario">

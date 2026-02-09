@@ -1,36 +1,23 @@
-/* ===============================
-   CONTENEDOR PRINCIPAL (ESTILO ADMIN)
-=============================== */
-
 .topbar-user-main {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* Fondo Azul Profundo YES EMS idéntico al Admin */
     background-color: #00003f;
     color: white;
-    padding: 10px 0;
     height: 70px;
-    /* Altura estándar */
-    font-family: 'Inter', 'Segoe UI', sans-serif;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 0 2rem;
 }
 
 
-/* ===============================
-   LOGO Y BADGE ESTUDIANTE
-=============================== */
+/* ================= LOGO ================= */
 
 .topbar-user-left {
-    margin-left: 2rem;
-}
-
-.user-logo-box {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -40,13 +27,11 @@
 .logo-user-text {
     font-size: 22px;
     font-weight: 900;
-    color: #ffffff;
     letter-spacing: -0.5px;
 }
 
 .user-role-badge {
     background: #fcb424;
-    /* Ámbar YES EMS igual que Admin */
     color: #00003f;
     font-size: 10px;
     font-weight: 900;
@@ -55,32 +40,25 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    letter-spacing: 0.5px;
 }
 
 
-/* ===============================
-   BOTONES DE NAVEGACIÓN
-=============================== */
+/* ================= MENÚ DESKTOP ================= */
 
 .topbar-user-right {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-right: 2rem;
+    gap: 8px;
 }
 
 .user-topbar-btn {
-    text-decoration: none;
     color: #cbd5e1;
-    /* Gris azulado suave del Admin */
     font-weight: 600;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-family: inherit;
     font-size: 0.9rem;
-    padding: 8px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
     transition: all 0.3s ease;
     display: flex;
@@ -88,60 +66,79 @@
     gap: 8px;
 }
 
-.user-topbar-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-
-/* Botón activo e indicador Admin */
-
-.user-topbar-btn.active,
-.admin-access-link:hover {
+.user-topbar-btn:hover,
+.user-topbar-btn.active {
     color: #fcb424;
     background: rgba(252, 180, 36, 0.1);
 }
 
-.divider-vertical-top {
-    width: 1px;
-    height: 24px;
-    background: rgba(255, 255, 255, 0.15);
-    margin: 0 5px;
-}
-
-
-/* ===============================
-   BOTÓN CERRAR SESIÓN (ROJO)
-=============================== */
-
 .logout-user-btn {
     background-color: #dc2626;
     color: white !important;
-    border-radius: 10px;
-}
-
-.logout-user-btn:hover {
-    background-color: #b91c1c;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 
-/* ===============================
-   RESPONSIVO
-=============================== */
+/* ================= BOTÓN HAMBURGUESA ================= */
+
+.topbar-mobile-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 768px) {
     .topbar-user-main {
-        padding: 10px 1rem;
+        height: 60px;
+        padding: 0 1rem;
     }
-    .user-topbar-btn span {
+    .logo-user-text {
+        font-size: 18px;
+    }
+    .badge-text,
+    .btn-text {
         display: none;
     }
-    .user-role-badge {
-        padding: 4px;
+    /* BOTÓN HAMBURGUESA */
+    .topbar-mobile-toggle {
+        display: block;
+        z-index: 1100;
     }
-    .user-role-badge span {
-        display: none;
+    /* MENÚ OCULTO */
+    .topbar-user-right {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background-color: #00003f;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 6px;
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+    }
+    /* MENÚ ABIERTO */
+    .topbar-user-right.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .user-topbar-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 14px;
+        border-radius: 12px;
+        font-size: 1rem;
+    }
+    .logout-user-btn {
+        justify-content: center;
     }
 }

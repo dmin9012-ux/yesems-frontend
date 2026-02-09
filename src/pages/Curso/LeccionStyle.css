@@ -1,7 +1,3 @@
-/* ===============================
-    CONTENEDOR GENERAL
-================================ */
-
 .leccion-contenedor-sidebar {
     display: flex;
     min-height: 100vh;
@@ -10,9 +6,7 @@
 }
 
 
-/* ===============================
-    SIDEBAR (MENÚ DE LECCIONES FIJO)
-=============================== */
+/* SIDEBAR MÓVIL Y ESCRITORIO */
 
 .sidebar {
     width: 320px;
@@ -23,372 +17,155 @@
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
     z-index: 100;
-}
-
-.sidebar h3 {
-    margin-bottom: 25px;
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #00003f;
-    border-bottom: 2px solid #fcb424;
-    padding-bottom: 15px;
-    text-align: center;
-}
-
-.nivel-sidebar {
-    margin-bottom: 30px;
-}
-
-.nivel-titulo {
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #000000;
-    font-size: 11px;
-    margin-bottom: 15px;
-    padding-left: 10px;
-}
-
-.nivel-sidebar ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.nivel-sidebar li {
-    margin-bottom: 6px;
-}
-
-.nivel-sidebar li a,
-.leccion-link {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border-radius: 12px;
-    color: #1a1a1a;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.nivel-sidebar li a:hover {
-    background: #f1f5f9;
-    color: #00003f;
-    transform: translateX(5px);
+    transition: transform 0.3s ease;
 }
 
 
-/* ===============================
-    LECCIÓN ACTUAL (INDICADOR AMARILLO)
-=============================== */
+/* BOTÓN HAMBURGUESA */
 
-.nivel-sidebar li.active a,
-.leccion-item.active .leccion-link {
-    background: #fcb424;
-    /* Fondo Amarillo Ámbar */
-    color: #00003f;
-    /* Texto Azul Profundo */
-    font-weight: 800;
-    box-shadow: 0 4px 15px rgba(252, 180, 36, 0.3);
+.btn-movil-sidebar {
+    display: none;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1001;
+    background: #00003f;
+    color: #fcb424;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
 
-/* Icono específico para la lección activa */
+/* CONTENIDO PRINCIPAL ADAPTABLE */
 
-.leccion-item.active .leccion-link .icon {
-    color: #00003f;
-}
-
-
-/* ===============================
-    LECCIÓN COMPLETADA Y BLOQUEADA
-=============================== */
-
-.nivel-sidebar li.completada a,
-.leccion-item.completada .leccion-link {
-    color: #16a34a;
-    font-weight: 700;
-}
-
-.leccion-bloqueada {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    color: #94a3b8;
-    font-size: 0.9rem;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-
-/* ===============================
-    CONTENIDO PRINCIPAL
-=============================== */
-
-.contenido-leccion,
-.contenido {
+.contenido-leccion {
     flex: 1;
-    padding: 75px;
-    max-width: 1000px;
+    padding: 60px 40px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .leccion-titulo {
-    font-size: 38px;
+    font-size: 2.2rem;
     font-weight: 900;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     color: #00003f;
-    line-height: 1.2;
 }
 
 
-/* VIDEO RESPONSIVE */
+/* VIDEO RESPONSIVE (Mantiene relación 16:9) */
 
-.video-wrapper,
-.video-container {
+.video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
     height: 0;
-    margin-bottom: 40px;
-    border-radius: 24px;
+    margin-bottom: 30px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.15);
     background: #000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.video-wrapper iframe,
-.video-container iframe {
+.video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    border: none;
 }
 
 
-/* CONTENIDO HTML */
+/* CONTENIDO HTML RICO */
 
-.contenido-html-rich,
-.contenido-html {
+.contenido-html-rich {
     background: white;
-    padding: 45px;
-    border-radius: 24px;
+    padding: 30px;
+    border-radius: 20px;
+    line-height: 1.7;
+    font-size: 1.05rem;
+    color: #334155;
     margin-bottom: 30px;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
-    line-height: 1.8;
-    color: #1e293b;
-    font-size: 17px;
+}
+
+.contenido-html-rich img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
 
-/* NAVEGACIÓN FOOTER */
+/* RECURSOS Y PDF */
 
-.navegacion-footer,
-.navegacion-lecciones {
+.seccion-recursos {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.pdf-embed-container {
+    margin-top: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 400px;
+    /* Reducido para móvil por defecto */
+}
+
+
+/* FOOTER NAVEGACIÓN */
+
+.navegacion-footer {
     display: flex;
     justify-content: space-between;
-    margin-top: 50px;
-    padding-top: 30px;
-    border-top: 2px solid #e5e7eb;
-}
-
-.btn-primario,
-.btn-secundario,
-.btn-nav {
-    padding: 16px 30px;
-    border-radius: 14px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.btn-primario {
-    background: #fcb424;
-    color: #00003f;
-    box-shadow: 0 4px 15px rgba(252, 180, 36, 0.3);
-}
-
-.btn-secundario {
-    background: #00003f;
-    color: white;
-}
-
-
-/* RESPONSIVO */
-
-@media (max-width: 1024px) {
-    .leccion-contenedor-sidebar {
-        flex-direction: column;
-    }
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid #e5e7eb;
-    }
+    gap: 15px;
+    margin-top: 40px;
 }
 
 
 /* ===============================
-    SECCIÓN DE RECURSOS (PDF)
+    📱 MEDIA QUERIES (MÓVIL)
 =============================== */
 
-.seccion-recursos {
-    margin-top: 40px;
-    background: #ffffff;
-    padding: 35px;
-    border-radius: 24px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
-}
-
-.recursos-titulo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #00003f;
-    margin-bottom: 25px;
-}
-
-.grid-materiales {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-}
-
-.material-card-estudiante {
-    border: 1.5px solid #f1f5f9;
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 18px;
-    transition: all 0.3s ease;
-}
-
-.material-card-estudiante:hover {
-    border-color: #fcb424;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-}
-
-.material-info {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
-}
-
-.icon-pdf {
-    color: #ef4444;
-    /* Rojo PDF */
-    background: white;
-    padding: 8px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.material-nombre {
-    font-weight: 800;
-    color: #00003f;
-    font-size: 1rem;
-    margin: 0;
-}
-
-.material-tipo {
-    font-size: 0.8rem;
-    color: #64748b;
-    font-weight: 600;
-    margin: 0;
-}
-
-
-/* BOTONES DE ACCIÓN */
-
-.material-acciones {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.btn-preview,
-.btn-download {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border-radius: 12px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-preview {
-    background: #00003f;
-    color: white;
-}
-
-.btn-preview:hover {
-    background: #000066;
-    box-shadow: 0 4px 12px rgba(0, 0, 63, 0.2);
-}
-
-.btn-download {
-    background: #fcb424;
-    color: #00003f;
-}
-
-.btn-download:hover {
-    background: #e6a91e;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
-}
-
-
-/* CONTENEDOR DE VISUALIZACIÓN PDF */
-
-.pdf-embed-container {
-    margin-top: 20px;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 2px solid #00003f;
-    background: #000;
-    animation: slideDown 0.4s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        max-height: 0;
+@media (max-width: 1024px) {
+    .btn-movil-sidebar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    to {
-        opacity: 1;
-        max-height: 800px;
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        width: 85%;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    .contenido-leccion {
+        padding: 80px 20px 100px 20px;
+    }
+    .leccion-titulo {
+        font-size: 1.7rem;
     }
 }
-
-.pdf-embed-container iframe {
-    display: block;
-    background: white;
-}
-
-
-/* RESPONSIVO */
 
 @media (max-width: 600px) {
-    .material-acciones {
-        flex-direction: column;
+    .navegacion-footer {
+        flex-direction: column-reverse;
     }
-    .btn-preview,
-    .btn-download {
+    .btn-primario,
+    .btn-secundario {
         width: 100%;
         justify-content: center;
+    }
+    .pdf-embed-container iframe {
+        height: 350px;
     }
 }

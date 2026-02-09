@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck, Send } from "lucide-react";
 
@@ -6,7 +6,7 @@ import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
 import { enviarExamenNivel, puedeAccederNivel } from "../../servicios/examenService";
 import { ProgresoContext } from "../../context/ProgresoContext";
-import { notify } from "../../Util/toast"; // 👈 Importamos tu utilidad
+import { notify } from "../../Util/toast"; 
 
 import "./ExamenStyle.css";
 
@@ -35,7 +35,7 @@ export default function Examen() {
   const [error, setError] = useState("");
   const [bloqueado, setBloqueado] = useState(false);
 
-  const cargarExamen = async () => {
+  const cargarExamen = useCallback(async () => {
     try {
       setCargando(true);
       setError("");
@@ -46,13 +46,13 @@ export default function Examen() {
       const acceso = await puedeAccederNivel({ cursoId, nivel: nivelNumero });
       if (!acceso?.ok || acceso.puedeAcceder !== true) {
         setBloqueado(true);
-        setError(acceso?.reason || "No tienes acceso a este nivel aún.");
+        setError(acceso?.reason || "Debes completar todas las lecciones antes de realizar la evaluación.");
         return;
       }
 
       const res = await apiYesems.get(`/examen/${cursoId}/nivel/${nivelNumero}`);
       if (!res?.data?.ok || !res.data.preguntas?.length) {
-        setError("No se encontraron preguntas.");
+        setError("Esta evaluación aún no tiene preguntas configuradas.");
         return;
       }
 
@@ -63,11 +63,11 @@ export default function Examen() {
     } finally {
       setCargando(false);
     }
-  };
+  }, [cursoId, nivelNumero]);
 
   useEffect(() => {
     cargarExamen();
-  }, [cursoId, nivelNumero]);
+  }, [cargarExamen]);
 
   const seleccionarRespuesta = (preguntaId, opcionIndex) => {
     setRespuestas((prev) => ({ ...prev, [preguntaId]: opcionIndex }));
@@ -79,9 +79,8 @@ export default function Examen() {
       respuesta: respuestas[p.id] 
     }));
 
-    // ❌ Cambio de alert a notify.warning
     if (respuestasArray.some((r) => r.respuesta === undefined)) {
-      notify("warning", "Por favor, responde todas las preguntas antes de finalizar.");
+      notify("warning", "Por favor, responde todas las preguntas para continuar.");
       return;
     }
 
@@ -90,20 +89,18 @@ export default function Examen() {
       const res = await enviarExamenNivel({ cursoId, nivel: nivelNumero, respuestas: respuestasArray });
 
       if (res.aprobado) {
-        // ✅ Éxito profesional
-        notify("success", `¡Excelente! Has aprobado con ${res.porcentaje}%`);
+        notify("success", `¡Felicidades! Aprobaste con ${res.porcentaje}%`);
         actualizarNivelesAprobados(cursoId, nivelNumero);
       } else {
-        // ❌ Error suave (intentar de nuevo)
-        notify("error", `Puntaje insuficiente (${res.porcentaje}%). ¡Sigue intentándolo!`);
+        notify("error", `Tu puntaje fue de ${res.porcentaje}%. ¡No te rindas!`);
       }
       
       await recargarProgreso();
       setResultado(res);
+      window.scrollTo(0, 0); // Volver arriba para ver el resultado
 
     } catch (err) {
-      // ❌ Error de servidor
-      notify("error", "Error crítico al procesar el examen.");
+      notify("error", "Hubo un problema al procesar tus respuestas.");
     } finally {
       setEnviando(false);
     }
@@ -112,41 +109,52 @@ export default function Examen() {
   if (cargando) return (
     <div className="examen-loading-full">
       <div className="spinner-yes"></div>
-      <p>Preparando tu evaluación...</p>
+      <p>Generando tu evaluación personalizada...</p>
     </div>
   );
 
-  if (bloqueado) return (
-    <div className="examen-screen-msg">
+  if (bloqueado || error) return (
+    <div className="examen-layout">
       <TopBar />
-      <div className="msg-card locked">
-        <AlertCircle size={60} />
-        <h2>Acceso restringido</h2>
-        <p>{error}</p>
-        <button className="btn-yes primary" onClick={() => navigate(`/curso/${cursoId}`)}>Volver al curso</button>
+      <div className="examen-content">
+        <div className="msg-card locked">
+          <AlertCircle size={64} className="icon-alert" />
+          <h2>Acceso Restringido</h2>
+          <p>{error || "No puedes acceder a este examen aún."}</p>
+          <button className="btn-finish-exam" onClick={() => navigate(`/curso/${cursoId}`)}>
+            Volver al Curso
+          </button>
+        </div>
       </div>
     </div>
   );
 
   if (resultado) return (
-    <div className="examen-screen-msg">
+    <div className="examen-layout">
       <TopBar />
-      <div className={`msg-card result ${resultado.aprobado ? "success" : "fail"}`}>
-        {resultado.aprobado ? <CheckCircle size={80} color="#10b981" /> : <XCircle size={80} color="#ef4444" />}
-        <h1>{resultado.aprobado ? "¡Excelente trabajo!" : "Puntaje insuficiente"}</h1>
-        <div className="score-badge">{resultado.porcentaje}%</div>
-        <p className="min-score">Mínimo requerido: 80%</p>
-        
-        <div className="result-actions">
-          {resultado.aprobado ? (
-            <button className="btn-yes success" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
-              {resultado.cursoFinalizado ? "Ver mi Constancia 🎓" : "Siguiente nivel"} <ArrowRight size={18} />
-            </button>
-          ) : (
-            <button className="btn-yes retry" onClick={cargarExamen}>
-              <RotateCcw size={18} /> Intentar de nuevo
-            </button>
-          )}
+      <div className="examen-content">
+        <div className={`msg-card result ${resultado.aprobado ? "success" : "fail"}`}>
+          <div className="result-icon-container">
+            {resultado.aprobado ? <CheckCircle size={80} color="#10b981" /> : <XCircle size={80} color="#ef4444" />}
+          </div>
+          <h1>{resultado.aprobado ? "¡Prueba Superada!" : "Puntaje Insuficiente"}</h1>
+          
+          <div className="score-container">
+              <span className="score-badge">{resultado.porcentaje}%</span>
+              <p className="min-score">Mínimo para aprobar: 80%</p>
+          </div>
+          
+          <div className="result-actions">
+            {resultado.aprobado ? (
+              <button className="btn-finish-exam" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
+                {resultado.cursoFinalizado ? "Ver mi Certificado 🎓" : "Continuar al siguiente nivel"} <ArrowRight size={18} />
+              </button>
+            ) : (
+              <button className="btn-finish-exam retry" onClick={cargarExamen}>
+                <RotateCcw size={18} /> Reintentar Evaluación
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -158,17 +166,17 @@ export default function Examen() {
       <div className="examen-content">
         <header className="examen-header-main">
           <div className="header-info">
-            <ClipboardCheck size={32} />
+            <ClipboardCheck size={36} />
             <div>
               <h1>Evaluación: Nivel {nivelNumero}</h1>
-              <p>Analiza cada pregunta cuidadosamente antes de responder.</p>
+              <p>Lee con atención. Solo una opción es correcta.</p>
             </div>
           </div>
         </header>
 
         <div className="preguntas-list">
           {examen.preguntas.map((pregunta, idx) => (
-            <div key={pregunta.id} className={`pregunta-card-student ${respuestas[pregunta.id] !== undefined ? "answered" : ""}`}>
+            <article key={pregunta.id} className={`pregunta-card-student ${respuestas[pregunta.id] !== undefined ? "answered" : ""}`}>
               <div className="pregunta-header">
                 <span className="q-number">{idx + 1}</span>
                 <h3>{pregunta.pregunta}</h3>
@@ -187,7 +195,7 @@ export default function Examen() {
                   </div>
                 ))}
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
@@ -200,12 +208,12 @@ export default function Examen() {
             {enviando ? (
                 <div className="loader-container">
                     <div className="spinner-mini"></div>
-                    <span>Procesando...</span>
+                    <span>Calificando...</span>
                 </div>
             ) : (
                 <>
                     <Send size={18} />
-                    <span>Finalizar Evaluación</span>
+                    <span>Enviar Evaluación</span>
                 </>
             )}
           </button>

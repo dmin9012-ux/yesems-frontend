@@ -1,4 +1,4 @@
-/* Contenedor general con estructura de Dashboard */
+/* Contenedor general */
 
 .curso-contenedor-sidebar {
     display: flex;
@@ -6,13 +6,10 @@
     background: #f8f9fa;
     font-family: 'Inter', sans-serif;
     padding-top: 70px;
-    /* Ajuste para el TopBar */
 }
 
 
-/* ===============================
-    ⬅️ SIDEBAR DEL CURSO (FIJO)
-=============================== */
+/* SIDEBAR ESCRITORIO */
 
 .sidebar {
     width: 320px;
@@ -25,7 +22,8 @@
     top: 70px;
     height: calc(100vh - 70px);
     overflow-y: auto;
-    z-index: 10;
+    z-index: 100;
+    transition: transform 0.3s ease-in-out;
 }
 
 .sidebar h3 {
@@ -35,12 +33,11 @@
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #fcb424;
-    /* Línea Ámbar */
     text-align: center;
 }
 
 
-/* Niveles en el Sidebar */
+/* Niveles y Lecciones */
 
 .nivel-sidebar {
     margin-bottom: 20px;
@@ -49,9 +46,6 @@
     background: #f9fafb;
     border: 1px solid #f0f0f0;
 }
-
-
-/* TITULO DE NIVEL EN NEGRO */
 
 .nivel-titulo {
     font-weight: 800;
@@ -64,15 +58,6 @@
     list-style: none;
     padding: 0;
 }
-
-.leccion-item {
-    margin-bottom: 6px;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-
-/* TEXTO DE LECCIONES EN NEGRO */
 
 .leccion-link {
     display: flex;
@@ -87,67 +72,24 @@
 }
 
 .leccion-link .text {
-    color: #000000;
     font-weight: 600;
 }
 
-
-/* ===============================
-    ESTADO ACTIVO (INDICADOR AMARILLO)
-=============================== */
-
-.leccion-item.active .leccion-link {
-    background: #fcb424;
-    /* Fondo Amarillo Ámbar */
-    color: #00003f;
-    /* Texto Azul Profundo */
-}
-
-.leccion-item.active .leccion-link .text {
-    color: #00003f;
-    font-weight: 800;
-}
-
-.leccion-link:hover:not(.active) {
-    background: #e5e7eb;
-}
-
-
-/* Estado completado */
-
-.leccion-item.completada .leccion-link:not(.active) {
-    color: #16a34a;
-    font-weight: 700;
-}
-
-.leccion-item.completada .leccion-link:not(.active) .text {
+.leccion-item.completada .leccion-link .text {
     color: #16a34a;
 }
 
-.leccion-bloqueada {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    color: #9ca3af;
-    font-size: 0.9rem;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
 
-
-/* ===============================
-    📦 CONTENIDO PRINCIPAL
-=============================== */
+/* CONTENIDO PRINCIPAL */
 
 .contenido-curso {
     flex: 1;
-    padding: 60px;
-    max-width: 900px;
+    padding: 40px 60px;
+    max-width: 1000px;
 }
 
 .curso-titulo {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     color: #00003f;
     margin-bottom: 10px;
@@ -172,63 +114,91 @@
     margin-bottom: 30px;
 }
 
-.curso-descripcion {
-    font-size: 1.1rem;
-    color: #4b5563;
-    line-height: 1.7;
+.indicaciones-ayuda {
+    background: #fffbeb;
+    padding: 20px;
+    border-left: 5px solid #fcb424;
+    border-radius: 12px;
+}
+
+
+/* BOTÓN TOGGLE (OCULTO EN PC) */
+
+.btn-toggle-menu {
+    display: none;
 }
 
 
 /* ===============================
-    🔘 BOTONES Y ESTADOS
+    📱 RESPONSIVE (CELULARES)
 =============================== */
 
-.btn-examen-sidebar {
+@media (max-width: 768px) {
+    .btn-toggle-menu {
+        display: block;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+        background: #00003f;
+        color: #fcb424;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        z-index: 1001;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        /* Escondido a la izquierda */
+        width: 85%;
+        height: 100vh;
+        padding-top: 80px;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar.active {
+        transform: translateX(0);
+        /* Deslizar hacia adentro */
+    }
+    .contenido-curso {
+        padding: 20px;
+        padding-top: 40px;
+    }
+    .curso-titulo {
+        font-size: 1.8rem;
+    }
+    .curso-info-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+}
+
+
+/* Botones genéricos */
+
+.btn-examen-sidebar,
+.btn-regresar-sidebar {
     width: 100%;
-    margin-top: 15px;
     padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-examen-sidebar {
     background: #fcb424;
     color: #00003f;
-    font-weight: 800;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-examen-sidebar:hover {
-    background: #e6a91e;
-    transform: translateY(-2px);
-}
-
-.nivel-aprobado {
-    margin-top: 15px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: #16a34a;
-    background: #dcfce7;
-    padding: 8px;
-    border-radius: 8px;
-    text-align: center;
 }
 
 .btn-regresar-sidebar {
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px;
     background: #f3f4f6;
     color: #4b5563;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
 }
-
-.btn-regresar-sidebar:hover {
-    background: #e5e7eb;
-    color: #00003f;
-}
-
-
-/* Spinner y otros se mantienen igual... */

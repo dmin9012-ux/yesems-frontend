@@ -7,16 +7,16 @@
     top: 0;
     left: 0;
     width: 100%;
-    /* Fusión: Fondo oscuro usando el Azul Profundo de marca */
     background-color: #00003f;
     color: white;
-    padding: 10px 0;
+    height: 70px;
     font-family: 'Inter', 'Segoe UI', sans-serif;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 0 2rem;
 }
 
 
@@ -25,7 +25,8 @@
 =============================== */
 
 .topbar-admin-left {
-    margin-left: 2rem;
+    display: flex;
+    align-items: center;
 }
 
 .admin-logo-box {
@@ -44,7 +45,6 @@
 
 .admin-badge {
     background: #fcb424;
-    /* Ámbar YES EMS */
     color: #00003f;
     font-size: 10px;
     font-weight: 900;
@@ -53,32 +53,40 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    letter-spacing: 0.5px;
 }
 
 
 /* ===============================
-   BOTONES DE NAVEGACIÓN
+   BOTÓN HAMBURGUESA
+=============================== */
+
+.topbar-admin-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+
+/* ===============================
+   NAVEGACIÓN DESKTOP
 =============================== */
 
 .topbar-admin-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-right: 2rem;
 }
 
 .admin-topbar-btn {
-    text-decoration: none;
     color: #cbd5e1;
-    /* Gris azulado suave */
     font-weight: 600;
     background: transparent;
-    border: 1px solid transparent;
+    border: none;
     cursor: pointer;
-    font-family: inherit;
     font-size: 0.9rem;
-    padding: 8px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
     transition: all 0.3s ease;
     display: flex;
@@ -86,14 +94,7 @@
     gap: 8px;
 }
 
-.admin-topbar-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-
-/* Estado Activo para el botón de Panel */
-
+.admin-topbar-btn:hover,
 .admin-topbar-btn.active {
     color: #fcb424;
     background: rgba(252, 180, 36, 0.1);
@@ -107,41 +108,64 @@
 }
 
 
-/* ===============================
-   BOTÓN CERRAR SESIÓN
-=============================== */
+/* BOTÓN CERRAR SESIÓN */
 
 .logout-admin {
     background-color: #dc2626;
-    /* Rojo vibrante */
     color: white !important;
-    border-color: #dc2626;
 }
 
 .logout-admin:hover {
     background-color: #b91c1c;
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 
 /* ===============================
-   RESPONSIVO
+   RESPONSIVO MÓVIL
 =============================== */
 
 @media (max-width: 768px) {
     .topbar-admin {
-        padding: 10px 1rem;
+        padding: 0 1rem;
+        height: 60px;
     }
-    .admin-topbar-btn span {
+    .logo-admin-text {
+        font-size: 18px;
+    }
+    /* Mostrar botón hamburguesa */
+    .topbar-admin-toggle {
+        display: block;
+    }
+    /* Ocultar nav por defecto */
+    .topbar-admin-right {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background: #00003f;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 10px;
         display: none;
-        /* Solo iconos en móvil */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
-    .admin-badge {
-        padding: 4px;
+    /* Mostrar cuando está abierto */
+    .topbar-admin-right.open {
+        display: flex;
     }
-    .admin-badge span {
+    .admin-topbar-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 14px;
+        font-size: 1rem;
+    }
+    .divider-v {
         display: none;
     }
-    /* Ocultar texto "ADMIN" en muy pequeños */
+    /* Ocultar textos pequeños */
+    .badge-text-admin {
+        display: none;
+    }
 }

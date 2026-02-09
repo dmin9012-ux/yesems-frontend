@@ -1,9 +1,15 @@
+/* ===================== ROOT ===================== */
+
 #root {
+    width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
 }
+
+
+/* ===================== LOGO (DEV / HOME) ===================== */
 
 .logo {
     height: 6em;
@@ -20,6 +26,9 @@
     filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+
+/* ===================== ANIMACIONES ===================== */
+
 @keyframes logo-spin {
     from {
         transform: rotate(0deg);
@@ -35,10 +44,30 @@
     }
 }
 
+
+/* ===================== UTILIDADES ===================== */
+
 .card {
     padding: 2em;
 }
 
 .read-the-docs {
     color: #888;
+}
+
+
+/* ===================== 📱 MOBILE ===================== */
+
+@media (max-width: 768px) {
+    #root {
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+    .logo {
+        height: 4em;
+        padding: 0.8em;
+    }
+    .card {
+        padding: 1rem;
+    }
 }
