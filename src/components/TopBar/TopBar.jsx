@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -16,8 +16,16 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout, user, loading } = useAuth();
-
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Cerrar menú si se cambia el tamaño de la pantalla a Desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (loading) return null;
 
@@ -26,8 +34,7 @@ const TopBar = () => {
     navigate("/login");
   };
 
-  const isActive = (path) =>
-    location.pathname === path ? "active" : "";
+  const isActive = (path) => (location.pathname === path ? "active" : "");
 
   const goTo = (path) => {
     navigate(path);
@@ -36,67 +43,71 @@ const TopBar = () => {
 
   return (
     <header className="topbar-user-main">
-      {/* ================= IZQUIERDA ================= */}
-      <div className="topbar-user-left" onClick={() => goTo("/principal")}>
-        <span className="logo-user-text">YESEMS</span>
+      <div className="topbar-container">
+        {/* ================= IZQUIERDA ================= */}
+        <div className="topbar-user-left" onClick={() => goTo("/principal")}>
+          <span className="logo-user-text">YESEMS</span>
+          <span className="user-role-badge">
+            <GraduationCap size={14} />
+            <span className="badge-text">ESTUDIANTE</span>
+          </span>
+        </div>
 
-        <span className="user-role-badge">
-          <GraduationCap size={14} />
-          <span className="badge-text">USUARIO</span>
-        </span>
-      </div>
-
-      {/* ================= BOTÓN MÓVIL ================= */}
-      <button
-        className="topbar-mobile-toggle"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Abrir menú"
-      >
-        {menuOpen ? <X size={22} /> : <Menu size={22} />}
-      </button>
-
-      {/* ================= MENÚ ================= */}
-      <nav className={`topbar-user-right ${menuOpen ? "open" : ""}`}>
+        {/* ================= BOTÓN MÓVIL ================= */}
         <button
-          className={`user-topbar-btn ${isActive("/principal")}`}
-          onClick={() => goTo("/principal")}
+          className={`topbar-mobile-toggle ${menuOpen ? "is-active" : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Abrir menú"
         >
-          <Home size={20} />
-          <span className="btn-text">Inicio</span>
+          {menuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
 
-        {user && (
+        {/* ================= NAVEGACIÓN ================= */}
+        <nav className={`topbar-user-nav ${menuOpen ? "open" : ""}`}>
           <button
-            className={`user-topbar-btn ${isActive("/perfil")}`}
-            onClick={() => goTo("/perfil")}
+            className={`user-topbar-btn ${isActive("/principal")}`}
+            onClick={() => goTo("/principal")}
           >
-            <User size={20} />
-            <span className="btn-text">Mi Perfil</span>
+            <Home size={20} />
+            <span className="nav-text">Inicio</span>
           </button>
-        )}
 
-        {user && user.rol === "admin" && (
-          <button
-            className="user-topbar-btn admin-access-link"
-            onClick={() => goTo("/admin")}
-          >
-            <Shield size={20} />
-            <span className="btn-text">Admin</span>
-          </button>
-        )}
+          {user && (
+            <button
+              className={`user-topbar-btn ${isActive("/perfil")}`}
+              onClick={() => goTo("/perfil")}
+            >
+              <User size={20} />
+              <span className="nav-text">Mi Perfil</span>
+            </button>
+          )}
 
-        <div className="divider-vertical-top"></div>
+          {user && user.rol === "admin" && (
+            <button
+              className="user-topbar-btn admin-access-link"
+              onClick={() => goTo("/admin")}
+            >
+              <Shield size={20} />
+              <span className="nav-text">Panel Admin</span>
+            </button>
+          )}
 
-        {user && (
-          <button
-            className="user-topbar-btn logout-user-btn"
-            onClick={handleLogout}
-          >
-            <LogOut size={20} />
-            <span className="btn-text">Salir</span>
-          </button>
-        )}
-      </nav>
+          <div className="nav-divider"></div>
+
+          {user && (
+            <button
+              className="user-topbar-btn logout-user-btn"
+              onClick={handleLogout}
+            >
+              <LogOut size={20} />
+              <span className="nav-text">Cerrar Sesión</span>
+            </button>
+          )}
+        </nav>
+      </div>
+      
+      {/* Overlay para cerrar el menú al tocar fuera (solo móvil) */}
+      {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)}></div>}
     </header>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck, Send } from "lucide-react";
+import { CheckCircle, XCircle, AlertCircle, ArrowRight, RotateCcw, ClipboardCheck, Send, Trophy } from "lucide-react";
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
@@ -10,6 +10,7 @@ import { notify } from "../../Util/toast";
 
 import "./ExamenStyle.css";
 
+// Mezclar preguntas para que cada intento se sienta fresco
 const shuffleArray = (array) => {
   const copia = [...array];
   for (let i = copia.length - 1; i > 0; i--) {
@@ -43,23 +44,24 @@ export default function Examen() {
       setResultado(null);
       setRespuestas({}); 
 
+      // 1. Validar si el usuario completó las lecciones previas
       const acceso = await puedeAccederNivel({ cursoId, nivel: nivelNumero });
       if (!acceso?.ok || acceso.puedeAcceder !== true) {
         setBloqueado(true);
-        setError(acceso?.reason || "Debes completar todas las lecciones antes de realizar la evaluación.");
+        setError(acceso?.reason || "Debes completar todas las lecciones del nivel antes de evaluarte.");
         return;
       }
 
+      // 2. Traer las preguntas del backend
       const res = await apiYesems.get(`/examen/${cursoId}/nivel/${nivelNumero}`);
       if (!res?.data?.ok || !res.data.preguntas?.length) {
-        setError("Esta evaluación aún no tiene preguntas configuradas.");
+        setError("Esta evaluación estará disponible próximamente.");
         return;
       }
 
       setExamen({ ...res.data, preguntas: shuffleArray(res.data.preguntas) });
     } catch (err) {
-      setError("Error al conectar con el servidor.");
-      notify("error", "Error al cargar la evaluación.");
+      setError("No pudimos conectar con el servidor de evaluaciones.");
     } finally {
       setCargando(false);
     }
@@ -73,14 +75,14 @@ export default function Examen() {
     setRespuestas((prev) => ({ ...prev, [preguntaId]: opcionIndex }));
   };
 
-  const enviarExamen = async () => {
+  const manejarEnvio = async () => {
     const respuestasArray = examen.preguntas.map((p) => ({ 
       preguntaId: p.id, 
       respuesta: respuestas[p.id] 
     }));
 
     if (respuestasArray.some((r) => r.respuesta === undefined)) {
-      notify("warning", "Por favor, responde todas las preguntas para continuar.");
+      notify("warning", "Responde todas las preguntas para calificar.");
       return;
     }
 
@@ -89,39 +91,40 @@ export default function Examen() {
       const res = await enviarExamenNivel({ cursoId, nivel: nivelNumero, respuestas: respuestasArray });
 
       if (res.aprobado) {
-        notify("success", `¡Felicidades! Aprobaste con ${res.porcentaje}%`);
+        notify("success", "¡Nivel completado con éxito! 🌟");
         actualizarNivelesAprobados(cursoId, nivelNumero);
       } else {
-        notify("error", `Tu puntaje fue de ${res.porcentaje}%. ¡No te rindas!`);
+        notify("error", "Puntaje insuficiente. ¡Repasa y vuelve a intentarlo!");
       }
       
       await recargarProgreso();
       setResultado(res);
-      window.scrollTo(0, 0); // Volver arriba para ver el resultado
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
-      notify("error", "Hubo un problema al procesar tus respuestas.");
+      notify("error", "Error al procesar el examen.");
     } finally {
       setEnviando(false);
     }
   };
 
   if (cargando) return (
-    <div className="examen-loading-full">
-      <div className="spinner-yes"></div>
-      <p>Generando tu evaluación personalizada...</p>
+    <div className="examen-loader">
+      <div className="spin-yes"></div>
+      <p>Cargando preguntas...</p>
     </div>
   );
 
+  // Pantalla de Error o Bloqueo
   if (bloqueado || error) return (
     <div className="examen-layout">
       <TopBar />
-      <div className="examen-content">
+      <div className="examen-container">
         <div className="msg-card locked">
-          <AlertCircle size={64} className="icon-alert" />
-          <h2>Acceso Restringido</h2>
-          <p>{error || "No puedes acceder a este examen aún."}</p>
-          <button className="btn-finish-exam" onClick={() => navigate(`/curso/${cursoId}`)}>
+          <AlertCircle size={50} className="icon-alert" />
+          <h2>Aviso de Evaluación</h2>
+          <p>{error}</p>
+          <button className="btn-back" onClick={() => navigate(`/curso/${cursoId}`)}>
             Volver al Curso
           </button>
         </div>
@@ -129,29 +132,32 @@ export default function Examen() {
     </div>
   );
 
+  // Pantalla de Resultados (Aprobado/Reprobado)
   if (resultado) return (
     <div className="examen-layout">
       <TopBar />
-      <div className="examen-content">
-        <div className={`msg-card result ${resultado.aprobado ? "success" : "fail"}`}>
-          <div className="result-icon-container">
-            {resultado.aprobado ? <CheckCircle size={80} color="#10b981" /> : <XCircle size={80} color="#ef4444" />}
-          </div>
-          <h1>{resultado.aprobado ? "¡Prueba Superada!" : "Puntaje Insuficiente"}</h1>
-          
-          <div className="score-container">
-              <span className="score-badge">{resultado.porcentaje}%</span>
-              <p className="min-score">Mínimo para aprobar: 80%</p>
+      <div className="examen-container">
+        <div className={`result-card ${resultado.aprobado ? "is-success" : "is-fail"}`}>
+          <div className="result-header">
+            {resultado.aprobado ? <Trophy size={60} color="#fcb424" /> : <XCircle size={60} color="#ef4444" />}
+            <h1>{resultado.aprobado ? "¡Excelente Trabajo!" : "Sigue intentando"}</h1>
           </div>
           
-          <div className="result-actions">
+          <div className="result-score">
+            <div className="score-circle">
+               <span className="big-percent">{resultado.porcentaje}%</span>
+               <span className="label-score">Puntaje total</span>
+            </div>
+          </div>
+
+          <div className="result-footer">
             {resultado.aprobado ? (
-              <button className="btn-finish-exam" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
-                {resultado.cursoFinalizado ? "Ver mi Certificado 🎓" : "Continuar al siguiente nivel"} <ArrowRight size={18} />
+              <button className="btn-action-main" onClick={() => navigate(resultado.cursoFinalizado ? "/perfil" : `/curso/${cursoId}`)}>
+                {resultado.cursoFinalizado ? "Obtener Certificado 🎓" : "Siguiente Nivel"} <ArrowRight size={20} />
               </button>
             ) : (
-              <button className="btn-finish-exam retry" onClick={cargarExamen}>
-                <RotateCcw size={18} /> Reintentar Evaluación
+              <button className="btn-action-main retry" onClick={cargarExamen}>
+                <RotateCcw size={18} /> Intentar de nuevo
               </button>
             )}
           </div>
@@ -160,62 +166,45 @@ export default function Examen() {
     </div>
   );
 
+  // Renderizado del examen
   return (
     <div className="examen-layout">
       <TopBar />
-      <div className="examen-content">
-        <header className="examen-header-main">
-          <div className="header-info">
-            <ClipboardCheck size={36} />
-            <div>
-              <h1>Evaluación: Nivel {nivelNumero}</h1>
-              <p>Lee con atención. Solo una opción es correcta.</p>
-            </div>
-          </div>
+      <div className="examen-container">
+        <header className="exam-header">
+           <ClipboardCheck size={32} color="#fcb424" />
+           <div>
+              <h1>Examen de Nivel {nivelNumero}</h1>
+              <p>Selecciona la respuesta correcta para cada caso.</p>
+           </div>
         </header>
 
-        <div className="preguntas-list">
-          {examen.preguntas.map((pregunta, idx) => (
-            <article key={pregunta.id} className={`pregunta-card-student ${respuestas[pregunta.id] !== undefined ? "answered" : ""}`}>
-              <div className="pregunta-header">
-                <span className="q-number">{idx + 1}</span>
-                <h3>{pregunta.pregunta}</h3>
-              </div>
-              <div className="opciones-grid-student">
-                {pregunta.opciones.map((opcion, i) => (
-                  <div 
-                    key={i} 
-                    className={`opcion-choice ${respuestas[pregunta.id] === i ? "selected" : ""}`}
-                    onClick={() => seleccionarRespuesta(pregunta.id, i)}
-                  >
-                    <div className="radio-custom">
-                        <div className="radio-inner"></div>
-                    </div>
-                    <span className="opcion-txt">{opcion}</span>
-                  </div>
+        <div className="questions-stack">
+          {examen.preguntas.map((p, idx) => (
+            <div key={p.id} className={`question-card ${respuestas[p.id] !== undefined ? "is-answered" : ""}`}>
+              <div className="q-label">Pregunta {idx + 1}</div>
+              <p className="q-text">{p.pregunta}</p>
+              <div className="options-list">
+                {p.opciones.map((opc, i) => (
+                  <label key={i} className={`option-item ${respuestas[p.id] === i ? "is-selected" : ""}`}>
+                    <input 
+                      type="radio" 
+                      name={p.id} 
+                      onChange={() => seleccionarRespuesta(p.id, i)}
+                      checked={respuestas[p.id] === i}
+                    />
+                    <span className="option-check"></span>
+                    <span className="option-label">{opc}</span>
+                  </label>
                 ))}
               </div>
-            </article>
+            </div>
           ))}
         </div>
 
-        <footer className="examen-footer-action">
-          <button 
-            className="btn-finish-exam" 
-            onClick={enviarExamen} 
-            disabled={enviando}
-          >
-            {enviando ? (
-                <div className="loader-container">
-                    <div className="spinner-mini"></div>
-                    <span>Calificando...</span>
-                </div>
-            ) : (
-                <>
-                    <Send size={18} />
-                    <span>Enviar Evaluación</span>
-                </>
-            )}
+        <footer className="exam-submit-bar">
+          <button className="btn-send-exam" onClick={manejarEnvio} disabled={enviando}>
+            {enviando ? "Calificando..." : "Finalizar y Enviar"} <Send size={18} />
           </button>
         </footer>
       </div>

@@ -1,171 +1,185 @@
-.leccion-contenedor-sidebar {
-    display: flex;
-    min-height: 100vh;
-    background: #f4f7f6;
-    font-family: 'Inter', sans-serif;
-}
+/* ===============================
+   LECCIÓN - DISEÑO DE LECTURA
+   =============================== */
 
-
-/* SIDEBAR MÓVIL Y ESCRITORIO */
-
-.sidebar {
-    width: 320px;
+.leccion-page {
     background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    padding: 80px 20px;
+    min-height: 100vh;
+}
+
+.leccion-layout {
+    display: flex;
+    padding-top: 70px;
+}
+
+
+/* SIDEBAR (Sticky en PC) */
+
+.leccion-sidebar {
+    width: 300px;
+    height: calc(100vh - 70px);
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: 70px;
+    border-right: 1px solid #edf2f7;
+    background: #f8fafc;
     overflow-y: auto;
-    z-index: 100;
-    transition: transform 0.3s ease;
 }
 
-
-/* BOTÓN HAMBURGUESA */
-
-.btn-movil-sidebar {
-    display: none;
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 1001;
-    background: #00003f;
-    color: #fcb424;
-    border: none;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+.sidebar-content {
+    padding: 30px 20px;
 }
 
-
-/* CONTENIDO PRINCIPAL ADAPTABLE */
-
-.contenido-leccion {
-    flex: 1;
-    padding: 60px 40px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.leccion-titulo {
-    font-size: 2.2rem;
-    font-weight: 900;
-    margin-bottom: 20px;
+.sidebar-course-name {
+    font-weight: 800;
     color: #00003f;
+    margin-bottom: 20px;
+}
+
+.sidebar-item {
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.sidebar-item.is-current {
+    background: #fcb424;
+}
+
+.sidebar-item.is-current a {
+    color: #00003f;
+    font-weight: 700;
 }
 
 
-/* VIDEO RESPONSIVE (Mantiene relación 16:9) */
+/* CONTENIDO PRINCIPAL */
 
-.video-wrapper {
+.leccion-main {
+    flex: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 60px;
+}
+
+.leccion-title-text {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #00003f;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+}
+
+
+/* VIDEO BOX */
+
+.video-responsive-box {
     position: relative;
     padding-bottom: 56.25%;
+    /* 16:9 Aspect Ratio */
     height: 0;
-    margin-bottom: 30px;
-    border-radius: 20px;
     overflow: hidden;
+    border-radius: 24px;
     background: #000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
 }
 
-.video-wrapper iframe {
+.video-responsive-box iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    border: none;
 }
 
 
-/* CONTENIDO HTML RICO */
+/* TEXTO ENRIQUECIDO */
 
-.contenido-html-rich {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    line-height: 1.7;
-    font-size: 1.05rem;
+.rich-text-container {
+    font-size: 1.15rem;
+    line-height: 1.8;
     color: #334155;
-    margin-bottom: 30px;
 }
 
-.contenido-html-rich img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
+.rich-text-container p {
+    margin-bottom: 20px;
 }
 
 
-/* RECURSOS Y PDF */
+/* BOTONES NAVEGACIÓN */
 
-.seccion-recursos {
-    background: white;
-    padding: 25px;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-}
-
-.pdf-embed-container {
-    margin-top: 15px;
-    border-radius: 15px;
-    overflow: hidden;
-    height: 400px;
-    /* Reducido para móvil por defecto */
-}
-
-
-/* FOOTER NAVEGACIÓN */
-
-.navegacion-footer {
+.leccion-navigation {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
-    margin-top: 40px;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-prev {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+}
+
+.btn-next {
+    background: #00003f;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-next:hover {
+    background: #fcb424;
+    color: #00003f;
 }
 
 
 /* ===============================
-    📱 MEDIA QUERIES (MÓVIL)
-=============================== */
+   RESPONSIVO (MÓVIL)
+   =============================== */
 
-@media (max-width: 1024px) {
-    .btn-movil-sidebar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+@media (max-width: 768px) {
+    .leccion-main {
+        padding: 30px 20px;
     }
-    .sidebar {
+    .leccion-sidebar {
         position: fixed;
         left: 0;
         top: 0;
+        z-index: 2000;
         transform: translateX(-100%);
-        width: 85%;
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        width: 80%;
     }
-    .sidebar.active {
+    .leccion-sidebar.is-active {
         transform: translateX(0);
     }
-    .contenido-leccion {
-        padding: 80px 20px 100px 20px;
-    }
-    .leccion-titulo {
-        font-size: 1.7rem;
-    }
-}
-
-@media (max-width: 600px) {
-    .navegacion-footer {
-        flex-direction: column-reverse;
-    }
-    .btn-primario,
-    .btn-secundario {
-        width: 100%;
+    .mobile-sidebar-trigger {
+        display: flex;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 2100;
+        background: #00003f;
+        color: #fcb424;
+        border: none;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        align-items: center;
         justify-content: center;
     }
-    .pdf-embed-container iframe {
-        height: 350px;
+    .leccion-title-text {
+        font-size: 1.8rem;
     }
 }

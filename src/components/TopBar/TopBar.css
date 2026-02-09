@@ -1,69 +1,80 @@
+/* ===============================
+   CONTENEDOR PRINCIPAL
+   =============================== */
+
 .topbar-user-main {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background-color: #00003f;
-    color: white;
     height: 70px;
-    z-index: 1000;
+    z-index: 2000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.topbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    padding: 0 2rem;
+    padding: 0 1.5rem;
 }
 
 
-/* ================= LOGO ================= */
+/* ================= IZQUIERDA ================= */
 
 .topbar-user-left {
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
+    z-index: 2101;
 }
 
 .logo-user-text {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 900;
-    letter-spacing: -0.5px;
+    color: #ffffff;
+    letter-spacing: -1px;
 }
 
 .user-role-badge {
     background: #fcb424;
     color: #00003f;
-    font-size: 10px;
-    font-weight: 900;
-    padding: 4px 8px;
-    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 }
 
 
-/* ================= MENÚ DESKTOP ================= */
+/* ================= NAV DESKTOP ================= */
 
-.topbar-user-right {
+.topbar-user-nav {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .user-topbar-btn {
     color: #cbd5e1;
-    font-weight: 600;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 10px 14px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .user-topbar-btn:hover,
@@ -72,13 +83,25 @@
     background: rgba(252, 180, 36, 0.1);
 }
 
+.nav-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 8px;
+}
+
 .logout-user-btn {
-    background-color: #dc2626;
+    background: rgba(220, 38, 38, 0.15);
+    color: #f87171;
+}
+
+.logout-user-btn:hover {
+    background: #dc2626;
     color: white !important;
 }
 
 
-/* ================= BOTÓN HAMBURGUESA ================= */
+/* ================= BOTÓN MÓVIL ================= */
 
 .topbar-mobile-toggle {
     display: none;
@@ -86,59 +109,65 @@
     border: none;
     color: white;
     cursor: pointer;
+    padding: 8px;
+    z-index: 2101;
+    transition: 0.3s;
 }
 
 
-/* ================= RESPONSIVE ================= */
+/* ================= RESPONSIVO (MÓVIL) ================= */
 
 @media (max-width: 768px) {
     .topbar-user-main {
-        height: 60px;
-        padding: 0 1rem;
+        height: 65px;
     }
-    .logo-user-text {
-        font-size: 18px;
-    }
-    .badge-text,
-    .btn-text {
-        display: none;
-    }
-    /* BOTÓN HAMBURGUESA */
     .topbar-mobile-toggle {
         display: block;
-        z-index: 1100;
     }
-    /* MENÚ OCULTO */
-    .topbar-user-right {
-        position: absolute;
-        top: 60px;
+    .topbar-user-nav {
+        position: fixed;
+        top: 0;
         right: 0;
-        width: 100%;
-        background-color: #00003f;
+        width: 280px;
+        /* Menú lateral derecho */
+        height: 100vh;
+        background: #00003f;
         flex-direction: column;
-        align-items: stretch;
-        padding: 1rem;
-        gap: 6px;
-        transform: translateY(-120%);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+        justify-content: flex-start;
+        padding: 90px 20px 30px;
+        gap: 10px;
+        transform: translateX(100%);
+        /* Escondido a la derecha */
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
     }
-    /* MENÚ ABIERTO */
-    .topbar-user-right.open {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: auto;
+    .topbar-user-nav.open {
+        transform: translateX(0);
     }
     .user-topbar-btn {
         width: 100%;
+        padding: 15px;
         justify-content: flex-start;
-        padding: 14px;
-        border-radius: 12px;
-        font-size: 1rem;
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.03);
     }
-    .logout-user-btn {
-        justify-content: center;
+    .nav-divider {
+        width: 100%;
+        height: 1px;
+        margin: 15px 0;
+    }
+    .badge-text {
+        display: none;
+        /* Solo icono en móvil para ahorrar espacio */
+    }
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1999;
     }
 }

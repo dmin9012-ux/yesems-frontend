@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { User, Mail, Lock, UserPlus } from "lucide-react"; // Iconos consistentes
+import { User, Mail, Lock, UserPlus } from "lucide-react"; 
 import "./RegisterStyle.css";
 
 export default function Register() {
@@ -36,11 +36,9 @@ export default function Register() {
       }
 
       notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
-
       setNombre("");
       setEmail("");
       setPassword("");
-
       navigate("/login");
     } catch (error) {
       console.error("Error en registro:", error);
@@ -54,71 +52,86 @@ export default function Register() {
     <div className="register-page">
       <div className="register-card">
         <header className="register-header">
-          <img src={logo} alt="yesems logo" className="register-logo" />
-          <h2>Crear Cuenta</h2>
-          <p className="subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
+          <div className="register-logo-container">
+            <img src={logo} alt="yesems logo" className="register-logo" />
+          </div>
+          <h2 className="register-title">Crear Cuenta</h2>
+          <p className="register-subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
         </header>
 
         <form onSubmit={handleRegister} className="register-form">
           <div className="input-group-auth">
-            <User className="input-icon" size={20} />
+            <div className="icon-box">
+              <User size={20} />
+            </div>
             <input
               type="text"
               placeholder="Nombre completo"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
           <div className="input-group-auth">
-            <Mail className="input-icon" size={20} />
+            <div className="icon-box">
+              <Mail size={20} />
+            </div>
             <input
               type="email"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
           <div className="input-group-auth password-group">
-            <Lock className="input-icon" size={20} />
+            <div className="icon-box">
+              <Lock size={20} />
+            </div>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contraseña (mínimo 6 caracteres)"
+              placeholder="Contraseña (mín. 6 caracteres)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
-            <img
-              src={showPassword ? ojoAbierto : ojoCerrado}
-              alt="Mostrar contraseña"
-              className="password-eye"
+            <button 
+              type="button" 
+              className="password-eye-btn"
               onClick={() => setShowPassword(!showPassword)}
-            />
-          </div>
-
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
-          <div className="register-actions">
-            <button className="btn-register-submit" type="submit" disabled={loading}>
-              {loading ? (
-                <span className="loader-btn"></span>
-              ) : (
-                <>
-                  <UserPlus size={18} />
-                  <span>Registrarme</span>
-                </>
-              )}
+            >
+              <img
+                src={showPassword ? ojoAbierto : ojoCerrado}
+                alt="Ver"
+                className="password-eye-img"
+              />
             </button>
           </div>
+
+          <button type="submit" className="btn-register-submit" disabled={loading}>
+            {loading ? (
+              <div className="spinner-mini"></div>
+            ) : (
+              <>
+                <UserPlus size={20} />
+                <span>Registrarme</span>
+              </>
+            )}
+          </button>
         </form>
 
         <footer className="register-footer">
-          <span>¿Ya tienes cuenta?</span>
-          <span className="link-login" onClick={() => navigate("/login")}>
-            Inicia sesión
-          </span>
+          <p>
+            ¿Ya tienes cuenta?{" "}
+            <span className="link-login" onClick={() => navigate("/login")}>
+              Inicia sesión
+            </span>
+          </p>
         </footer>
       </div>
     </div>

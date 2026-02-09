@@ -34,8 +34,9 @@ export default function ForgotPassword() {
   return (
     <div className="forgot-page">
       <div className="forgot-card">
-        <button className="btn-floating-back" onClick={() => navigate("/login")} title="Regresar">
-          <ArrowLeft size={20} />
+        {/* Botón de regreso mejorado para móvil */}
+        <button className="btn-back-nav" onClick={() => navigate("/login")} title="Regresar">
+          <ArrowLeft size={22} />
         </button>
 
         <header className="forgot-header">
@@ -44,40 +45,44 @@ export default function ForgotPassword() {
           </div>
           <h2 className="forgot-title">¿Olvidaste tu contraseña?</h2>
           <p className="forgot-subtitle">
-            No te preocupes. Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
+            Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="forgot-form">
           <div className="input-group-auth">
-            <Mail className="input-icon" size={20} />
+            <div className="icon-box">
+              <Mail size={20} />
+            </div>
             <input
               type="email"
-              placeholder="Tu correo electrónico registrado"
+              placeholder="Tu correo registrado"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
-          <div className="forgot-actions">
-            <button type="submit" className="btn-forgot-submit" disabled={loading}>
-              {loading ? (
-                <div className="loader-dots">
-                  <span></span><span></span><span></span>
-                </div>
-              ) : (
-                <>
-                  <span>Enviar código de acceso</span>
-                  <Send size={18} className="send-icon" />
-                </>
-              )}
-            </button>
-          </div>
+          <button type="submit" className="btn-forgot-submit" disabled={loading}>
+            {loading ? (
+              <div className="spinner-mini"></div>
+            ) : (
+              <>
+                <span>Enviar código</span>
+                <Send size={18} className="send-icon" />
+              </>
+            )}
+          </button>
         </form>
 
         <footer className="forgot-footer">
-          <p>¿Recordaste tu contraseña? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
+          <p>
+            ¿La recordaste?{" "}
+            <strong className="link-login" onClick={() => navigate("/login")}>
+              Inicia sesión
+            </strong>
+          </p>
         </footer>
       </div>
     </div>

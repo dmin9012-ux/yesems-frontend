@@ -4,6 +4,7 @@ import TopBar from "../../components/TopBar/TopBar";
 import { obtenerCursos } from "../../servicios/cursosService";
 import { obtenerProgresoUsuario } from "../../servicios/progresoService";
 import { notify } from "../../Util/toast";
+import { BookOpen } from "lucide-react"; // Icono para el estado vacío
 import "./PrincipalStyle.css";
 
 const Principal = () => {
@@ -15,26 +16,23 @@ const Principal = () => {
     let mounted = true;
 
     const cargarDatos = async () => {
-      setCargando(true);
-
       try {
-        // 1️⃣ Cursos
-        const cursosFirebase = await obtenerCursos();
+        const [cursosFirebase, progresoRes] = await Promise.all([
+          obtenerCursos(),
+          obtenerProgresoUsuario()
+        ]);
+
         if (!Array.isArray(cursosFirebase)) {
           throw new Error("No se pudieron obtener los cursos.");
         }
 
-        // 2️⃣ Progreso
-        const progresoRes = await obtenerProgresoUsuario();
         if (!progresoRes?.ok) {
           throw new Error(progresoRes?.message || "Error al cargar progreso");
         }
 
         if (mounted) {
           setCursos(cursosFirebase);
-          setCursosCompletados(
-            progresoRes.data?.cursosCompletados || []
-          );
+          setCursosCompletados(progresoRes.data?.cursosCompletados || []);
         }
       } catch (err) {
         console.error("❌ Error en Principal:", err);
@@ -45,10 +43,7 @@ const Principal = () => {
     };
 
     cargarDatos();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   return (
@@ -59,23 +54,27 @@ const Principal = () => {
         <header className="principal-header">
           <h1 className="principal-title">Bienvenido a YES EMS</h1>
           <p className="principal-subtitle">
-            Explora tus cursos y continúa aprendiendo
+            Explora tus cursos y continúa con tu formación profesional.
           </p>
         </header>
 
         {cargando ? (
           <div className="loader-container">
-            <div className="spinner" />
-            <p>Sincronizando tus cursos...</p>
+            <div className="spinner-main" />
+            <p className="loader-text">Sincronizando tus cursos...</p>
           </div>
         ) : cursos.length > 0 ? (
-          <Menu
-            cursos={cursos}
-            cursosCompletados={cursosCompletados}
-          />
+          <div className="menu-wrapper">
+             <Menu
+                cursos={cursos}
+                cursosCompletados={cursosCompletados}
+              />
+          </div>
         ) : (
-          <div className="empty-state">
+          <div className="empty-state-card">
+            <BookOpen size={48} />
             <p>No hay cursos disponibles en este momento.</p>
+            <span>Vuelve a revisar más tarde para nuevas actualizaciones.</span>
           </div>
         )}
       </main>

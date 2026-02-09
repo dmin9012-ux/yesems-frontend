@@ -1,6 +1,6 @@
 /* ===============================
    CONTENEDOR PRINCIPAL
-=============================== */
+   =============================== */
 
 .topbar-admin {
     position: fixed;
@@ -8,72 +8,56 @@
     left: 0;
     width: 100%;
     background-color: #00003f;
-    color: white;
     height: 70px;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    z-index: 1000;
+    z-index: 2000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    font-family: 'Inter', sans-serif;
+}
+
+.topbar-admin-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    padding: 0 2rem;
+    padding: 0 1.5rem;
 }
 
 
-/* ===============================
-   LOGO Y BADGE ADMIN
-=============================== */
+/* ================= IZQUIERDA ================= */
 
 .topbar-admin-left {
     display: flex;
     align-items: center;
-}
-
-.admin-logo-box {
-    display: flex;
-    align-items: center;
     gap: 12px;
     cursor: pointer;
+    z-index: 2101;
 }
 
 .logo-admin-text {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 900;
     color: #ffffff;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
 }
 
 .admin-badge {
     background: #fcb424;
     color: #00003f;
-    font-size: 10px;
-    font-weight: 900;
-    padding: 4px 8px;
-    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 }
 
 
-/* ===============================
-   BOTÓN HAMBURGUESA
-=============================== */
+/* ================= NAVEGACIÓN DESKTOP ================= */
 
-.topbar-admin-toggle {
-    display: none;
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-
-/* ===============================
-   NAVEGACIÓN DESKTOP
-=============================== */
-
-.topbar-admin-right {
+.topbar-admin-nav {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -81,17 +65,17 @@
 
 .admin-topbar-btn {
     color: #cbd5e1;
-    font-weight: 600;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 10px 14px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .admin-topbar-btn:hover,
@@ -100,72 +84,94 @@
     background: rgba(252, 180, 36, 0.1);
 }
 
-.divider-v {
+.nav-admin-divider {
     width: 1px;
     height: 24px;
     background: rgba(255, 255, 255, 0.15);
-    margin: 0 5px;
+    margin: 0 8px;
 }
 
-
-/* BOTÓN CERRAR SESIÓN */
-
-.logout-admin {
-    background-color: #dc2626;
+.logout-admin-btn {
+    background: #dc2626;
     color: white !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
-.logout-admin:hover {
-    background-color: #b91c1c;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+.logout-admin-btn:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
 }
 
 
-/* ===============================
-   RESPONSIVO MÓVIL
-=============================== */
+/* ================= BOTÓN MÓVIL ================= */
+
+.topbar-admin-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 2101;
+}
+
+
+/* ================= RESPONSIVO (MÓVIL) ================= */
 
 @media (max-width: 768px) {
     .topbar-admin {
-        padding: 0 1rem;
-        height: 60px;
+        height: 65px;
     }
-    .logo-admin-text {
-        font-size: 18px;
-    }
-    /* Mostrar botón hamburguesa */
     .topbar-admin-toggle {
         display: block;
     }
-    /* Ocultar nav por defecto */
-    .topbar-admin-right {
-        position: absolute;
-        top: 60px;
+    .topbar-admin-nav {
+        position: fixed;
+        top: 0;
         right: 0;
-        width: 100%;
+        width: 280px;
+        height: 100vh;
         background: #00003f;
         flex-direction: column;
-        align-items: stretch;
-        padding: 1rem;
-        gap: 10px;
-        display: none;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        justify-content: flex-start;
+        padding: 90px 20px 30px;
+        gap: 12px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
     }
-    /* Mostrar cuando está abierto */
-    .topbar-admin-right.open {
-        display: flex;
+    .topbar-admin-nav.open {
+        transform: translateX(0);
     }
     .admin-topbar-btn {
         width: 100%;
+        padding: 16px;
         justify-content: flex-start;
-        padding: 14px;
-        font-size: 1rem;
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.03);
     }
-    .divider-v {
-        display: none;
+    .nav-admin-divider {
+        width: 100%;
+        height: 1px;
+        margin: 10px 0;
     }
-    /* Ocultar textos pequeños */
     .badge-text-admin {
         display: none;
+        /* En móvil solo mostramos el icono del escudo */
+    }
+    .admin-nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1999;
+    }
+    .logout-admin-btn {
+        margin-top: auto;
+        /* Empuja el botón de salir al final del menú móvil */
+        justify-content: center;
     }
 }

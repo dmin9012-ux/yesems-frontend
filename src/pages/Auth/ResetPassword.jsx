@@ -65,9 +65,8 @@ export default function ResetPassword() {
   return (
     <div className="reset-page">
       <div className="reset-card">
-        {/* Botón opcional por si el usuario quiere cancelar el proceso */}
         <button className="btn-back-auth" onClick={() => navigate("/login")} title="Cancelar">
-          <ArrowLeft size={20} />
+          <ArrowLeft size={22} />
         </button>
 
         <header className="reset-header">
@@ -75,19 +74,22 @@ export default function ResetPassword() {
             <img src={logo} alt="YES EMS logo" className="reset-logo" />
           </div>
           <h2 className="reset-title">Nueva Contraseña</h2>
-          <p className="subtitle">Crea una clave segura para proteger tu acceso a <strong>YES EMS</strong></p>
+          <p className="reset-subtitle">Crea una clave segura para proteger tu acceso a <strong>YES EMS</strong></p>
         </header>
 
         <form onSubmit={handleSubmit} className="reset-form">
           {/* 🔐 NUEVA CONTRASEÑA */}
           <div className="input-group-auth password-group">
-            <Lock className="input-icon" size={20} />
+            <div className="icon-box">
+              <Lock size={20} />
+            </div>
             <input
               type={showPasswordNueva ? "text" : "password"}
               placeholder="Nueva contraseña"
               value={passwordNueva}
               onChange={(e) => setPasswordNueva(e.target.value)}
               required
+              disabled={loading}
             />
             <button 
               type="button" 
@@ -100,13 +102,16 @@ export default function ResetPassword() {
 
           {/* 🔐 CONFIRMAR CONTRASEÑA */}
           <div className="input-group-auth password-group">
-            <ShieldCheck className="input-icon" size={20} />
+            <div className="icon-box">
+              <ShieldCheck size={20} />
+            </div>
             <input
               type={showConfirmarPassword ? "text" : "password"}
               placeholder="Confirmar contraseña"
               value={confirmarPassword}
               onChange={(e) => setConfirmarPassword(e.target.value)}
               required
+              disabled={loading}
             />
             <button 
               type="button" 
@@ -117,20 +122,16 @@ export default function ResetPassword() {
             </button>
           </div>
 
-          <div className="reset-actions">
-            <button type="submit" className="btn-reset-submit" disabled={loading}>
-              {loading ? (
-                <div className="loader-dots-white">
-                  <span></span><span></span><span></span>
-                </div>
-              ) : (
-                <>
-                  <Save size={18} />
-                  <span>Actualizar contraseña</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button type="submit" className="btn-reset-submit" disabled={loading}>
+            {loading ? (
+              <div className="spinner-mini"></div>
+            ) : (
+              <>
+                <Save size={18} />
+                <span>Actualizar contraseña</span>
+              </>
+            )}
+          </button>
         </form>
       </div>
     </div>

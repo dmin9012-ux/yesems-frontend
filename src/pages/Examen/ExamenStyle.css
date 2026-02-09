@@ -1,246 +1,165 @@
 .examen-layout {
+    background-color: #f0f2f5;
     min-height: 100vh;
-    background-color: #f8fafc;
-    padding-top: 80px;
-    padding-bottom: 50px;
+    padding: 100px 20px 60px;
 }
 
-.examen-content {
-    max-width: 800px;
+.examen-container {
+    max-width: 750px;
     margin: 0 auto;
-    padding: 20px;
 }
 
 
-/* CARGA */
+/* CARDS DE PREGUNTAS */
 
-.examen-loading-full {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #ffffff;
-    gap: 20px;
-}
-
-
-/* HEADER */
-
-.header-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.question-card {
     background: white;
-    padding: 25px;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 30px;
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: 0.3s ease;
+    border: 2px solid transparent;
 }
 
-.header-info h1 {
-    color: #00003f;
-    font-size: 1.5rem;
+.question-card.is-answered {
+    border-color: #fcb42433;
+}
+
+.q-label {
+    font-size: 0.8rem;
     font-weight: 800;
-    margin: 0;
-}
-
-.header-info p {
-    margin: 0;
-    color: #64748b;
-    font-size: 0.9rem;
-}
-
-.header-info svg {
+    text-transform: uppercase;
     color: #fcb424;
-    flex-shrink: 0;
+    margin-bottom: 10px;
 }
 
-
-/* PREGUNTAS */
-
-.pregunta-card-student {
-    background: white;
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 20px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-}
-
-.pregunta-card-student.answered {
-    border-left: 6px solid #fcb424;
-}
-
-.pregunta-header {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.q-number {
-    background: #00003f;
-    color: white;
-    min-width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    flex-shrink: 0;
-}
-
-.pregunta-header h3 {
-    font-size: 1.1rem;
-    color: #1e293b;
-    margin: 0;
+.q-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #00003f;
+    margin-bottom: 25px;
     line-height: 1.4;
 }
 
 
-/* OPCIONES */
+/* OPCIONES ESTILO BOTÓN */
 
-.opciones-grid-student {
+.options-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.opcion-choice {
-    display: flex;
-    align-items: center;
     gap: 12px;
-    padding: 15px;
-    background: #f8fafc;
-    border: 2px solid #f1f5f9;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.opcion-choice.selected {
-    background: #fffcf0;
-    border-color: #fcb424;
-}
-
-.radio-custom {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #cbd5e1;
-    border-radius: 50%;
+.option-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    padding: 18px 24px;
+    background: #f8fafc;
+    border: 2px solid #edf2f7;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.opcion-choice.selected .radio-inner {
-    width: 10px;
-    height: 10px;
-    background: #fcb424;
-    border-radius: 50%;
+.option-item input {
+    display: none;
 }
 
-.opcion-txt {
+.option-item.is-selected {
+    background: #00003f;
+    border-color: #00003f;
+    color: white;
+}
+
+.option-item.is-selected .option-label {
+    color: white;
+}
+
+.option-label {
     font-weight: 600;
-    color: #334155;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    color: #475569;
 }
 
 
-/* BOTÓN ENVIAR */
+/* PANTALLA DE RESULTADOS */
 
-.examen-footer-action {
+.result-card {
+    background: white;
+    border-radius: 32px;
+    padding: 50px 30px;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.score-circle {
+    width: 180px;
+    height: 180px;
+    border: 10px solid #f1f5f9;
+    border-radius: 50%;
+    margin: 30px auto;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    margin-top: 30px;
 }
 
-.btn-finish-exam {
-    width: 100%;
-    max-width: 400px;
-    padding: 18px;
+.is-success .score-circle {
+    border-color: #10b98122;
+}
+
+.is-fail .score-circle {
+    border-color: #ef444422;
+}
+
+.big-percent {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #00003f;
+    display: block;
+    line-height: 1;
+}
+
+.label-score {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.btn-action-main {
     background: #fcb424;
     color: #00003f;
-    border-radius: 15px;
-    font-size: 1.1rem;
+    padding: 18px 40px;
+    border-radius: 20px;
     font-weight: 800;
     border: none;
     cursor: pointer;
-    display: flex;
+    font-size: 1.1rem;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: transform 0.2s;
+    gap: 12px;
 }
 
-.btn-finish-exam:active {
-    transform: scale(0.98);
-}
-
-.btn-finish-exam.retry {
+.btn-action-main.retry {
     background: #00003f;
     color: white;
 }
 
 
-/* RESULTADOS */
+/* ANIMACIONES */
 
-.msg-card {
-    background: white;
-    padding: 40px 20px;
-    border-radius: 30px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-}
-
-.score-badge {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #00003f;
-}
-
-.result-icon-container {
-    margin-bottom: 20px;
-}
-
-
-/* RESPONSIVE */
-
-@media (max-width: 600px) {
-    .examen-content {
-        padding: 10px;
-    }
-    .header-info {
-        padding: 15px;
-        flex-direction: column;
-        text-align: center;
-    }
-    .pregunta-card-student {
-        padding: 20px;
-    }
-    .score-badge {
-        font-size: 3rem;
-    }
-}
-
-
-/* Spinner */
-
-.spinner-yes {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #fcb424;
+.spin-yes {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fcb424;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
     100% {
         transform: rotate(360deg);
     }

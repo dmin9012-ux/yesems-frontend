@@ -1,3 +1,7 @@
+/* ===============================
+   BASE Y CONTENEDOR (Móvil Primero)
+   =============================== */
+
 .home-container {
     min-height: 100vh;
     display: flex;
@@ -5,14 +9,15 @@
     align-items: center;
     background: radial-gradient(circle at top right, #02025f, #00003f);
     font-family: 'Inter', sans-serif;
-    padding: 20px;
+    padding: 15px;
+    /* Menos padding en móvil para ganar espacio */
 }
 
 .home-card {
     background: #ffffff;
-    padding: 60px 40px;
-    border-radius: 32px;
-    /* Más redondeado para un look moderno */
+    padding: 40px 20px;
+    /* Ajuste para móvil */
+    border-radius: 28px;
     text-align: center;
     width: 100%;
     max-width: 440px;
@@ -22,23 +27,16 @@
     overflow: hidden;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+
+/* LOGO */
 
 .logo-wrapper {
     background: #f8fafc;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 25px;
-    border-radius: 30px;
+    width: 100px;
+    /* Más pequeño en móvil */
+    height: 100px;
+    margin: 0 auto 20px;
+    border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -46,55 +44,55 @@
 }
 
 .home-logo {
-    width: 90px;
+    width: 70px;
     height: auto;
     object-fit: contain;
 }
 
+
+/* TEXTOS */
+
 .home-title {
     color: #00003f;
-    font-size: 2.8rem;
+    font-size: 2.2rem;
+    /* Tamaño móvil */
     font-weight: 900;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: -1px;
 }
 
 .home-subtitle {
     color: #64748b;
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin-bottom: 40px;
-    padding: 0 10px;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 35px;
+    padding: 0 5px;
 }
+
+
+/* BOTONES (Apilados verticalmente siempre) */
 
 .home-buttons {
     display: flex;
     flex-direction: column;
-    /* Botones apilados para mejor UX en móvil */
     gap: 12px;
 }
 
 .btn-home {
     width: 100%;
-    padding: 18px;
-    font-size: 1.1rem;
-    border-radius: 16px;
+    padding: 16px;
+    font-size: 1.05rem;
+    border-radius: 14px;
     border: none;
     cursor: pointer;
     font-weight: 800;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
 }
 
 .btn-home.primary {
     background: #fcb424;
     color: #00003f;
-    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
-}
-
-.btn-home.primary:hover {
-    background: #e6a91e;
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px rgba(252, 180, 36, 0.3);
+    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.2);
 }
 
 .btn-home.secondary {
@@ -102,35 +100,54 @@
     color: #00003f;
 }
 
-.btn-home.secondary:hover {
-    background-color: #e2e8f0;
-    transform: translateY(-2px);
-}
-
 .home-footer {
-    margin-top: 30px;
-    font-size: 0.8rem;
+    margin-top: 25px;
+    font-size: 0.75rem;
     color: #94a3b8;
 }
 
 
 /* ===============================
-    📱 ADAPTACIÓN PARA MÓVIL
-=============================== */
+   🖥️ AJUSTES PARA COMPUTADORA (Escritorio)
+   =============================== */
 
-@media (max-width: 480px) {
+@media (min-width: 768px) {
+    .home-container {
+        padding: 40px;
+    }
     .home-card {
-        padding: 45px 25px;
-        border-radius: 28px;
-    }
-    .home-title {
-        font-size: 2.2rem;
-    }
-    .home-subtitle {
-        font-size: 1rem;
+        padding: 60px 45px;
     }
     .logo-wrapper {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 25px;
+    }
+    .home-logo {
+        width: 85px;
+    }
+    .home-title {
+        font-size: 2.8rem;
+    }
+    .home-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+    .btn-home:hover {
+        transform: translateY(-3px);
+    }
+}
+
+
+/* ANIMACIÓN */
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -23,8 +23,9 @@ export default function VerifyCode() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (codigo.length !== 6) return;
+    
     setLoading(true);
-
     try {
       const res = await apiYesems.post("/usuario/password/verify-code", {
         email,
@@ -48,8 +49,8 @@ export default function VerifyCode() {
   return (
     <div className="verify-page">
       <div className="verify-card">
-        <button className="btn-floating-back" onClick={() => navigate("/forgot-password")} title="Cambiar correo">
-          <ArrowLeft size={20} />
+        <button className="btn-back-nav" onClick={() => navigate("/forgot-password")} title="Cambiar correo">
+          <ArrowLeft size={22} />
         </button>
 
         <header className="verify-header">
@@ -57,52 +58,52 @@ export default function VerifyCode() {
             <img src={logo} alt="yesems logo" className="verify-logo" />
           </div>
           <h2 className="verify-title">Verificar Código</h2>
-          <p className="subtitle">
-            Ingresa los 6 dígitos que enviamos a: <br />
-            <strong className="email-highlight">{email}</strong>
+          <p className="verify-subtitle">
+            Ingresa los 6 dígitos enviados a: <br />
+            <strong className="email-display">{email}</strong>
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="verify-form">
-          <div className="input-group-auth verify-input-box">
-            <KeyRound className="input-icon" size={20} />
+          <div className="input-group-auth verify-input-container">
+            <div className="icon-box-absolute">
+              <KeyRound size={22} />
+            </div>
             <input
               type="text"
-              inputMode="numeric" /* Fuerza teclado numérico en móviles */
+              inputMode="numeric" 
               pattern="[0-9]*"
               placeholder="000000"
-              className="input-codigo-style"
+              className="input-pin-style"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
               maxLength={6}
               required
+              disabled={loading}
             />
           </div>
 
-          <div className="verify-actions">
-            <button 
-              type="submit" 
-              className="btn-verify-submit"
-              disabled={loading || codigo.length !== 6}
-            >
-              {loading ? (
-                <div className="loader-dots">
-                  <span></span><span></span><span></span>
-                </div>
-              ) : (
-                <>
-                  <CheckCircle2 size={20} />
-                  <span>Validar Código</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button 
+            type="submit" 
+            className="btn-verify-submit"
+            disabled={loading || codigo.length !== 6}
+          >
+            {loading ? (
+              <div className="spinner-mini"></div>
+            ) : (
+              <>
+                <CheckCircle2 size={20} />
+                <span>Validar Código</span>
+              </>
+            )}
+          </button>
         </form>
 
         <footer className="verify-footer">
-          <p>¿No recibiste el código? <br /> 
-            <span className="link-resend" onClick={() => navigate("/forgot-password")}>Reenviar correo</span>
-          </p>
+          <p>¿No recibiste el código?</p>
+          <span className="link-resend" onClick={() => navigate("/forgot-password")}>
+            Reenviar correo
+          </span>
         </footer>
       </div>
     </div>

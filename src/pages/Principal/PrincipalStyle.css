@@ -1,95 +1,135 @@
 /* ===============================
-   CONTENEDOR PRINCIPAL
-=============================== */
+   CONTENEDOR BASE
+   =============================== */
 
 .principal-container {
     min-height: 100vh;
-    background: #f8f9fa;
-    font-family: "Inter", "Segoe UI", sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #f1f5f9;
+    /* Color de fondo más suave para lectura */
+    font-family: "Inter", sans-serif;
 }
-
-
-/* ===============================
-   CONTENIDO (RESPETA TOPBAR)
-=============================== */
 
 .principal-content {
-    padding-top: 90px;
-    /* Altura TopBar desktop */
+    padding-top: 100px;
+    /* Espacio para TopBar Desktop */
+    padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 40px;
     width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-/* ===============================
-   HEADER
-=============================== */
-
-.principal-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.principal-title {
-    font-size: 3rem;
-    color: #00003f;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 10px;
-}
-
-.principal-subtitle {
-    font-size: 1.2rem;
-    color: #6b7280;
-    max-width: 600px;
-    line-height: 1.6;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
 
 /* ===============================
-   ESTADO VACÍO
-=============================== */
+   HEADER SECCIÓN
+   =============================== */
 
-.empty-state {
-    padding: 80px 20px;
+.principal-header {
     text-align: center;
-    color: #6b7280;
-    font-size: 1.05rem;
+    margin-bottom: 50px;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.principal-title {
+    font-size: 2.8rem;
+    color: #00003f;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+}
+
+.principal-subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
 
 /* ===============================
    LOADER
-=============================== */
+   =============================== */
 
 .loader-container {
-    min-height: 50vh;
+    min-height: 40vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
 }
 
-.spinner {
-    width: 45px;
-    height: 45px;
-    border: 4px solid #e5e7eb;
-    border-top: 4px solid #fcb424;
+.spinner-main {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 63, 0.1);
+    border-top: 5px solid #fcb424;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
+
+.loader-text {
+    color: #00003f;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+
+/* ===============================
+   ESTADO VACÍO (EMPTY STATE)
+   =============================== */
+
+.empty-state-card {
+    background: white;
+    padding: 60px 30px;
+    border-radius: 24px;
+    text-align: center;
+    color: #94a3b8;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.empty-state-card p {
+    color: #475569;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+
+/* ===============================
+   RESPONSIVO
+   =============================== */
+
+@media (max-width: 768px) {
+    .principal-content {
+        padding-top: 85px;
+        /* Espacio para TopBar Móvil */
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .principal-title {
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+    }
+    .principal-subtitle {
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+    .principal-header {
+        margin-bottom: 30px;
+    }
+}
+
+
+/* ANIMACIONES */
 
 @keyframes spin {
     to {
@@ -97,22 +137,13 @@
     }
 }
 
-
-/* ===============================
-   RESPONSIVO
-=============================== */
-
-@media (max-width: 768px) {
-    .principal-content {
-        padding-top: 80px;
-        /* TopBar móvil */
-        padding-left: 15px;
-        padding-right: 15px;
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
     }
-    .principal-title {
-        font-size: 2.2rem;
-    }
-    .principal-subtitle {
-        font-size: 1.05rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

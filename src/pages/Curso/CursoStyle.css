@@ -1,204 +1,232 @@
-/* Contenedor general */
+/* ===============================
+   LAYOUT GENERAL
+   =============================== */
 
-.curso-contenedor-sidebar {
-    display: flex;
+.curso-layout {
     min-height: 100vh;
-    background: #f8f9fa;
-    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+}
+
+.curso-container {
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
     padding-top: 70px;
-}
-
-
-/* SIDEBAR ESCRITORIO */
-
-.sidebar {
-    width: 320px;
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 70px;
-    height: calc(100vh - 70px);
-    overflow-y: auto;
-    z-index: 100;
-    transition: transform 0.3s ease-in-out;
-}
-
-.sidebar h3 {
-    color: #00003f;
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #fcb424;
-    text-align: center;
-}
-
-
-/* Niveles y Lecciones */
-
-.nivel-sidebar {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 12px;
-    background: #f9fafb;
-    border: 1px solid #f0f0f0;
-}
-
-.nivel-titulo {
-    font-weight: 800;
-    color: #000000;
-    font-size: 0.95rem;
-    margin-bottom: 12px;
-}
-
-.lecciones-lista {
-    list-style: none;
-    padding: 0;
-}
-
-.leccion-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #000000;
-    font-size: 0.9rem;
-    padding: 8px 10px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.leccion-link .text {
-    font-weight: 600;
-}
-
-.leccion-item.completada .leccion-link .text {
-    color: #16a34a;
-}
-
-
-/* CONTENIDO PRINCIPAL */
-
-.contenido-curso {
-    flex: 1;
-    padding: 40px 60px;
-    max-width: 1000px;
-}
-
-.curso-titulo {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: #00003f;
-    margin-bottom: 10px;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    background: #00003f;
-    color: #fcb424;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-bottom: 30px;
-}
-
-.curso-info-card {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
-}
-
-.indicaciones-ayuda {
-    background: #fffbeb;
-    padding: 20px;
-    border-left: 5px solid #fcb424;
-    border-radius: 12px;
-}
-
-
-/* BOTÓN TOGGLE (OCULTO EN PC) */
-
-.btn-toggle-menu {
-    display: none;
+    /* Altura TopBar */
 }
 
 
 /* ===============================
-    📱 RESPONSIVE (CELULARES)
-=============================== */
+   SIDEBAR (ESCRITORIO)
+   =============================== */
 
-@media (max-width: 768px) {
-    .btn-toggle-menu {
-        display: block;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 55px;
-        height: 55px;
-        background: #00003f;
-        color: #fcb424;
-        border: none;
-        border-radius: 50%;
-        font-size: 1.5rem;
-        z-index: 1001;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-    }
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        transform: translateX(-100%);
-        /* Escondido a la izquierda */
-        width: 85%;
-        height: 100vh;
-        padding-top: 80px;
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
-    }
-    .sidebar.active {
-        transform: translateX(0);
-        /* Deslizar hacia adentro */
-    }
-    .contenido-curso {
-        padding: 20px;
-        padding-top: 40px;
-    }
-    .curso-titulo {
-        font-size: 1.8rem;
-    }
-    .curso-info-card {
-        padding: 20px;
-        border-radius: 16px;
-    }
+.curso-sidebar {
+    width: 320px;
+    background: #ffffff;
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
+.sidebar-course-info h3 {
+    color: #00003f;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
 
-/* Botones genéricos */
+.sidebar-navigation {
+    flex-grow: 1;
+}
 
-.btn-examen-sidebar,
-.btn-regresar-sidebar {
-    width: 100%;
-    padding: 12px;
+.sidebar-level {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+.level-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.lesson-list {
+    list-style: none;
+    padding: 0;
+}
+
+.lesson-item a,
+.lesson-disabled {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
     border-radius: 10px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #334155;
+    font-weight: 600;
+    transition: 0.2s;
 }
 
-.btn-examen-sidebar {
-    background: #fcb424;
+.lesson-item a:hover {
+    background: #ffffff;
     color: #00003f;
 }
 
-.btn-regresar-sidebar {
-    background: #f3f4f6;
-    color: #4b5563;
+.is-done a {
+    color: #10b981;
+}
+
+.icon-done {
+    color: #10b981;
+}
+
+.is-locked {
+    opacity: 0.6;
+}
+
+.btn-go-exam {
+    width: 100%;
+    margin-top: 15px;
+    background: #fcb424;
+    color: #00003f;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+
+/* ===============================
+   CONTENIDO PRINCIPAL
+   =============================== */
+
+.curso-main-content {
+    flex-grow: 1;
+    padding: 40px;
+    max-width: 900px;
+}
+
+.welcome-card {
+    background: #00003f;
+    color: white;
+    padding: 40px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.badge-status {
+    background: #fcb424;
+    color: #00003f;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.welcome-card h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.congrats-banner {
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px border rgba(252, 180, 36, 0.3);
+}
+
+
+/* ===============================
+   MOBILE & RESPONSIVE
+   =============================== */
+
+.floating-menu-btn {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .curso-sidebar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-menu-btn {
+        display: flex;
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        background: #fcb424;
+        color: #00003f;
+        border: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        z-index: 2100;
+        box-shadow: 0 8px 25px rgba(252, 180, 36, 0.4);
+    }
+    .curso-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 300px;
+        transform: translateX(-100%);
+        transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 2050;
+    }
+    .curso-sidebar.is-open {
+        transform: translateX(0);
+    }
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 2040;
+    }
+    .curso-main-content {
+        padding: 20px;
+        padding-top: 30px;
+    }
+    .welcome-card {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    .welcome-card h1 {
+        font-size: 1.6rem;
+    }
 }
