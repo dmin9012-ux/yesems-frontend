@@ -32,30 +32,28 @@ export default function Register() {
 
       if (!res.ok) {
         notify("error", res.message || "Error al registrar usuario");
+        setLoading(false); // Detenemos el loading aquí si hay error
         return;
       }
 
-      // ✅ NOTIFICACIÓN DE ÉXITO
+      // ✅ PASO 1: Notificamos el éxito
       notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
 
-      // Limpiamos los campos
+      // ✅ PASO 2: Limpiamos los campos para que se vea ordenado
       setNombre("");
       setEmail("");
       setPassword("");
 
-      // ⏩ ESPERAMOS 3 SEGUNDOS ANTES DE NAVEGAR
-      // Esto asegura que el usuario lea que debe verificar su cuenta.
+      // ✅ PASO 3: Esperamos 3.5 segundos para que lean la notificación
       setTimeout(() => {
+        setLoading(false);
         navigate("/login");
       }, 3500);
 
     } catch (error) {
       console.error("Error en registro:", error);
       notify("error", "Error al conectar con el servidor");
-    } finally {
-      // Importante: No quitamos el loading inmediatamente si queremos bloquear 
-      // el botón mientras se muestra la notificación antes de ir al login.
-      setTimeout(() => setLoading(false), 3500);
+      setLoading(false);
     }
   };
 
@@ -63,9 +61,7 @@ export default function Register() {
     <div className="register-page">
       <div className="register-card">
         <header className="register-header">
-          <div className="register-logo-wrapper">
-             <img src={logo} alt="yesems logo" className="register-logo" />
-          </div>
+          <img src={logo} alt="yesems logo" className="register-logo" />
           <h2>Crear Cuenta</h2>
           <p className="subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
         </header>
@@ -79,7 +75,7 @@ export default function Register() {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required
-              disabled={loading} // Bloqueamos durante la espera
+              disabled={loading} 
             />
           </div>
 
@@ -99,25 +95,24 @@ export default function Register() {
             <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contraseña"
+              placeholder="Contraseña (mínimo 6 caracteres)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
             />
-            <button 
-              type="button" 
-              className="password-toggle-eye" 
+            <img
+              src={showPassword ? ojoAbierto : ojoCerrado}
+              alt="Mostrar contraseña"
+              className="password-eye"
               onClick={() => setShowPassword(!showPassword)}
-            >
-              <img src={showPassword ? ojoAbierto : ojoCerrado} alt="Ver" />
-            </button>
+            />
           </div>
 
           <div className="register-actions">
             <button className="btn-register-submit" type="submit" disabled={loading}>
               {loading ? (
-                <div className="loader-dots">
+                <div className="loader-dots-dark">
                   <span></span><span></span><span></span>
                 </div>
               ) : (
@@ -131,7 +126,10 @@ export default function Register() {
         </form>
 
         <footer className="register-footer">
-          <p>¿Ya tienes cuenta? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
+          <span>¿Ya tienes cuenta?</span>
+          <span className="link-login" onClick={() => !loading && navigate("/login")}>
+            Inicia sesión
+          </span>
         </footer>
       </div>
     </div>
