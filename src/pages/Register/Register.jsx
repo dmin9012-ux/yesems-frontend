@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { User, Mail, Lock, UserPlus, ArrowLeft } from "lucide-react"; 
+import { User, Mail, Lock, UserPlus } from "lucide-react"; 
 import "./RegisterStyle.css";
 
 export default function Register() {
@@ -35,35 +35,39 @@ export default function Register() {
         return;
       }
 
+      // ✅ NOTIFICACIÓN DE ÉXITO
       notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
-      
+
+      // Limpiamos los campos
       setNombre("");
       setEmail("");
       setPassword("");
 
-      navigate("/login");
+      // ⏩ ESPERAMOS 3 SEGUNDOS ANTES DE NAVEGAR
+      // Esto asegura que el usuario lea que debe verificar su cuenta.
+      setTimeout(() => {
+        navigate("/login");
+      }, 3500);
+
     } catch (error) {
       console.error("Error en registro:", error);
       notify("error", "Error al conectar con el servidor");
     } finally {
-      setLoading(false);
+      // Importante: No quitamos el loading inmediatamente si queremos bloquear 
+      // el botón mientras se muestra la notificación antes de ir al login.
+      setTimeout(() => setLoading(false), 3500);
     }
   };
 
   return (
     <div className="register-page">
       <div className="register-card">
-        {/* Botón para regresar rápido al Login */}
-        <button className="btn-back-login" onClick={() => navigate("/login")} title="Volver al inicio">
-            <ArrowLeft size={20} />
-        </button>
-
         <header className="register-header">
-          <div className="register-logo-container">
-            <img src={logo} alt="yesems logo" className="register-logo" />
+          <div className="register-logo-wrapper">
+             <img src={logo} alt="yesems logo" className="register-logo" />
           </div>
           <h2>Crear Cuenta</h2>
-          <p className="subtitle">Comienza tu formación en <strong>YES EMS</strong></p>
+          <p className="subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
         </header>
 
         <form onSubmit={handleRegister} className="register-form">
@@ -75,6 +79,7 @@ export default function Register() {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required
+              disabled={loading} // Bloqueamos durante la espera
             />
           </div>
 
@@ -86,6 +91,7 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -93,20 +99,18 @@ export default function Register() {
             <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contraseña (mín. 6 caracteres)"
+              placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
             <button 
               type="button" 
-              className="password-toggle-btn"
+              className="password-toggle-eye" 
               onClick={() => setShowPassword(!showPassword)}
             >
-              <img
-                src={showPassword ? ojoAbierto : ojoCerrado}
-                alt="Ver"
-              />
+              <img src={showPassword ? ojoAbierto : ojoCerrado} alt="Ver" />
             </button>
           </div>
 
@@ -114,12 +118,12 @@ export default function Register() {
             <button className="btn-register-submit" type="submit" disabled={loading}>
               {loading ? (
                 <div className="loader-dots">
-                    <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
                 </div>
               ) : (
                 <>
-                  <UserPlus size={20} />
-                  <span>Crear mi cuenta</span>
+                  <UserPlus size={18} />
+                  <span>Registrarme</span>
                 </>
               )}
             </button>
@@ -127,7 +131,7 @@ export default function Register() {
         </form>
 
         <footer className="register-footer">
-          <p>¿Ya eres parte de nosotros? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
+          <p>¿Ya tienes cuenta? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
         </footer>
       </div>
     </div>
