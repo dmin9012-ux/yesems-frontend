@@ -9,13 +9,16 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-card">
+        <div className="home-content">
+          <div className="logo-wrapper">
+            <img src={logo} alt="yesems logo" className="home-logo" />
+          </div>
 
-        <img src={logo} alt="yesems logo" className="home-logo" />
-
-        <h1 className="home-title">YES EMS</h1>
-        <p className="home-subtitle">
-          Plataforma digital para una mejor experiencia
-        </p>
+          <h1 className="home-title">YES EMS</h1>
+          <p className="home-subtitle">
+            Plataforma digital para una mejor experiencia educativa.
+          </p>
+        </div>
 
         <div className="home-buttons">
           <button
@@ -29,10 +32,13 @@ const Home = () => {
             onClick={() => navigate("/register")}
             className="btn-home secondary"
           >
-            Registrarse
+            Crear Cuenta
           </button>
         </div>
-
+        
+        <footer className="home-footer">
+          <p>© 2026 YES EMS. Todos los derechos reservados.</p>
+        </footer>
       </div>
     </div>
   );

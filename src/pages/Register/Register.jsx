@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { User, Mail, Lock, UserPlus } from "lucide-react"; // Iconos consistentes
+import { User, Mail, Lock, UserPlus, ArrowLeft } from "lucide-react"; 
 import "./RegisterStyle.css";
 
 export default function Register() {
@@ -36,7 +36,7 @@ export default function Register() {
       }
 
       notify("success", "¡Registro exitoso! 📧 Revisa tu correo para verificar tu cuenta.");
-
+      
       setNombre("");
       setEmail("");
       setPassword("");
@@ -53,10 +53,17 @@ export default function Register() {
   return (
     <div className="register-page">
       <div className="register-card">
+        {/* Botón para regresar rápido al Login */}
+        <button className="btn-back-login" onClick={() => navigate("/login")} title="Volver al inicio">
+            <ArrowLeft size={20} />
+        </button>
+
         <header className="register-header">
-          <img src={logo} alt="yesems logo" className="register-logo" />
+          <div className="register-logo-container">
+            <img src={logo} alt="yesems logo" className="register-logo" />
+          </div>
           <h2>Crear Cuenta</h2>
-          <p className="subtitle">Únete a la plataforma <strong>YES EMS</strong></p>
+          <p className="subtitle">Comienza tu formación en <strong>YES EMS</strong></p>
         </header>
 
         <form onSubmit={handleRegister} className="register-form">
@@ -86,28 +93,33 @@ export default function Register() {
             <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contraseña (mínimo 6 caracteres)"
+              placeholder="Contraseña (mín. 6 caracteres)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <img
-              src={showPassword ? ojoAbierto : ojoCerrado}
-              alt="Mostrar contraseña"
-              className="password-eye"
+            <button 
+              type="button" 
+              className="password-toggle-btn"
               onClick={() => setShowPassword(!showPassword)}
-            />
+            >
+              <img
+                src={showPassword ? ojoAbierto : ojoCerrado}
+                alt="Ver"
+              />
+            </button>
           </div>
 
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="register-actions">
             <button className="btn-register-submit" type="submit" disabled={loading}>
               {loading ? (
-                <span className="loader-btn"></span>
+                <div className="loader-dots">
+                    <span></span><span></span><span></span>
+                </div>
               ) : (
                 <>
-                  <UserPlus size={18} />
-                  <span>Registrarme</span>
+                  <UserPlus size={20} />
+                  <span>Crear mi cuenta</span>
                 </>
               )}
             </button>
@@ -115,10 +127,7 @@ export default function Register() {
         </form>
 
         <footer className="register-footer">
-          <span>¿Ya tienes cuenta?</span>
-          <span className="link-login" onClick={() => navigate("/login")}>
-            Inicia sesión
-          </span>
+          <p>¿Ya eres parte de nosotros? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
         </footer>
       </div>
     </div>

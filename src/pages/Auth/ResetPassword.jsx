@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { Lock, Save, ShieldCheck } from "lucide-react"; // Iconos consistentes
+import { Lock, Save, ShieldCheck, ArrowLeft } from "lucide-react"; 
 import "./ResetPasswordStyle.css";
 
 export default function ResetPassword() {
@@ -65,10 +65,17 @@ export default function ResetPassword() {
   return (
     <div className="reset-page">
       <div className="reset-card">
+        {/* Botón opcional por si el usuario quiere cancelar el proceso */}
+        <button className="btn-back-auth" onClick={() => navigate("/login")} title="Cancelar">
+          <ArrowLeft size={20} />
+        </button>
+
         <header className="reset-header">
-          <img src={logo} alt="YES EMS logo" className="reset-logo" />
-          <h2 className="reset-title">Restablecer contraseña</h2>
-          <p className="subtitle">Crea una nueva contraseña segura para tu cuenta</p>
+          <div className="reset-logo-wrapper">
+            <img src={logo} alt="YES EMS logo" className="reset-logo" />
+          </div>
+          <h2 className="reset-title">Nueva Contraseña</h2>
+          <p className="subtitle">Crea una clave segura para proteger tu acceso a <strong>YES EMS</strong></p>
         </header>
 
         <form onSubmit={handleSubmit} className="reset-form">
@@ -82,12 +89,13 @@ export default function ResetPassword() {
               onChange={(e) => setPasswordNueva(e.target.value)}
               required
             />
-            <img
-              src={showPasswordNueva ? ojoAbierto : ojoCerrado}
-              alt="Mostrar"
-              className="password-eye"
+            <button 
+              type="button" 
+              className="password-toggle-eye" 
               onClick={() => setShowPasswordNueva(!showPasswordNueva)}
-            />
+            >
+              <img src={showPasswordNueva ? ojoAbierto : ojoCerrado} alt="Ver" />
+            </button>
           </div>
 
           {/* 🔐 CONFIRMAR CONTRASEÑA */}
@@ -100,23 +108,25 @@ export default function ResetPassword() {
               onChange={(e) => setConfirmarPassword(e.target.value)}
               required
             />
-            <img
-              src={showConfirmarPassword ? ojoAbierto : ojoCerrado}
-              alt="Mostrar"
-              className="password-eye"
+            <button 
+              type="button" 
+              className="password-toggle-eye" 
               onClick={() => setShowConfirmarPassword(!showConfirmarPassword)}
-            />
+            >
+              <img src={showConfirmarPassword ? ojoAbierto : ojoCerrado} alt="Ver" />
+            </button>
           </div>
 
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="reset-actions">
             <button type="submit" className="btn-reset-submit" disabled={loading}>
               {loading ? (
-                <span className="loader-btn"></span>
+                <div className="loader-dots-white">
+                  <span></span><span></span><span></span>
+                </div>
               ) : (
                 <>
                   <Save size={18} />
-                  <span>Restablecer contraseña</span>
+                  <span>Actualizar contraseña</span>
                 </>
               )}
             </button>

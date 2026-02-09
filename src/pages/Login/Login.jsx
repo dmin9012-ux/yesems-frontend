@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { LogIn, Mail, Lock } from "lucide-react"; // Iconos para mejorar la UI
+import { LogIn, Mail, Lock } from "lucide-react"; 
 import "./LoginStyle.css";
 
 export default function Login() {
@@ -17,11 +17,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Verificación de entorno (opcional)
-    console.log("API URL:", import.meta.env.VITE_API_URL);
-  }, []);
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -29,7 +24,6 @@ export default function Login() {
     try {
       const res = await login({ email, password });
 
-      // ❌ Error de login (Credenciales incorrectas)
       if (!res || res.ok === false) {
         notify("error", res?.message || "Credenciales incorrectas");
         setLoading(false);
@@ -38,17 +32,14 @@ export default function Login() {
 
       const usuario = res.usuario;
 
-      // ⚠️ Usuario no verificado
       if (usuario && usuario.verificado === false) {
         notify("warning", "Debes verificar tu correo antes de iniciar sesión.");
         setLoading(false);
         return;
       }
 
-      // ✅ Login Exitoso
       notify("success", `¡Bienvenido, ${usuario.nombre}!`);
 
-      // 🚀 Redirección por rol
       if (usuario && usuario.rol === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -67,7 +58,9 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <header className="login-header">
-          <img src={logo} alt="yesems logo" className="login-logo" />
+          <div className="login-logo-container">
+            <img src={logo} alt="yesems logo" className="login-logo" />
+          </div>
           <h2 className="login-title">Bienvenido</h2>
           <p className="login-subtitle">
             Inicia sesión en <strong>YES EMS</strong>
@@ -75,9 +68,10 @@ export default function Login() {
         </header>
 
         <form onSubmit={handleLogin} className="login-form">
-          {/* GRUPO EMAIL */}
           <div className="input-group-auth">
-            <Mail className="input-icon" size={20} />
+            <div className="icon-box">
+              <Mail className="input-icon" size={20} />
+            </div>
             <input
               type="email"
               placeholder="Correo electrónico"
@@ -87,9 +81,10 @@ export default function Login() {
             />
           </div>
 
-          {/* GRUPO PASSWORD */}
           <div className="input-group-auth password-group">
-            <Lock className="input-icon" size={20} />
+            <div className="icon-box">
+              <Lock className="input-icon" size={20} />
+            </div>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Contraseña"
@@ -97,43 +92,48 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <img
-              src={showPassword ? ojoAbierto : ojoCerrado}
-              alt="Mostrar contraseña"
-              className="password-eye"
+            <button 
+              type="button" 
+              className="password-eye-btn"
               onClick={() => setShowPassword(!showPassword)}
-            />
+            >
+              <img
+                src={showPassword ? ojoAbierto : ojoCerrado}
+                alt="Ver"
+                className="password-eye-img"
+              />
+            </button>
           </div>
 
           <div className="login-options">
-            <span
+            <button
+              type="button"
               className="link-forgot"
               onClick={() => navigate("/forgot-password")}
             >
               ¿Olvidaste tu contraseña?
-            </span>
-          </div>
-
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
-          <div className="login-actions">
-            <button type="submit" className="btn-login-submit" disabled={loading}>
-              {loading ? (
-                <span className="loader-btn"></span>
-              ) : (
-                <>
-                  <LogIn size={18} />
-                  <span>Entrar</span>
-                </>
-              )}
             </button>
           </div>
+
+          <button type="submit" className="btn-login-submit" disabled={loading}>
+            {loading ? (
+              <div className="spinner-mini"></div>
+            ) : (
+              <>
+                <LogIn size={20} />
+                <span>Entrar</span>
+              </>
+            )}
+          </button>
         </form>
 
         <footer className="login-footer">
-          <span>¿No tienes cuenta?</span>
-          <span className="link-register" onClick={() => navigate("/register")}>
-            Regístrate aquí
-          </span>
+          <p>
+            ¿No tienes cuenta?{" "}
+            <span className="link-register" onClick={() => navigate("/register")}>
+              Regístrate aquí
+            </span>
+          </p>
         </footer>
       </div>
     </div>

@@ -1,62 +1,76 @@
-/* ===============================
-   FONDO Y LAYOUT (Consistente con Login)
-=============================== */
-
-.register-page,
-.register-container {
+.register-page {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
-    font-family: "Inter", "Segoe UI", sans-serif;
+    font-family: "Inter", sans-serif;
     padding: 20px;
 }
 
-
-/* ===============================
-   CARD DE REGISTRO
-=============================== */
-
 .register-card {
     background: #ffffff;
-    padding: 45px 35px;
-    border-radius: 28px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    padding: 50px 40px;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     text-align: center;
     width: 100%;
-    max-width: 440px;
-    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 450px;
+    position: relative;
+    animation: slideUp 0.5s ease-out;
+}
+
+
+/* BOTÓN VOLVER */
+
+.btn-back-login {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    background: #f1f5f9;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00003f;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-back-login:hover {
+    background: #e2e8f0;
+    transform: translateX(-3px);
 }
 
 .register-logo {
-    width: 130px;
-    margin-bottom: 15px;
+    width: 140px;
+    margin-bottom: 10px;
 }
 
 .register-card h2 {
-    margin: 10px 0 5px;
     color: #00003f;
-    font-size: 30px;
+    font-size: 1.8rem;
     font-weight: 900;
-    letter-spacing: -1px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
-    font-size: 14px;
     color: #64748b;
-    margin-bottom: 30px;
+    font-size: 0.95rem;
+    margin-bottom: 35px;
 }
 
 
-/* ===============================
-   INPUTS CON ICONOS
-=============================== */
+/* FORMULARIO */
 
 .register-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .input-group-auth {
@@ -67,118 +81,103 @@
 
 .input-group-auth .input-icon {
     position: absolute;
-    left: 14px;
+    left: 16px;
     color: #94a3b8;
-    z-index: 10;
+    transition: color 0.3s;
 }
 
 .input-group-auth input {
     width: 100%;
-    padding: 14px 16px 14px 45px;
-    /* Espacio para el icono */
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+    padding: 16px 16px 16px 50px;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    background: #f8fafc;
+    font-size: 1rem;
     outline: none;
-    font-size: 15px;
-    background-color: #f8fafc;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .input-group-auth input:focus {
     border-color: #00003f;
-    background-color: #ffffff;
+    background: #fff;
     box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
 
-
-/* Estilo especial para foco en contraseña (Opcional) */
-
-.password-group input:focus {
-    border-color: #fcb424;
+.input-group-auth input:focus+.input-icon {
+    color: #00003f;
 }
 
 
-/* ===============================
-   CONTENEDOR DEL BOTÓN (CENTRADO)
-=============================== */
+/* TOGGLE PASSWORD */
+
+.password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    opacity: 0.6;
+}
+
+.password-toggle-btn img {
+    width: 22px;
+    height: 22px;
+}
+
+
+/* BOTÓN SUBMIT */
 
 .register-actions {
-    display: flex;
-    justify-content: center;
-    /* ESTO CENTRA EL BOTÓN */
-    width: 100%;
     margin-top: 15px;
 }
 
 .btn-register-submit {
+    width: 100%;
     background: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
-    /* Texto Azul Profundo */
     border: none;
-    padding: 16px 40px;
-    width: 85%;
-    /* Ancho estético, no total */
-    border-radius: 14px;
-    font-size: 16px;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
+    gap: 12px;
+    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn-register-submit:hover:not(:disabled) {
-    background: #e6a91e;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(252, 180, 36, 0.3);
 }
 
 .btn-register-submit:disabled {
-    background: #cbd5e1;
+    background: #e2e8f0;
     color: #94a3b8;
     cursor: not-allowed;
     box-shadow: none;
 }
 
 
-/* ===============================
-   ELEMENTOS ADICIONALES
-=============================== */
-
-.password-eye {
-    position: absolute;
-    right: 14px;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-    z-index: 10;
-}
-
-.password-eye:hover {
-    opacity: 1;
-}
+/* FOOTER */
 
 .register-footer {
-    margin-top: 30px;
-    font-size: 14px;
-    color: #64748b;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+    margin-top: 35px;
+    padding-top: 25px;
     border-top: 1px solid #f1f5f9;
-    padding-top: 20px;
+    font-size: 0.95rem;
+    color: #64748b;
 }
 
 .link-login {
     color: #00003f;
-    font-weight: 700;
     cursor: pointer;
+    font-weight: 800;
 }
 
 .link-login:hover {
@@ -186,13 +185,44 @@
     text-decoration: underline;
 }
 
-@keyframes fadeIn {
+
+/* ANIMACIONES */
+
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+.loader-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.loader-dots span {
+    width: 8px;
+    height: 8px;
+    background: #00003f;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loader-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loader-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-6px);
+        opacity: 0.5;
     }
 }

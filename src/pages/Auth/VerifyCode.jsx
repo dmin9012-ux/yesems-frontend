@@ -3,13 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
 import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
-import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; // Iconos consistentes
+import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; 
 import "./VerifyCodeStyle.css";
 
 export default function VerifyCode() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const email = location.state?.email;
 
   const [codigo, setCodigo] = useState("");
@@ -39,7 +38,6 @@ export default function VerifyCode() {
         });
       }
     } catch (error) {
-      console.error(error);
       const msg = error.response?.data?.message || "Código inválido o expirado";
       notify("error", msg);
     } finally {
@@ -50,11 +48,17 @@ export default function VerifyCode() {
   return (
     <div className="verify-page">
       <div className="verify-card">
+        <button className="btn-floating-back" onClick={() => navigate("/forgot-password")} title="Cambiar correo">
+          <ArrowLeft size={20} />
+        </button>
+
         <header className="verify-header">
-          <img src={logo} alt="yesems logo" className="verify-logo" />
-          <h2 className="verify-title">Verificar código</h2>
+          <div className="verify-logo-wrapper">
+            <img src={logo} alt="yesems logo" className="verify-logo" />
+          </div>
+          <h2 className="verify-title">Verificar Código</h2>
           <p className="subtitle">
-            Ingresa el código de 6 dígitos enviado a: <br />
+            Ingresa los 6 dígitos que enviamos a: <br />
             <strong className="email-highlight">{email}</strong>
           </p>
         </header>
@@ -64,18 +68,17 @@ export default function VerifyCode() {
             <KeyRound className="input-icon" size={20} />
             <input
               type="text"
+              inputMode="numeric" /* Fuerza teclado numérico en móviles */
+              pattern="[0-9]*"
               placeholder="000000"
               className="input-codigo-style"
               value={codigo}
-              onChange={(e) =>
-                setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))
-              }
+              onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
               maxLength={6}
               required
             />
           </div>
 
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="verify-actions">
             <button 
               type="submit" 
@@ -83,11 +86,13 @@ export default function VerifyCode() {
               disabled={loading || codigo.length !== 6}
             >
               {loading ? (
-                <span className="loader-btn"></span>
+                <div className="loader-dots">
+                  <span></span><span></span><span></span>
+                </div>
               ) : (
                 <>
-                  <CheckCircle2 size={18} />
-                  <span>Verificar código</span>
+                  <CheckCircle2 size={20} />
+                  <span>Validar Código</span>
                 </>
               )}
             </button>
@@ -95,10 +100,9 @@ export default function VerifyCode() {
         </form>
 
         <footer className="verify-footer">
-          <button className="link-back-verify" onClick={() => navigate("/forgot-password")}>
-            <ArrowLeft size={16} />
-            <span>Cambiar correo</span>
-          </button>
+          <p>¿No recibiste el código? <br /> 
+            <span className="link-resend" onClick={() => navigate("/forgot-password")}>Reenviar correo</span>
+          </p>
         </footer>
       </div>
     </div>

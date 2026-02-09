@@ -3,12 +3,11 @@ import { useNavigate } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
 import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
-import { Mail, Send, ArrowLeft } from "lucide-react"; // Iconos consistentes
+import { Mail, Send, ArrowLeft } from "lucide-react"; 
 import "./ForgotPasswordStyle.css";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,18 +17,14 @@ export default function ForgotPassword() {
 
     try {
       const res = await apiYesems.post("/usuario/password/forgot", { email });
-
-      // ✅ Éxito
       notify("success", res.data.message || "Código enviado correctamente 📧");
 
-      // ⏩ Redirección automática tras el éxito
       setTimeout(() => {
         navigate("/verify-code", { state: { email } });
       }, 1500);
 
     } catch (error) {
-      console.error(error);
-      const errorMsg = error.response?.data?.message || "Error al enviar el código. Intenta más tarde.";
+      const errorMsg = error.response?.data?.message || "Error al enviar el código.";
       notify("error", errorMsg);
     } finally {
       setLoading(false);
@@ -39,11 +34,17 @@ export default function ForgotPassword() {
   return (
     <div className="forgot-page">
       <div className="forgot-card">
+        <button className="btn-floating-back" onClick={() => navigate("/login")} title="Regresar">
+          <ArrowLeft size={20} />
+        </button>
+
         <header className="forgot-header">
-          <img src={logo} alt="yesems logo" className="forgot-logo" />
-          <h2 className="forgot-title">Recuperar contraseña</h2>
+          <div className="forgot-logo-wrapper">
+            <img src={logo} alt="yesems logo" className="forgot-logo" />
+          </div>
+          <h2 className="forgot-title">¿Olvidaste tu contraseña?</h2>
           <p className="forgot-subtitle">
-            Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
+            No te preocupes. Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu acceso.
           </p>
         </header>
 
@@ -52,22 +53,23 @@ export default function ForgotPassword() {
             <Mail className="input-icon" size={20} />
             <input
               type="email"
-              placeholder="Correo electrónico"
+              placeholder="Tu correo electrónico registrado"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="forgot-actions">
             <button type="submit" className="btn-forgot-submit" disabled={loading}>
               {loading ? (
-                <span className="loader-btn"></span>
+                <div className="loader-dots">
+                  <span></span><span></span><span></span>
+                </div>
               ) : (
                 <>
-                  <Send size={18} />
-                  <span>Enviar código</span>
+                  <span>Enviar código de acceso</span>
+                  <Send size={18} className="send-icon" />
                 </>
               )}
             </button>
@@ -75,10 +77,7 @@ export default function ForgotPassword() {
         </form>
 
         <footer className="forgot-footer">
-          <button className="link-back" onClick={() => navigate("/login")}>
-            <ArrowLeft size={16} />
-            <span>Volver al inicio de sesión</span>
-          </button>
+          <p>¿Recordaste tu contraseña? <strong className="link-login" onClick={() => navigate("/login")}>Inicia sesión</strong></p>
         </footer>
       </div>
     </div>

@@ -3,25 +3,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #00003f, #02025f);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top right, #02025f, #00003f);
+    font-family: 'Inter', sans-serif;
+    padding: 20px;
 }
 
 .home-card {
     background: #ffffff;
-    padding: 50px 40px;
-    border-radius: 16px;
+    padding: 60px 40px;
+    border-radius: 32px;
+    /* Más redondeado para un look moderno */
     text-align: center;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.7s ease-in-out;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes fadeIn {
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
@@ -29,64 +33,104 @@
     }
 }
 
+.logo-wrapper {
+    background: #f8fafc;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 25px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .home-logo {
-    width: 160px;
-    margin-bottom: 20px;
+    width: 90px;
+    height: auto;
+    object-fit: contain;
 }
 
 .home-title {
     color: #00003f;
-    font-size: 2.4rem;
-    margin-bottom: 10px;
+    font-size: 2.8rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
 }
 
 .home-subtitle {
-    color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 30px;
+    color: #64748b;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    padding: 0 10px;
 }
 
 .home-buttons {
     display: flex;
-    gap: 15px;
-    justify-content: center;
+    flex-direction: column;
+    /* Botones apilados para mejor UX en móvil */
+    gap: 12px;
 }
 
 .btn-home {
-    padding: 14px 28px;
-    font-size: 1rem;
-    border-radius: 8px;
+    width: 100%;
+    padding: 18px;
+    font-size: 1.1rem;
+    border-radius: 16px;
     border: none;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
+    font-weight: 800;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-home.primary {
-    background-color: #fcb424;
+    background: #fcb424;
     color: #00003f;
+    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
 }
 
 .btn-home.primary:hover {
-    background-color: #e6a91e;
+    background: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(252, 180, 36, 0.3);
 }
 
 .btn-home.secondary {
-    background-color: transparent;
+    background-color: #f1f5f9;
     color: #00003f;
-    border: 2px solid #00003f;
 }
 
 .btn-home.secondary:hover {
-    background-color: #00003f;
-    color: #ffffff;
+    background-color: #e2e8f0;
+    transform: translateY(-2px);
 }
+
+.home-footer {
+    margin-top: 30px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+
+/* ===============================
+    📱 ADAPTACIÓN PARA MÓVIL
+=============================== */
 
 @media (max-width: 480px) {
     .home-card {
-        padding: 40px 25px;
+        padding: 45px 25px;
+        border-radius: 28px;
     }
     .home-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+    .home-subtitle {
+        font-size: 1rem;
+    }
+    .logo-wrapper {
+        width: 100px;
+        height: 100px;
     }
 }
