@@ -3,12 +3,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
 import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
-import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; 
+import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; // Iconos consistentes
 import "./VerifyCodeStyle.css";
 
 export default function VerifyCode() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const email = location.state?.email;
 
   const [codigo, setCodigo] = useState("");
@@ -23,9 +24,8 @@ export default function VerifyCode() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (codigo.length !== 6) return;
-    
     setLoading(true);
+
     try {
       const res = await apiYesems.post("/usuario/password/verify-code", {
         email,
@@ -39,6 +39,7 @@ export default function VerifyCode() {
         });
       }
     } catch (error) {
+      console.error(error);
       const msg = error.response?.data?.message || "Código inválido o expirado";
       notify("error", msg);
     } finally {
@@ -49,61 +50,55 @@ export default function VerifyCode() {
   return (
     <div className="verify-page">
       <div className="verify-card">
-        <button className="btn-back-nav" onClick={() => navigate("/forgot-password")} title="Cambiar correo">
-          <ArrowLeft size={22} />
-        </button>
-
         <header className="verify-header">
-          <div className="verify-logo-wrapper">
-            <img src={logo} alt="yesems logo" className="verify-logo" />
-          </div>
-          <h2 className="verify-title">Verificar Código</h2>
-          <p className="verify-subtitle">
-            Ingresa los 6 dígitos enviados a: <br />
-            <strong className="email-display">{email}</strong>
+          <img src={logo} alt="yesems logo" className="verify-logo" />
+          <h2 className="verify-title">Verificar código</h2>
+          <p className="subtitle">
+            Ingresa el código de 6 dígitos enviado a: <br />
+            <strong className="email-highlight">{email}</strong>
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="verify-form">
-          <div className="input-group-auth verify-input-container">
-            <div className="icon-box-absolute">
-              <KeyRound size={22} />
-            </div>
+          <div className="input-group-auth verify-input-box">
+            <KeyRound className="input-icon" size={20} />
             <input
               type="text"
-              inputMode="numeric" 
-              pattern="[0-9]*"
               placeholder="000000"
-              className="input-pin-style"
+              className="input-codigo-style"
               value={codigo}
-              onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              onChange={(e) =>
+                setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
               maxLength={6}
               required
-              disabled={loading}
             />
           </div>
 
-          <button 
-            type="submit" 
-            className="btn-verify-submit"
-            disabled={loading || codigo.length !== 6}
-          >
-            {loading ? (
-              <div className="spinner-mini"></div>
-            ) : (
-              <>
-                <CheckCircle2 size={20} />
-                <span>Validar Código</span>
-              </>
-            )}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="verify-actions">
+            <button 
+              type="submit" 
+              className="btn-verify-submit"
+              disabled={loading || codigo.length !== 6}
+            >
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <CheckCircle2 size={18} />
+                  <span>Verificar código</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
         <footer className="verify-footer">
-          <p>¿No recibiste el código?</p>
-          <span className="link-resend" onClick={() => navigate("/forgot-password")}>
-            Reenviar correo
-          </span>
+          <button className="link-back-verify" onClick={() => navigate("/forgot-password")}>
+            <ArrowLeft size={16} />
+            <span>Cambiar correo</span>
+          </button>
         </footer>
       </div>
     </div>

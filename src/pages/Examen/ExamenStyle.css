@@ -1,166 +1,355 @@
+/* ===============================
+    LAYOUT Y CONTENEDOR
+================================ */
+
 .examen-layout {
-    background-color: #f0f2f5;
     min-height: 100vh;
-    padding: 100px 20px 60px;
+    background-color: #f8fafc;
+    padding-top: 80px;
+    /* Espacio para TopBar */
 }
 
-.examen-container {
-    max-width: 750px;
-    margin: 0 auto;
+.examen-content {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.examen-header-main {
+    margin-bottom: 40px;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.05);
+}
+
+.header-info h1 {
+    color: #00003f;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.header-info p {
+    color: #64748b;
+    margin: 5px 0 0 0;
+}
+
+.header-info svg {
+    color: #fcb424;
+    /* Ámbar YES EMS */
 }
 
 
-/* CARDS DE PREGUNTAS */
+/* ===============================
+    TARJETAS DE PREGUNTAS
+================================ */
 
-.question-card {
+.pregunta-card-student {
     background: white;
     border-radius: 24px;
-    padding: 30px;
+    padding: 35px;
     margin-bottom: 25px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    transition: 0.3s ease;
-    border: 2px solid transparent;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
 }
 
-.question-card.is-answered {
-    border-color: #fcb42433;
+.pregunta-card-student.answered {
+    border-left: 6px solid #fcb424;
 }
 
-.q-label {
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #fcb424;
-    margin-bottom: 10px;
-}
-
-.q-text {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #00003f;
+.pregunta-header {
+    display: flex;
+    gap: 15px;
     margin-bottom: 25px;
-    line-height: 1.4;
+}
+
+.q-number {
+    background: #00003f;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.pregunta-header h3 {
+    font-size: 1.2rem;
+    color: #1e293b;
+    line-height: 1.5;
+    margin: 0;
 }
 
 
-/* OPCIONES ESTILO BOTÓN */
+/* ===============================
+    OPCIONES DE SELECCIÓN
+================================ */
 
-.options-list {
+.opciones-grid-student {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.option-item {
+.opcion-choice {
     display: flex;
     align-items: center;
-    padding: 18px 24px;
+    gap: 15px;
+    padding: 18px;
     background: #f8fafc;
-    border: 2px solid #edf2f7;
+    border: 2px solid #f1f5f9;
     border-radius: 16px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
-.option-item input {
-    display: none;
+.opcion-choice:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    transform: translateX(8px);
 }
 
-.option-item.is-selected {
-    background: #00003f;
+.opcion-choice.selected {
+    background: #f0f7ff;
     border-color: #00003f;
-    color: white;
 }
 
-.option-item.is-selected .option-label {
-    color: white;
+.radio-custom {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.option-label {
-    font-weight: 600;
+.opcion-choice.selected .radio-custom {
+    border-color: #00003f;
+}
+
+.radio-inner {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.opcion-choice.selected .radio-inner {
+    background: #fcb424;
+}
+
+.opcion-txt {
     font-size: 1rem;
+    font-weight: 500;
     color: #475569;
 }
 
-
-/* PANTALLA DE RESULTADOS */
-
-.result-card {
-    background: white;
-    border-radius: 32px;
-    padding: 50px 30px;
-    text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+.opcion-choice.selected .opcion-txt {
+    color: #00003f;
+    font-weight: 700;
 }
 
-.score-circle {
-    width: 180px;
-    height: 180px;
-    border: 10px solid #f1f5f9;
+
+/* ===============================
+    PANTALLAS DE CARGA Y MENSAJES
+================================ */
+
+.examen-loading-full {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #00003f;
+    font-weight: 700;
+}
+
+.spinner-yes {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #fcb424;
     border-radius: 50%;
-    margin: 30px auto;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+
+/* ===============================
+    PANTALLAS DE RESULTADO
+================================ */
+
+.examen-screen-msg {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: #f1f5f9;
+    padding: 20px;
 }
 
-.is-success .score-circle {
-    border-color: #10b98122;
+.msg-card {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 32px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease;
 }
 
-.is-fail .score-circle {
-    border-color: #ef444422;
-}
-
-.big-percent {
-    font-size: 3.5rem;
+.score-badge {
+    font-size: 4.5rem;
     font-weight: 900;
     color: #00003f;
-    display: block;
-    line-height: 1;
+    margin: 15px 0;
 }
 
-.label-score {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 30px;
 }
 
-.btn-action-main {
+
+/* ===============================
+    BOTONES Y ACCIONES
+=============================== */
+
+.examen-footer-action {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px;
+    padding-bottom: 60px;
+}
+
+.btn-finish-exam {
+    width: 80%;
+    max-width: 450px;
+    padding: 20px;
     background: #fcb424;
     color: #00003f;
-    padding: 18px 40px;
-    border-radius: 20px;
-    font-weight: 800;
     border: none;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    font-weight: 900;
     cursor: pointer;
-    font-size: 1.1rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
+    box-shadow: 0 10px 20px rgba(252, 180, 36, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-action-main.retry {
+.btn-finish-exam:hover:not(:disabled) {
+    transform: translateY(-5px);
+    background: #e6a91e;
+}
+
+.btn-finish-exam:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.btn-yes {
+    padding: 16px 24px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-yes.success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-yes.retry {
     background: #00003f;
     color: white;
 }
 
+.btn-yes.primary {
+    background: #fcb424;
+    color: #00003f;
+}
 
-/* ANIMACIONES */
+.btn-yes:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
 
-.spin-yes {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #fcb424;
+
+/* Loader dentro de botón */
+
+.loader-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.spinner-mini {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(0, 0, 63, 0.1);
+    border-top: 3px solid #00003f;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-    100% {
+    to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsivo */
+
+@media (max-width: 600px) {
+    .btn-finish-exam {
+        width: 100%;
+    }
+    .header-info h1 {
+        font-size: 1.5rem;
     }
 }

@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { Lock, Save, ShieldCheck, ArrowLeft } from "lucide-react"; 
+import { Lock, Save, ShieldCheck } from "lucide-react"; // Iconos consistentes
 import "./ResetPasswordStyle.css";
 
 export default function ResetPassword() {
@@ -65,73 +65,62 @@ export default function ResetPassword() {
   return (
     <div className="reset-page">
       <div className="reset-card">
-        <button className="btn-back-auth" onClick={() => navigate("/login")} title="Cancelar">
-          <ArrowLeft size={22} />
-        </button>
-
         <header className="reset-header">
-          <div className="reset-logo-wrapper">
-            <img src={logo} alt="YES EMS logo" className="reset-logo" />
-          </div>
-          <h2 className="reset-title">Nueva Contraseña</h2>
-          <p className="reset-subtitle">Crea una clave segura para proteger tu acceso a <strong>YES EMS</strong></p>
+          <img src={logo} alt="YES EMS logo" className="reset-logo" />
+          <h2 className="reset-title">Restablecer contraseña</h2>
+          <p className="subtitle">Crea una nueva contraseña segura para tu cuenta</p>
         </header>
 
         <form onSubmit={handleSubmit} className="reset-form">
           {/* 🔐 NUEVA CONTRASEÑA */}
           <div className="input-group-auth password-group">
-            <div className="icon-box">
-              <Lock size={20} />
-            </div>
+            <Lock className="input-icon" size={20} />
             <input
               type={showPasswordNueva ? "text" : "password"}
               placeholder="Nueva contraseña"
               value={passwordNueva}
               onChange={(e) => setPasswordNueva(e.target.value)}
               required
-              disabled={loading}
             />
-            <button 
-              type="button" 
-              className="password-toggle-eye" 
+            <img
+              src={showPasswordNueva ? ojoAbierto : ojoCerrado}
+              alt="Mostrar"
+              className="password-eye"
               onClick={() => setShowPasswordNueva(!showPasswordNueva)}
-            >
-              <img src={showPasswordNueva ? ojoAbierto : ojoCerrado} alt="Ver" />
-            </button>
+            />
           </div>
 
           {/* 🔐 CONFIRMAR CONTRASEÑA */}
           <div className="input-group-auth password-group">
-            <div className="icon-box">
-              <ShieldCheck size={20} />
-            </div>
+            <ShieldCheck className="input-icon" size={20} />
             <input
               type={showConfirmarPassword ? "text" : "password"}
               placeholder="Confirmar contraseña"
               value={confirmarPassword}
               onChange={(e) => setConfirmarPassword(e.target.value)}
               required
-              disabled={loading}
             />
-            <button 
-              type="button" 
-              className="password-toggle-eye" 
+            <img
+              src={showConfirmarPassword ? ojoAbierto : ojoCerrado}
+              alt="Mostrar"
+              className="password-eye"
               onClick={() => setShowConfirmarPassword(!showConfirmarPassword)}
-            >
-              <img src={showConfirmarPassword ? ojoAbierto : ojoCerrado} alt="Ver" />
-            </button>
+            />
           </div>
 
-          <button type="submit" className="btn-reset-submit" disabled={loading}>
-            {loading ? (
-              <div className="spinner-mini"></div>
-            ) : (
-              <>
-                <Save size={18} />
-                <span>Actualizar contraseña</span>
-              </>
-            )}
-          </button>
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
+          <div className="reset-actions">
+            <button type="submit" className="btn-reset-submit" disabled={loading}>
+              {loading ? (
+                <span className="loader-btn"></span>
+              ) : (
+                <>
+                  <Save size={18} />
+                  <span>Restablecer contraseña</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -1,144 +1,198 @@
-.menu-section {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+/* ===================================================
+   MENU PRINCIPAL - YES EMS ACADEMY
+   =================================================== */
+
+.menu-wrapper {
+    margin-top: 30px;
+    padding: 0rem 2rem;
+    background: #f4f7fa;
+    /* Fondo limpio para resaltar las cards */
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.menu-section-header {
-    margin-bottom: 2.5rem;
+
+/* Título con la elegancia del Azul Profundo */
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeInDown 0.8s ease-out;
 }
 
-.menu-section-title {
-    font-size: 2rem;
-    font-weight: 800;
+.menu-title {
+    font-size: 3rem;
+    font-weight: 900;
     color: #00003f;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    letter-spacing: -1.5px;
 }
 
-.menu-section-subtitle {
-    color: #64748b;
+.menu-subtitle {
+    color: #6b7280;
     font-size: 1.1rem;
 }
+
+
+/* Grid optimizada */
 
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
 }
 
-.course-card {
+
+/* CARD DE CURSO (Estilo Premium) */
+
+.menu-card {
     background: #ffffff;
-    border-radius: 20px;
-    overflow: hidden;
+    border-radius: 28px;
+    padding: 0;
+    /* Quitamos el padding interno para que la imagen llegue al borde superior */
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.04);
     display: flex;
     flex-direction: column;
-    cursor: pointer;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.course-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 63, 0.1);
-    border-color: #fcb424;
-}
-
-.course-card-image {
-    width: 100%;
-    height: 170px;
     position: relative;
-    background-color: #f8fafc;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    animation: fadeInUp 0.6s forwards;
 }
 
-.course-card-image img {
+.menu-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.12);
+    border-color: #fcb424;
+    /* Resalte en Ámbar */
+}
+
+
+/* Contenedor de Imagen */
+
+.card-image-container {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #e5e7eb;
+}
+
+.card-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.6s ease;
 }
 
-.course-status-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: #10b981;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.menu-card:hover .card-image-container img {
+    transform: scale(1.1);
 }
 
-.course-card-body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+
+/* Cuerpo de la Card */
+
+.card-content {
+    padding: 25px;
 }
 
-.course-card-name {
-    font-size: 1.25rem;
+.card-title {
+    font-size: 1.35rem;
     font-weight: 800;
     color: #00003f;
     margin-bottom: 10px;
 }
 
-.course-card-info {
+.card-description {
     font-size: 0.95rem;
     color: #64748b;
+    line-height: 1.6;
     margin-bottom: 20px;
-    flex-grow: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
-.course-action-btn {
+
+/* BADGES Y ESTADOS */
+
+.card-badge-success {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #10b981;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.is-completed {
+    opacity: 0.9;
+    background-color: #f0fdf4;
+    border: 1.5px solid #10b981 !important;
+}
+
+
+/* Botón de acción fantasma que aparece en hover */
+
+.card-btn {
     width: 100%;
     padding: 12px;
-    background: #f1f5f9;
+    background: #f3f4f6;
     color: #00003f;
-    border: none;
     border-radius: 12px;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.menu-card:hover .card-btn {
+    background: #00003f;
+    color: white;
 }
 
 
-/* --- ESTILOS MÓVIL: SCROLL HORIZONTAL --- */
+/* Animaciones */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsivo */
 
 @media (max-width: 768px) {
+    .menu-title {
+        font-size: 2.2rem;
+    }
     .menu-grid {
-        display: flex !important;
-        flex-direction: row;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 16px;
-        padding: 10px 10px 30px 10px;
-        margin: 0 -10px;
-        -webkit-overflow-scrolling: touch;
+        gap: 20px;
     }
-    .menu-grid::-webkit-scrollbar {
-        display: none;
-    }
-    .course-card {
-        min-width: 285px;
-        max-width: 285px;
-        scroll-snap-align: center;
-        flex-shrink: 0;
-        transform: none !important;
-        /* Evita saltos en móvil */
-    }
-    .menu-section-title {
-        font-size: 1.5rem;
-    }
-    .menu-section-subtitle {
-        font-size: 0.95rem;
+    .card-image-container {
+        height: 150px;
     }
 }

@@ -1,91 +1,71 @@
 /* ===============================
-   CONTENEDOR BASE
-   =============================== */
+   FONDO Y LAYOUT GENERAL
+=============================== */
 
-.verify-page {
+.verify-page,
+.verify-container {
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at top right, #02025f, #00003f);
-    padding: 15px;
-    font-family: 'Inter', sans-serif;
+    justify-content: center;
+    /* Gradiente radial profundo YES EMS */
+    background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
+    font-family: "Inter", "Segoe UI", sans-serif;
+    padding: 20px;
 }
+
+
+/* ===============================
+   CARD DE VERIFICACIÓN
+=============================== */
 
 .verify-card {
-    background: #ffffff;
+    background-color: #ffffff;
     width: 100%;
-    max-width: 440px;
-    padding: 40px 20px;
+    max-width: 430px;
+    padding: 45px 35px;
     border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    /* Bordes más curvos y modernos */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
-    position: relative;
-    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-/* BOTÓN REGRESAR */
-
-.btn-back-nav {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: #f1f5f9;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #00003f;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-
-/* HEADER */
-
-.verify-logo-wrapper {
-    background: #f8fafc;
-    width: 75px;
-    height: 75px;
-    margin: 0 auto 15px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .verify-logo {
-    width: 50px;
+    width: 130px;
+    margin-bottom: 15px;
 }
 
-.verify-title {
+.verify-card h2 {
     color: #00003f;
-    font-size: 1.6rem;
+    font-size: 1.85rem;
     font-weight: 900;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
-.verify-subtitle {
+.subtitle {
+    font-size: 14px;
     color: #64748b;
-    font-size: 0.9rem;
-    line-height: 1.5;
     margin-bottom: 30px;
-}
-
-.email-display {
-    color: #00003f;
-    font-weight: 800;
-    display: block;
-    margin-top: 5px;
-    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 
-/* FORMULARIO E INPUT PIN */
+/* ===============================
+   INPUT DE CÓDIGO (ESTILO SECURITY)
+=============================== */
 
 .verify-form {
     display: flex;
@@ -93,134 +73,141 @@
     gap: 20px;
 }
 
-.verify-input-container {
+.input-group-auth {
     position: relative;
     display: flex;
     align-items: center;
-    background: #f1f5f9;
-    border-radius: 18px;
-    border: 2px solid transparent;
-    transition: 0.3s;
+    width: 100%;
 }
 
-.verify-input-container:focus-within {
-    background: #ffffff;
-    border-color: #fcb424;
-}
-
-.icon-box-absolute {
+.input-group-auth .input-icon {
     position: absolute;
     left: 18px;
     color: #94a3b8;
-    pointer-events: none;
+    z-index: 10;
 }
 
-.input-pin-style {
+.verify-card input,
+.input-codigo-style {
     width: 100%;
-    padding: 15px 15px 15px 50px;
-    font-size: 28px;
-    font-weight: 900;
+    padding: 16px 16px 16px 45px;
+    /* Espacio para el icono */
+    font-size: 26px;
+    font-weight: 800;
     letter-spacing: 8px;
+    /* Espaciado estilo PIN para los 6 dígitos */
     text-align: center;
-    background: transparent;
-    border: none;
-    outline: none;
+    border-radius: 14px;
+    border: 2px solid #e5e7eb;
     color: #00003f;
+    background-color: #f8fafc;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.verify-card input:focus,
+.input-codigo-style:focus {
+    border-color: #fcb424;
+    /* Resalte en ámbar al escribir */
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
 }
 
 
-/* BOTÓN */
+/* ===============================
+   CENTRADO DEL BOTÓN
+=============================== */
 
-.btn-verify-submit {
+.verify-actions {
+    display: flex;
+    justify-content: center;
+    /* ESTO CENTRA EL BOTÓN */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-verify-submit,
+.verify-card button {
+    width: 85%;
+    /* Ancho estilizado para no ser tosco */
     padding: 16px;
     background-color: #fcb424;
+    /* Amarillo Ámbar YES EMS */
     color: #00003f;
-    font-size: 1.05rem;
-    font-weight: 800;
+    /* Azul Profundo */
     border: none;
     border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.2);
-    transition: all 0.3s;
+    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-verify-submit:disabled {
-    background-color: #e2e8f0;
+.btn-verify-submit:hover:not(:disabled),
+.verify-card button:hover:not(:disabled) {
+    background-color: #e6a91e;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+}
+
+.btn-verify-submit:disabled,
+.verify-card button:disabled {
+    background-color: #cbd5e1;
     color: #94a3b8;
-    box-shadow: none;
     cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
 
-/* FOOTER */
+/* ===============================
+   FOOTER Y ENLACES
+=============================== */
 
 .verify-footer {
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid #f1f5f9;
-    font-size: 0.9rem;
 }
 
-.link-resend {
+.link,
+.link-back-verify {
     color: #00003f;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
-    display: inline-block;
-    margin-top: 5px;
-    text-decoration: underline;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.link:hover,
+.link-back-verify:hover {
+    color: #fcb424;
+    text-decoration: none;
 }
 
 
 /* ===============================
-   🖥️ AJUSTES PARA COMPUTADORA
-   =============================== */
+   RESPONSIVO
+=============================== */
 
-@media (min-width: 768px) {
+@media (max-width: 480px) {
     .verify-card {
-        padding: 55px 45px;
+        padding: 40px 25px;
     }
-    .verify-title {
-        font-size: 1.85rem;
+    .verify-card h2 {
+        font-size: 1.6rem;
     }
-    .input-pin-style {
-        font-size: 32px;
-        letter-spacing: 12px;
-    }
-    .btn-verify-submit:hover:not(:disabled) {
-        transform: translateY(-2px);
-        background-color: #e6a91e;
-    }
-}
-
-
-/* REUSANDO ANIMACIONES Y SPINNER */
-
-.spinner-mini {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0, 0, 63, 0.1);
-    border-top: 3px solid #00003f;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
+    .btn-verify-submit,
+    .verify-card button {
+        width: 100%;
     }
 }

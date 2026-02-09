@@ -1,200 +1,195 @@
 /* ===============================
-   CONTENEDOR BASE (Móvil Primero)
-   =============================== */
+   FONDO Y LAYOUT (Consistente con Login)
+=============================== */
 
-.register-page {
-    min-height: 100vh;
+.register-page,
+.register-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at top right, #02025f, #00003f);
-    padding: 15px;
-    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
+    font-family: "Inter", "Segoe UI", sans-serif;
+    padding: 20px;
 }
+
+
+/* ===============================
+   CARD DE REGISTRO
+=============================== */
 
 .register-card {
     background: #ffffff;
+    padding: 45px 35px;
+    border-radius: 28px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    text-align: center;
     width: 100%;
     max-width: 440px;
-    padding: 30px 20px;
-    /* Un poco más compacto que el login */
-    border-radius: 28px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-
-/* HEADER */
-
-.register-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.register-logo-container {
-    background: #f8fafc;
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 12px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .register-logo {
-    width: 50px;
+    width: 130px;
+    margin-bottom: 15px;
 }
 
-.register-title {
+.register-card h2 {
+    margin: 10px 0 5px;
     color: #00003f;
-    font-size: 1.7rem;
+    font-size: 30px;
     font-weight: 900;
-    margin-bottom: 5px;
+    letter-spacing: -1px;
 }
 
-.register-subtitle {
+.subtitle {
+    font-size: 14px;
     color: #64748b;
-    font-size: 0.85rem;
+    margin-bottom: 30px;
 }
 
 
-/* FORMULARIO */
+/* ===============================
+   INPUTS CON ICONOS
+=============================== */
 
 .register-form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
 }
 
 .input-group-auth {
+    position: relative;
     display: flex;
     align-items: center;
-    background: #f1f5f9;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    transition: all 0.3s;
 }
 
-.input-group-auth:focus-within {
-    background: #ffffff;
-    border-color: #fcb424;
-}
-
-.icon-box {
-    padding: 0 12px;
+.input-group-auth .input-icon {
+    position: absolute;
+    left: 14px;
     color: #94a3b8;
-    display: flex;
-    align-items: center;
+    z-index: 10;
 }
 
 .input-group-auth input {
     width: 100%;
-    padding: 12px 12px 12px 0;
-    background: transparent;
-    border: none;
+    padding: 14px 16px 14px 45px;
+    /* Espacio para el icono */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
     outline: none;
-    font-size: 16px;
-    /* Evita zoom en iPhone */
-    font-weight: 600;
-    color: #1e293b;
+    font-size: 15px;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.input-group-auth input:focus {
+    border-color: #00003f;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
 
 
-/* BOTÓN REGISTRO */
+/* Estilo especial para foco en contraseña (Opcional) */
+
+.password-group input:focus {
+    border-color: #fcb424;
+}
+
+
+/* ===============================
+   CONTENEDOR DEL BOTÓN (CENTRADO)
+=============================== */
+
+.register-actions {
+    display: flex;
+    justify-content: center;
+    /* ESTO CENTRA EL BOTÓN */
+    width: 100%;
+    margin-top: 15px;
+}
 
 .btn-register-submit {
-    margin-top: 10px;
-    padding: 16px;
     background: #fcb424;
+    /* Amarillo Ámbar */
     color: #00003f;
+    /* Texto Azul Profundo */
     border: none;
-    border-radius: 12px;
-    font-size: 1rem;
+    padding: 16px 40px;
+    width: 85%;
+    /* Ancho estético, no total */
+    border-radius: 14px;
+    font-size: 16px;
     font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: all 0.3s;
-    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.2);
+    box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.password-eye-btn {
-    background: none;
-    border: none;
-    padding: 0 12px;
-    cursor: pointer;
+.btn-register-submit:hover:not(:disabled) {
+    background: #e6a91e;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
 }
 
-.password-eye-img {
-    width: 20px;
-    opacity: 0.6;
-}
-
-
-/* FOOTER */
-
-.register-footer {
-    margin-top: 20px;
-    text-align: center;
-    color: #64748b;
-    font-size: 0.9rem;
-}
-
-.link-login {
-    color: #00003f;
-    font-weight: 800;
-    cursor: pointer;
-    margin-left: 5px;
+.btn-register-submit:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 
 /* ===============================
-   🖥️ AJUSTES PARA COMPUTADORA
-   =============================== */
+   ELEMENTOS ADICIONALES
+=============================== */
 
-@media (min-width: 768px) {
-    .register-card {
-        padding: 45px 35px;
-    }
-    .register-logo-container {
-        width: 85px;
-        height: 85px;
-    }
-    .register-title {
-        font-size: 2.2rem;
-    }
-    .btn-register-submit:hover:not(:disabled) {
-        transform: translateY(-2px);
-        background: #e6a91e;
-        box-shadow: 0 12px 20px rgba(252, 180, 36, 0.3);
-    }
-}
-
-
-/* REUSANDO EL SPINNER DEL LOGIN */
-
-.spinner-mini {
+.password-eye {
+    position: absolute;
+    right: 14px;
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(0, 0, 63, 0.1);
-    border-top: 3px solid #00003f;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    z-index: 10;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.password-eye:hover {
+    opacity: 1;
 }
 
-@keyframes slideIn {
+.register-footer {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #64748b;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}
+
+.link-login {
+    color: #00003f;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.link-login:hover {
+    color: #fcb424;
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
