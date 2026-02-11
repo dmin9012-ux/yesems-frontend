@@ -23,7 +23,7 @@ const Suscripcion = () => {
       // Nota: El backend debe tener la ruta POST /api/pago/crear-preferencia
       const res = await apiYesems.post("/pago/crear-preferencia", {
         plan: "premium_semanal",
-        precio: 100 // Puedes ajustar el precio o traerlo de una config
+        precio: 10 // Puedes ajustar el precio o traerlo de una config
       });
 
       if (res.data && res.data.init_point) {
@@ -52,7 +52,7 @@ const Suscripcion = () => {
 
         <div className="plan-detalles">
           <h2>Plan Semanal</h2>
-          <p className="precio">$100.00 MXN</p>
+          <p className="precio">$10.00 MXN</p>
           <ul>
             <li>✅ Acceso a todos los niveles</li>
             <li>✅ Certificado de finalización</li>
