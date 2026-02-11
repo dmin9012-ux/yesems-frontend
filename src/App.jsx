@@ -21,7 +21,8 @@ import Principal from "./pages/Principal/Principal";
 import Curso from "./pages/Curso/Curso";
 import Leccion from "./pages/Curso/Leccion";
 import Perfil from "./pages/Perfil/Perfil";
-import Suscripcion from "./pages/Suscripcion/SuscripcionTEMP";
+// ✅ Nombre corregido para coincidir con el 'git mv' que hiciste
+import Suscripcion from "./pages/Suscripcion/SuscripcionFix"; 
 
 // 📝 Examen
 import Examen from "./pages/Examen/Examen";
@@ -41,7 +42,7 @@ import DashboardReportes from "./pages/Admin/Reportes/DashboardReportes";
 // Rutas protegidas
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
-import SuscripcionRoute from "./components/SuscripcionRoute"; // 👈 Importada
+import SuscripcionRoute from "./components/SuscripcionRoute"; 
 
 // Toasts
 import { ToastContainer } from "react-toastify";
@@ -113,6 +114,7 @@ const App = () => {
           </Route>
         </Routes>
 
+        {/* 🔔 Toasts globales */}
         <ToastContainer
           position={window.innerWidth < 768 ? "bottom-center" : "top-right"}
           autoClose={3000}
