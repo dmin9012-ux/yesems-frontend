@@ -1,50 +1,59 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 Para navegar a suscripción
+import { useAuth } from "../../context/AuthContext"; // 👈 Para saber si pagó
 import Menu from "../../components/Menu/Menu";
 import TopBar from "../../components/TopBar/TopBar";
 import { obtenerCursos } from "../../servicios/cursosService";
 import { obtenerProgresoUsuario } from "../../servicios/progresoService";
-import { notify } from "../../Util/toast"; // 👈 Tu utilidad de Toasts
+import { notify } from "../../Util/toast";
 import "./PrincipalStyle.css";
 
 const Principal = () => {
+  const { isPremium, user } = useAuth(); // 👈 Extraemos el estado
+  const navigate = useNavigate();
   const [cursos, setCursos] = useState([]);
   const [cursosCompletados, setCursosCompletados] = useState([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const cargarDatos = async () => {
-      setCargando(true);
-
-      try {
-        // 🔹 1. Cursos desde Firebase
-        const cursosFirebase = await obtenerCursos();
-
-        if (!Array.isArray(cursosFirebase)) {
-          throw new Error("No se pudieron obtener los cursos.");
+      // Si no es premium, solo cargamos los nombres de los cursos (o nada)
+      // y no llamamos al servicio de progreso para evitar el 403
+      if (!isPremium) {
+        try {
+          const cursosFirebase = await obtenerCursos();
+          setCursos(cursosFirebase);
+        } catch (err) {
+          console.error("Error al cargar vista previa:", err);
         }
+        setCargando(false);
+        return;
+      }
 
-        // 🔹 2. Progreso desde backend
+      // Si ES PREMIUM, cargamos todo el flujo
+      setCargando(true);
+      try {
+        const cursosFirebase = await obtenerCursos();
+        
+        // Solo pedimos progreso si el backend nos dará acceso (es premium)
         const progresoRes = await obtenerProgresoUsuario();
 
-        if (!progresoRes.ok) {
-          throw new Error(progresoRes.message || "Error al cargar progreso");
+        if (progresoRes.ok) {
+          const cursosFinalizados = progresoRes.data?.cursosCompletados || [];
+          setCursosCompletados(cursosFinalizados);
         }
-
-        // 🧠 Normalizar progreso (Array de IDs de cursos completados)
-        const cursosFinalizados = progresoRes.data?.cursosCompletados || [];
-
+        
         setCursos(cursosFirebase);
-        setCursosCompletados(cursosFinalizados);
       } catch (err) {
         console.error("❌ Error en Principal:", err);
-        notify("error", err.message || "Error al cargar la plataforma");
+        notify("error", "Error al sincronizar tus datos");
       } finally {
         setCargando(false);
       }
     };
 
     cargarDatos();
-  }, []);
+  }, [isPremium]); // 👈 Se recarga si el estado de pago cambia
 
   return (
     <div className="principal-container">
@@ -52,9 +61,29 @@ const Principal = () => {
       
       <main className="principal-content">
         <div className="principal-header">
-          <h1 className="principal-title">Bienvenido a YES EMS</h1>
-          <p className="principal-subtitle">Explora tus cursos y continúa aprendiendo</p>
+          <h1 className="principal-title">Bienvenido, {user?.nombre || 'Estudiante'}</h1>
+          <p className="principal-subtitle">
+            {isPremium 
+              ? "Continúa donde te quedaste en tus cursos." 
+              : "Estás a un paso de comenzar tu capacitación."}
+          </p>
         </div>
+
+        {/* 📢 BANNER DE SUSCRIPCIÓN (Solo si NO es premium) */}
+        {!isPremium && !cargando && (
+          <div className="subscription-banner">
+            <div className="banner-text">
+              <h2>¡Desbloquea todo el contenido! 🔓</h2>
+              <p>Suscríbete para acceder a las lecciones, realizar exámenes y obtener tu constancia oficial.</p>
+            </div>
+            <button 
+              className="banner-button" 
+              onClick={() => navigate("/suscripcion")}
+            >
+              Suscribirme ahora
+            </button>
+          </div>
+        )}
 
         {cargando ? (
           <div className="loader-container">
@@ -62,7 +91,7 @@ const Principal = () => {
             <p>Sincronizando tus cursos...</p>
           </div>
         ) : (
-          <>
+          <div className={!isPremium ? "preview-mode" : ""}>
             {cursos.length > 0 ? (
               <Menu
                 cursos={cursos}
@@ -73,7 +102,7 @@ const Principal = () => {
                 <p>No hay cursos disponibles en este momento.</p>
               </div>
             )}
-          </>
+          </div>
         )}
       </main>
     </div>

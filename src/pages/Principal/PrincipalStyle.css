@@ -174,3 +174,36 @@
         font-size: 1.1rem;
     }
 }
+
+.subscription-banner {
+    background: linear-gradient(135deg, #6f7caa 0%, #4a557a 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.banner-button {
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.banner-button:hover {
+    transform: scale(1.05);
+}
+
+.preview-mode {
+    opacity: 0.7;
+    pointer-events: none;
+    /* Bloquea clics en los cursos si no ha pagado */
+}
