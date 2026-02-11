@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Trash2, Edit, LogOut, BookOpen, FileText } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom"; // 👈 Añadido useLocation
+import { Mail, Lock, Trash2, Edit, LogOut, BookOpen, FileText, Star } from "lucide-react";
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
@@ -11,13 +11,14 @@ import { useAuth } from "../../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { ProgresoContext } from "../../context/ProgresoContext";
-import { notify, confirmDialog } from "../../Util/toast"; // 👈 Importamos tus Toasts
+import { notify, confirmDialog } from "../../Util/toast";
 
 import "./PerfilStyle.css";
 
 const Perfil = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const location = useLocation(); // 👈 Para capturar el status de Mercado Pago
+  const { logout, actualizarDatosUsuario, isPremium } = useAuth(); // 👈 Traemos actualizarDatosUsuario
   const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
@@ -26,6 +27,24 @@ const Perfil = () => {
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEditarPerfil, setShowEditarPerfil] = useState(false);
+
+  /* ========================================================
+      🎉 DETECCIÓN DE RETORNO DE MERCADO PAGO
+  ======================================================== */
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const status = queryParams.get("status");
+
+    if (status === "approved") {
+      notify("success", "¡Pago procesado con éxito! Bienvenido al nivel Premium.");
+      actualizarDatosUsuario(); // Actualiza el contexto global
+      // Limpiamos la URL para que el mensaje no se repita al recargar
+      navigate("/perfil", { replace: true });
+    } else if (status === "failure") {
+      notify("error", "Hubo un problema con tu pago. Por favor, reintenta.");
+      navigate("/perfil", { replace: true });
+    }
+  }, [location, actualizarDatosUsuario, navigate]);
 
   useEffect(() => {
     const cargarDatosIniciales = async () => {
@@ -89,7 +108,6 @@ const Perfil = () => {
   };
 
   const eliminarCuenta = async () => {
-    // Usamos el diálogo de confirmación personalizado con tus colores
     const result = await confirmDialog(
       "¿Eliminar cuenta?",
       "Esta acción es permanente y perderás todo tu progreso.",
@@ -118,11 +136,16 @@ const Perfil = () => {
         <aside className="perfil-sidebar">
           <div className="perfil-avatar-container">
             <div className="perfil-avatar">{usuario.nombre?.charAt(0).toUpperCase()}</div>
+            {isPremium && <div className="premium-badge-icon" title="Usuario Premium"><Star size={16} fill="gold" /></div>}
           </div>
           <h3>{usuario.nombre}</h3>
+          <span className={`status-pill ${isPremium ? "premium" : "free"}`}>
+            {isPremium ? "Plan Premium" : "Plan Gratuito"}
+          </span>
           <p className="perfil-email"><Mail size={14} /> {usuario.email}</p>
           
           <nav className="perfil-nav">
+            {!isPremium && <button className="upgrade-btn" onClick={() => navigate("/suscripcion")}><Star size={16} /> ¡Hazte Premium!</button>}
             <button onClick={() => setShowEditarPerfil(true)}><Edit size={16} /> Editar Perfil</button>
             <button onClick={() => setShowPasswordModal(true)}><Lock size={16} /> Cambiar Contraseña</button>
             <button className="logout" onClick={() => { logout(); navigate("/login"); }}><LogOut size={16} /> Cerrar sesión</button>

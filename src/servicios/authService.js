@@ -44,8 +44,7 @@ export const registerRequest = async(datos) => {
         return {
             ok: true,
             message: res.data && res.data.message ?
-                res.data.message :
-                "Registro exitoso, revisa tu correo para verificar tu cuenta",
+                res.data.message : "Registro exitoso, revisa tu correo para verificar tu cuenta",
         };
     } catch (error) {
         let message = "Error al registrar usuario";
@@ -73,8 +72,7 @@ export const verificarCorreoRequest = async(token) => {
         return {
             ok: true,
             message: res.data && res.data.message ?
-                res.data.message :
-                "Cuenta verificada correctamente",
+                res.data.message : "Cuenta verificada correctamente",
         };
     } catch (error) {
         let message = "Error al verificar correo";
@@ -102,8 +100,7 @@ export const forgotPasswordRequest = async(email) => {
         return {
             ok: true,
             message: res.data && res.data.message ?
-                res.data.message :
-                "Si el correo existe, se enviará un enlace",
+                res.data.message : "Si el correo existe, se enviará un enlace",
         };
     } catch (error) {
         let message = "Error al solicitar recuperación";
@@ -134,8 +131,7 @@ export const resetPasswordRequest = async(token, password) => {
         return {
             ok: true,
             message: res.data && res.data.message ?
-                res.data.message :
-                "Contraseña actualizada correctamente",
+                res.data.message : "Contraseña actualizada correctamente",
         };
     } catch (error) {
         let message = "Error al restablecer contraseña";

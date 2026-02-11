@@ -1,4 +1,3 @@
-// /yesems/src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
@@ -22,6 +21,7 @@ import Principal from "./pages/Principal/Principal";
 import Curso from "./pages/Curso/Curso";
 import Leccion from "./pages/Curso/Leccion";
 import Perfil from "./pages/Perfil/Perfil";
+import Suscripcion from "./pages/Suscripcion/suscripcion"; // 👈 Importada
 
 // 📝 Examen
 import Examen from "./pages/Examen/Examen";
@@ -41,6 +41,7 @@ import DashboardReportes from "./pages/Admin/Reportes/DashboardReportes";
 // Rutas protegidas
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
+import SuscripcionRoute from "./components/SuscripcionRoute"; // 👈 Importada
 
 // Toasts
 import { ToastContainer } from "react-toastify";
@@ -67,26 +68,29 @@ const App = () => {
             element={<VerificarCorreo />}
           />
 
-          {/* ================= RUTAS USUARIO ================= */}
+          {/* ================= RUTAS USUARIO (Logueado) ================= */}
           <Route element={<PrivateRoute />}>
             <Route path="/principal" element={<Principal />} />
             <Route path="/perfil" element={<Perfil />} />
-            <Route path="/curso/:id" element={<Curso />} />
-            <Route
-              path="/curso/:id/nivel/:nivel/leccion/:num"
-              element={<Leccion />}
-            />
-            <Route
-              path="/curso/:id/nivel/:nivel/examen"
-              element={<Examen />}
-            />
+            <Route path="/suscripcion" element={<Suscripcion />} />
+
+            {/* 🛡️ RUTAS PROTEGIDAS POR PAGO (Suscripción Activa) */}
+            <Route element={<SuscripcionRoute />}>
+              <Route path="/curso/:id" element={<Curso />} />
+              <Route
+                path="/curso/:id/nivel/:nivel/leccion/:num"
+                element={<Leccion />}
+              />
+              <Route
+                path="/curso/:id/nivel/:nivel/examen"
+                element={<Examen />}
+              />
+            </Route>
           </Route>
 
           {/* ================= RUTAS ADMIN ================= */}
           <Route element={<AdminRoute />}>
             <Route path="/admin" element={<AdminPanel />} />
-
-            {/* Cursos */}
             <Route path="/admin/cursos" element={<ListarCursos />} />
             <Route path="/admin/cursos/crear" element={<CrearCurso />} />
             <Route
@@ -97,15 +101,11 @@ const App = () => {
               path="/admin/cursos/eliminar/:id"
               element={<EliminarCurso />}
             />
-
-            {/* Usuarios */}
             <Route path="/admin/usuarios" element={<ListarUsuarios />} />
             <Route
               path="/admin/usuarios/editar/:id"
               element={<EditarUsuario />}
             />
-
-            {/* Reportes */}
             <Route
               path="/admin/reportes"
               element={<DashboardReportes />}
@@ -113,7 +113,6 @@ const App = () => {
           </Route>
         </Routes>
 
-        {/* 🔔 Toasts globales (adaptados a móvil) */}
         <ToastContainer
           position={window.innerWidth < 768 ? "bottom-center" : "top-right"}
           autoClose={3000}

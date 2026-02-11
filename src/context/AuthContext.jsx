@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest } from "../servicios/authService";
+import { obtenerMiPerfil } from "../servicios/usuarioService"; // Importante para refrescar
 
 const AuthContext = createContext(null);
 
@@ -8,21 +9,47 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   /* ===============================
-     🔄 CARGAR SESIÓN
+      🔄 CARGAR SESIÓN AL INICIAR
   =============================== */
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    const cargarSesion = () => {
+      const storedUser = localStorage.getItem("user");
+      const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-    }
+      if (storedUser && storedToken) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Error al parsear usuario:", error);
+          logout();
+        }
+      }
+      setLoading(false);
+    };
 
-    setLoading(false);
+    cargarSesion();
   }, []);
 
+  /* ========================================================
+      ✨ REFRESCAR DATOS (Crucial para Mercado Pago)
+      Consulta al backend el estado actual (rol, suscripción)
+  ======================================================== */
+  const actualizarDatosUsuario = async () => {
+    try {
+      const perfilActualizado = await obtenerMiPerfil();
+      if (perfilActualizado) {
+        localStorage.setItem("user", JSON.stringify(perfilActualizado));
+        setUser(perfilActualizado);
+        return perfilActualizado;
+      }
+    } catch (error) {
+      console.error("Error al refrescar perfil:", error);
+    }
+    return null;
+  };
+
   /* ===============================
-     🔐 LOGIN
+      🔐 LOGIN
   =============================== */
   const login = async (datos) => {
     const res = await loginRequest(datos);
@@ -31,26 +58,23 @@ export const AuthProvider = ({ children }) => {
       return res;
     }
 
-    // Guardar solo el token en localStorage
+    // Guardar token y usuario por separado
     localStorage.setItem("token", res.token);
-
-    // Guardar info del usuario sin token dentro de user
-    const userData = {
-      ...res.usuario,
-    };
-
+    
+    const userData = { ...res.usuario };
     localStorage.setItem("user", JSON.stringify(userData));
+    
     setUser(userData);
 
     return res;
   };
 
   /* ===============================
-     🚪 LOGOUT
+      🚪 LOGOUT
   =============================== */
   const logout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("token"); // ✅ eliminar token también
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -61,8 +85,11 @@ export const AuthProvider = ({ children }) => {
         loading,
         isAuthenticated: !!user,
         isAdmin: user && user.rol === "admin",
+        // Agregamos el estado de suscripción para fácil acceso en el Front
+        isPremium: user && user.suscripcion && user.suscripcion.estado === "active",
         login,
         logout,
+        actualizarDatosUsuario, // La exportamos para usarla al volver de pagar
       }}
     >
       {children}
