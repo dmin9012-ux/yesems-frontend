@@ -1,33 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // 👈 Añadimos useLocation
 import { useAuth } from "../../context/AuthContext";
 import apiYesems from "../../api/apiYesems";
 import "./SuscripcionStyle.css";
 
 const Suscripcion = () => {
   const navigate = useNavigate();
-  const { isPremium, loading } = useAuth();
+  const location = useLocation(); // 👈 Para leer los parámetros que envía Mercado Pago al volver
+  const { isPremium, loading, actualizarDatosUsuario } = useAuth(); // 👈 Traemos la función de actualizar
   const [cargandoPago, setCargandoPago] = useState(false);
 
-  // Si ya es premium, no debe estar aquí
+  /* ============================================================
+      🔄 VERIFICACIÓN AUTOMÁTICA AL VOLVER DE MERCADO PAGO
+  ============================================================ */
   useEffect(() => {
-    if (!loading && isPremium) {
-      navigate("/principal");
+    // Si en la URL detectamos que el pago fue exitoso
+    const queryParams = new URLSearchParams(location.search);
+    const status = queryParams.get("status");
+
+    if (status === "approved" || isPremium) {
+      const sincronizar = async () => {
+        await actualizarDatosUsuario(); // Forzamos al Front a pedir los datos nuevos al Back
+        navigate("/principal"); // Nos lo llevamos a ver sus cursos
+      };
+      sincronizar();
     }
-  }, [isPremium, loading, navigate]);
+  }, [location, isPremium, navigate, actualizarDatosUsuario]);
 
   const manejarSuscripcion = async () => {
     setCargandoPago(true);
     try {
-      // Pedimos al backend la preferencia de Mercado Pago
-      // Nota: El backend debe tener la ruta POST /api/pago/crear-preferencia
       const res = await apiYesems.post("/pago/crear-preferencia", {
         plan: "premium_semanal",
-        precio: 10 // Puedes ajustar el precio o traerlo de una config
+        precio: 10 
       });
 
       if (res.data && res.data.init_point) {
-        // Redirección directa a la pasarela de Mercado Pago
         window.location.href = res.data.init_point;
       } else {
         alert("No se pudo generar el enlace de pago. Intenta más tarde.");
@@ -51,12 +59,12 @@ const Suscripcion = () => {
         </p>
 
         <div className="plan-detalles">
-          <h2>Plan Semanal</h2>
+          <h2>Plan de Prueba</h2>
           <p className="precio">$10.00 MXN</p>
           <ul>
-            <li>✅ Acceso a todos los niveles</li>
+            <li>✅ Acceso total por 1 hora</li>
+            <li>✅ Exámenes desbloqueados</li>
             <li>✅ Certificado de finalización</li>
-            <li>✅ Soporte técnico</li>
           </ul>
         </div>
 
