@@ -21,7 +21,7 @@ import Principal from "./pages/Principal/Principal";
 import Curso from "./pages/Curso/Curso";
 import Leccion from "./pages/Curso/Leccion";
 import Perfil from "./pages/Perfil/Perfil";
-import Suscripcion from "./pages/Suscripcion/Suscripcion"; // 👈 Importada
+import Suscripcion from "./pages/Suscripcion/suscripcion"; // 👈 Importada
 
 // 📝 Examen
 import Examen from "./pages/Examen/Examen";
