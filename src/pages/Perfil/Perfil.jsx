@@ -207,15 +207,18 @@ const Perfil = () => {
               return (
                 <div key={curso.id} className={`perfil-curso-card ${p.estado}`}>
                   <div className="curso-info">
-                    <div className="curso-text">
+                    {/* SECCIÓN SUPERIOR: NOMBRE Y BADGE */}
+                    <div className="curso-header">
                       <strong>{curso.nombre}</strong>
                       <span className={`badge ${p.estado}`}>
                         {p.completado ? "Certificado Disponible" : p.porcentaje > 0 ? "En curso" : "Pendiente"}
                       </span>
                     </div>
+
+                    {/* SECCIÓN INFERIOR: BARRA Y BOTONES */}
                     <div className="curso-stats">
                       <div className="progress-container">
-                        <div className="progress-label">
+                        <div className="progress-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>
                           <span>{p.porcentaje}% Completado</span>
                           <span>{p.completadas}/{p.total} Lecciones</span>
                         </div>
