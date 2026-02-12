@@ -31,30 +31,35 @@ export default function ListarUsuarios() {
   }, []);
 
   /* ========================================================
-      ⚡ LÓGICA PARA ACTIVAR PREMIUM DESDE LA TABLA
+      ⚡ LÓGICA CORREGIDA PARA ACTIVAR PREMIUM DESDE TABLA
   ======================================================== */
   const handleActivarPremium = async (u) => {
     const result = await confirmDialog(
       `¿Activar Premium para ${u.nombre}?`,
       "Introduce el número de horas de suscripción (ej: 1, 24, 720):",
       "question",
-      true // Habilita el input en el modal
+      true 
     );
 
-    if (result.isConfirmed) {
-      const horas = result.value || "1"; 
+    if (result.isConfirmed && result.value) {
+      const horasNum = parseInt(result.value, 10);
+
+      if (isNaN(horasNum)) {
+        return notify("error", "Ingresa un número de horas válido.");
+      }
+
       try {
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: u._id,
-          horas: parseInt(horas),
+          horas: horasNum,
           tipo: "prueba_hora"
         });
         
-        notify("success", `¡Premium activado por ${horas}h para ${u.nombre}! ⚡`);
-        cargarUsuarios(); // Refrescar lista para ver cambios
+        notify("success", `¡Premium activado por ${horasNum}h para ${u.nombre}! ⚡`);
+        cargarUsuarios(); 
       } catch (err) {
-        console.error("Error activation:", err);
-        notify("error", "Error al activar la suscripción.");
+        console.error("Error activation:", err.response?.data || err);
+        notify("error", err.response?.data?.message || "Error al activar la suscripción.");
       }
     }
   };
@@ -130,7 +135,6 @@ export default function ListarUsuarios() {
                     </td>
                     <td className="text-center">
                       <div className="action-buttons-cell">
-                        {/* ⚡ BOTÓN ACTIVAR PREMIUM */}
                         <button 
                           className="btn-accion-premium"
                           onClick={() => handleActivarPremium(u)}
@@ -139,7 +143,6 @@ export default function ListarUsuarios() {
                           <Zap size={16} />
                         </button>
 
-                        {/* 📝 BOTÓN EDITAR */}
                         <button 
                           className="btn-accion-edit"
                           onClick={() => navigate(`/admin/usuarios/editar/${u._id}`)}

@@ -4,7 +4,7 @@ import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarioPorId, actualizarUsuario } from "../../../servicios/usuarioAdminService";
 import apiYesems from "../../../api/apiYesems";
 import { notify, confirmDialog } from "../../../Util/toast"; 
-import { Zap, ShieldCheck } from "lucide-react"; // 👈 Añadimos los iconos para el botón premium
+import { Zap, ShieldCheck } from "lucide-react"; 
 import "./UsuariosStyle.css";
 
 export default function EditarUsuario() {
@@ -53,28 +53,35 @@ export default function EditarUsuario() {
   };
 
   /* ========================================================
-      ⚡ LÓGICA PARA ACTIVAR PREMIUM MANUALMENTE
+      ⚡ LÓGICA CORREGIDA PARA ACTIVAR PREMIUM
   ======================================================== */
   const handleActivarPremium = async () => {
     const result = await confirmDialog(
       "Activar Suscripción Premium",
       "¿Cuántas horas de acceso quieres otorgar a este usuario?",
       "question",
-      true // Esto activa el campo de texto en tu SweetAlert
+      true 
     );
 
-    if (result.isConfirmed) {
-      const horas = result.value || "1";
+    // Solo procedemos si el usuario confirmó y escribió algo
+    if (result.isConfirmed && result.value) {
+      const horasNum = parseInt(result.value, 10);
+
+      // Si no es un número válido, avisamos y no enviamos nada
+      if (isNaN(horasNum)) {
+        return notify("error", "Debes ingresar un número válido de horas.");
+      }
+
       try {
         await apiYesems.post("/usuario/activar-premium-admin", {
-          usuarioId: id,
-          horas: parseInt(horas),
+          usuarioId: id, // ID obtenido de useParams
+          horas: horasNum,
           tipo: "prueba_hora"
         });
-        notify("success", `¡Suscripción de ${horas}h activada con éxito! ⚡`);
+        notify("success", `¡Suscripción de ${horasNum}h activada con éxito! ⚡`);
       } catch (err) {
-        console.error("Error al activar premium:", err);
-        notify("error", "Hubo un fallo al procesar la suscripción.");
+        console.error("Error al activar premium:", err.response?.data || err);
+        notify("error", err.response?.data?.message || "Fallo al procesar la suscripción.");
       }
     }
   };
@@ -146,7 +153,6 @@ export default function EditarUsuario() {
               </div>
             </div>
 
-            {/* --- 🛡️ SECCIÓN NUEVA: GESTIÓN DE SUSCRIPCIÓN --- */}
             <div className="admin-premium-section">
               <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
               <p>Otorga acceso premium manualmente a este usuario sin pasar por Mercado Pago.</p>
