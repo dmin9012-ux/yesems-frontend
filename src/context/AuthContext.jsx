@@ -30,8 +30,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const perfilActualizado = await obtenerMiPerfil();
       if (perfilActualizado) {
+        // ✅ Guardamos en localStorage y actualizamos el estado global
         localStorage.setItem("user", JSON.stringify(perfilActualizado));
-        setUser(perfilActualizado);
+        setUser({...perfilActualizado}); // Spread para forzar re-render
         return perfilActualizado;
       }
     } catch (error) {
@@ -65,16 +66,11 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
 
-    // Comprobar si la fecha de fin ya expiró
     const fechaFin = new Date(user.suscripcion.fechaFin);
     const ahora = new Date();
 
-    if (ahora > fechaFin) {
-      // Si ya expiró, podríamos limpiar el estado o simplemente retornar false
-      return false;
-    }
-
-    return true;
+    // Si la hora actual es menor a la fecha de fin, sigue siendo Premium
+    return ahora < fechaFin;
   };
 
   return (
@@ -84,7 +80,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         isAuthenticated: !!user,
         isAdmin: user && user.rol === "admin",
-        // Ahora isPremium es el resultado de la validación de tiempo
+        // isPremium se recalcula en cada renderizado
         isPremium: checkPremiumStatus(), 
         login,
         logout,
