@@ -4,7 +4,7 @@ import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarioPorId, actualizarUsuario } from "../../../servicios/usuarioAdminService";
 import apiYesems from "../../../api/apiYesems";
 import { notify, confirmDialog } from "../../../Util/toast";
-import { Zap, ShieldCheck } from "lucide-react"; // 👈 Añadidos iconos
+import { Zap, ShieldCheck } from "lucide-react"; // 👈 Iconos para la sección premium
 import "./UsuariosStyle.css";
 
 export default function EditarUsuario() {
@@ -52,17 +52,19 @@ export default function EditarUsuario() {
     }
   };
 
-  // 🚀 NUEVA FUNCIÓN: ACTIVAR PREMIUM DESDE LA EDICIÓN
+  /* ========================================================
+      ⚡ LÓGICA PARA ACTIVAR PREMIUM DESDE LA EDICIÓN
+  ======================================================== */
   const handleActivarPremium = async () => {
     const result = await confirmDialog(
       "Activar Suscripción Premium",
       "¿Cuántas horas de acceso quieres otorgar a este usuario?",
       "question",
-      true // Asumiendo que tu util permite input
+      true // Habilita el input de horas
     );
 
     if (result.isConfirmed) {
-      const horas = result.value || 1;
+      const horas = result.value || "1";
       try {
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: id,
@@ -71,6 +73,7 @@ export default function EditarUsuario() {
         });
         notify("success", `¡Suscripción de ${horas}h activada con éxito! ⚡`);
       } catch (err) {
+        console.error("Error premium activation:", err);
         notify("error", "Hubo un fallo al procesar la suscripción.");
       }
     }
@@ -89,6 +92,7 @@ export default function EditarUsuario() {
         notify("success", "Usuario eliminado permanentemente.");
         navigate("/admin/usuarios");
       } catch (err) {
+        console.error("Error al eliminar usuario:", err);
         notify("error", "No se tienen permisos o el usuario no existe.");
       }
     }
@@ -114,7 +118,6 @@ export default function EditarUsuario() {
 
         <div className="usuario-edit-card">
           <form className="usuario-form" onSubmit={handleSubmit}>
-            {/* ... (campos de nombre y email se mantienen igual) */}
             <div className="input-group-admin">
               <label>Nombre Completo</label>
               <input type="text" name="nombre" value={usuario.nombre} onChange={handleChange} required />
@@ -143,13 +146,13 @@ export default function EditarUsuario() {
               </div>
             </div>
 
-            {/* 🛡️ SECCIÓN NUEVA: GESTIÓN DE SUSCRIPCIÓN */}
+            {/* 🛡️ SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN */}
             <div className="admin-premium-section">
-                <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
-                <p>Otorga acceso premium manualmente a este usuario sin pasar por Mercado Pago.</p>
-                <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
-                    <Zap size={16} /> Activar Premium Ahora
-                </button>
+              <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
+              <p>Otorga acceso premium manualmente a este usuario sin pasar por Mercado Pago.</p>
+              <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
+                <Zap size={16} /> Activar Premium Ahora
+              </button>
             </div>
 
             <div className="form-actions-admin">

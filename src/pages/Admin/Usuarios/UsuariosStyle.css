@@ -5,7 +5,6 @@
 .admin-page-layout {
     min-height: 100vh;
     background-color: #f4f7f6;
-    /* Fondo técnico claro */
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
@@ -108,7 +107,6 @@
 
 .usuarios-table th {
     background-color: #00003f;
-    /* Tu Azul Profundo */
     color: white;
     padding: 18px 20px;
     font-size: 0.85rem;
@@ -166,7 +164,7 @@
 
 
 /* ---------------------------------------------------
-   FORMULARIO DE EDICIÓN (EditarUsuario.jsx)
+   FORMULARIO DE EDICIÓN
    --------------------------------------------------- */
 
 .usuario-edit-card {
@@ -212,7 +210,6 @@
 .input-group-admin select:focus {
     outline: none;
     border-color: #fcb424;
-    /* Amarillo Ámbar */
     background: white;
     box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
 }
@@ -225,8 +222,85 @@
 
 
 /* ---------------------------------------------------
-   BOTONES DE ACCIÓN
+   GESTIÓN DE SUSCRIPCIÓN (NUEVO)
    --------------------------------------------------- */
+
+.admin-premium-section {
+    margin-top: 10px;
+    padding: 25px;
+    background: #fffbeb;
+    /* Fondo ámbar suave */
+    border: 2px dashed #fcb424;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-premium-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #00003f;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.admin-premium-section p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.btn-premium-direct {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    background-color: #00003f;
+    color: #fcb424;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-premium-direct:hover {
+    background-color: #00005f;
+    transform: translateY(-2px);
+}
+
+
+/* ---------------------------------------------------
+   BOTONES DE ACCIÓN Y TABLA
+   --------------------------------------------------- */
+
+.action-buttons-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-accion-premium {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-accion-premium:hover {
+    background: #fbbf24;
+    color: #fff;
+    transform: scale(1.1);
+}
 
 .form-actions-admin {
     display: flex;
@@ -237,7 +311,6 @@
 .btn-guardar-admin,
 .btn-accion-edit {
     background-color: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
     border: none;
     padding: 14px 24px;
@@ -266,11 +339,6 @@
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-eliminar-admin:hover {
-    background-color: #fecaca;
 }
 
 
@@ -293,100 +361,4 @@
     .usuario-edit-card {
         padding: 30px 20px;
     }
-}
-
-
-/* ---------------------------------------------------
-   GESTIÓN DE SUSCRIPCIÓN (Admin)
-   --------------------------------------------------- */
-
-
-/* Sección dentro de EditarUsuario.js */
-
-.admin-premium-section {
-    margin-top: 10px;
-    padding: 25px;
-    background: #fffbeb;
-    /* Fondo ámbar muy ligero */
-    border: 2px dashed #fcb424;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.admin-premium-section h3 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #00003f;
-    font-size: 1.1rem;
-    font-weight: 800;
-    margin: 0;
-}
-
-.admin-premium-section p {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin: 0;
-    line-height: 1.4;
-}
-
-
-/* Botón Premium Directo (Edición) */
-
-.btn-premium-direct {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px;
-    background-color: #00003f;
-    /* Azul profundo para contraste */
-    color: #fcb424;
-    /* Texto Ámbar */
-    border: none;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-premium-direct:hover {
-    background-color: #00005f;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 63, 0.2);
-}
-
-
-/* Botón Rayo (Lista de Usuarios) */
-
-.btn-accion-premium {
-    background: #fef3c7;
-    color: #d97706;
-    border: 1px solid #fbbf24;
-    padding: 8px;
-    border-radius: 10px;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-accion-premium:hover {
-    background: #fbbf24;
-    color: #fff;
-    transform: scale(1.1);
-}
-
-
-/* Alineación de botones en la tabla */
-
-.action-buttons-cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
