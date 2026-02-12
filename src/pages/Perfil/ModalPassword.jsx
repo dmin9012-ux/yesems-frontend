@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Centralizamos la respuesta
+import { notify } from "../../Util/toast";
+import ojoAbierto from "../../assets/ojoabierto.png";
+import ojoCerrado from "../../assets/ojocerrado.png";
 import "./ModalPasswordStyle.css";
 
 const ModalPassword = ({ onClose }) => {
   const [passwordActual, setPasswordActual] = useState("");
   const [passwordNueva, setPasswordNueva] = useState("");
+  const [showActual, setShowActual] = useState(false);
+  const [showNueva, setShowNueva] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const cerrarModal = () => {
     setPasswordActual("");
     setPasswordNueva("");
+    setShowActual(false);
+    setShowNueva(false);
     setLoading(false);
     onClose();
   };
@@ -35,8 +41,6 @@ const ModalPassword = ({ onClose }) => {
       });
 
       notify("success", "Contraseña actualizada correctamente 🔐");
-      
-      // Cerramos de inmediato o tras un breve delay para que vean el éxito
       setTimeout(cerrarModal, 1000);
     } catch (error) {
       const errorMsg = error?.response?.data?.message || "Error al cambiar contraseña";
@@ -53,23 +57,41 @@ const ModalPassword = ({ onClose }) => {
         <p className="modal-subtitle">Asegúrate de usar una combinación segura.</p>
 
         <div className="modal-form">
-          <input
-            type="password"
-            placeholder="Contraseña actual"
-            className="modal-input"
-            value={passwordActual}
-            onChange={(e) => setPasswordActual(e.target.value)}
-            disabled={loading}
-          />
+          {/* PASSWORD ACTUAL */}
+          <div className="input-container-modal">
+            <input
+              type={showActual ? "text" : "password"}
+              placeholder="Contraseña actual"
+              className="modal-input"
+              value={passwordActual}
+              onChange={(e) => setPasswordActual(e.target.value)}
+              disabled={loading}
+            />
+            <img
+              src={showActual ? ojoAbierto : ojoCerrado}
+              alt="Ver"
+              className="modal-password-eye"
+              onClick={() => setShowActual(!showActual)}
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Nueva contraseña"
-            className="modal-input"
-            value={passwordNueva}
-            onChange={(e) => setPasswordNueva(e.target.value)}
-            disabled={loading}
-          />
+          {/* NUEVA PASSWORD */}
+          <div className="input-container-modal">
+            <input
+              type={showNueva ? "text" : "password"}
+              placeholder="Nueva contraseña"
+              className="modal-input"
+              value={passwordNueva}
+              onChange={(e) => setPasswordNueva(e.target.value)}
+              disabled={loading}
+            />
+            <img
+              src={showNueva ? ojoAbierto : ojoCerrado}
+              alt="Ver"
+              className="modal-password-eye"
+              onClick={() => setShowNueva(!showNueva)}
+            />
+          </div>
         </div>
 
         <div className="modal-actions">
