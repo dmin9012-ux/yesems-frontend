@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mail, Lock, Trash2, Edit, LogOut, BookOpen, FileText, Star, Clock } from "lucide-react"; // 👈 Añadido Clock
+import { Mail, Lock, Trash2, Edit, LogOut, BookOpen, FileText, Star, Clock } from "lucide-react"; 
 
 import TopBar from "../../components/TopBar/TopBar";
 import apiYesems from "../../api/apiYesems";
@@ -18,7 +18,7 @@ import "./PerfilStyle.css";
 const Perfil = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout, actualizarDatosUsuario, isPremium, user } = useAuth(); // 👈 Traemos 'user' del contexto
+  const { logout, actualizarDatosUsuario, isPremium, user } = useAuth(); 
   const { progresoCursos, recargarProgreso } = useContext(ProgresoContext);
 
   const [usuario, setUsuario] = useState(null);
@@ -70,7 +70,7 @@ const Perfil = () => {
       setTiempoRestante(`${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`);
     };
 
-    calcularDiferencia(); // Ejecutar al inicio
+    calcularDiferencia();
     const interval = setInterval(calcularDiferencia, 1000);
 
     return () => clearInterval(interval);
@@ -104,8 +104,6 @@ const Perfil = () => {
     cargarDatosIniciales();
   }, [logout, navigate, recargarProgreso]);
 
-  // ... (mantenemos la función calcularProgreso y eliminarCuenta igual)
-
   const calcularProgreso = (curso) => {
     const progresoDB = progresoCursos.find((c) => c.cursoId === curso.id);
     const leccionesCompletadas = progresoDB ? progresoDB.leccionesCompletadas : [];
@@ -123,15 +121,37 @@ const Perfil = () => {
     };
   };
 
+  const descargarConstancia = async (cursoId, nombreCurso) => {
+    try {
+      const res = await apiYesems.get(`/constancia/${cursoId}`, { responseType: "blob" });
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Constancia-${nombreCurso}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+      notify("success", "Descargando constancia...");
+    } catch (error) {
+      notify("info", "La constancia se está procesando. Reintenta en unos minutos.");
+    }
+  };
+
   const eliminarCuenta = async () => {
-    const result = await confirmDialog("¿Eliminar?", "Esta acción es permanente.", "warning");
+    const result = await confirmDialog(
+      "¿Eliminar cuenta?",
+      "Esta acción es permanente y perderás todo tu progreso.",
+      "warning"
+    );
+
     if (result.isConfirmed) {
       try {
         await apiYesems.delete("/usuario/perfil/me");
+        notify("success", "Cuenta eliminada correctamente");
         logout();
         navigate("/login");
       } catch (error) {
-        notify("error", "Error al eliminar");
+        notify("error", "No se pudo eliminar la cuenta");
       }
     }
   };
@@ -150,12 +170,11 @@ const Perfil = () => {
           </div>
           <h3>{usuario.nombre}</h3>
           
-          <div className="status-container-perfil"> {/* Contenedor para el status y el timer */}
+          <div className="status-container-perfil">
             <span className={`status-pill ${isPremium ? "premium" : "free"}`}>
               {isPremium ? "Plan Premium" : "Plan Gratuito"}
             </span>
 
-            {/* 🕒 BLOQUE DEL TIMER PREMIUM */}
             {isPremium && tiempoRestante && (
               <div className="premium-timer-badge">
                 <Clock size={12} />
@@ -176,18 +195,47 @@ const Perfil = () => {
         </aside>
 
         <main className="perfil-main">
-          {/* ... resto del contenido igual ... */}
           <div className="perfil-main-header">
             <h2><BookOpen size={24} /> Mi Progreso Académico</h2>
+            <p>Aquí puedes ver tus lecciones completadas y descargar tus certificados.</p>
           </div>
+
           <div className="cursos-list">
+            {cursos.length === 0 && <p className="no-data">No hay cursos disponibles actualmente.</p>}
             {cursos.map((curso) => {
               const p = calcularProgreso(curso);
               return (
                 <div key={curso.id} className={`perfil-curso-card ${p.estado}`}>
                   <div className="curso-info">
-                    <strong>{curso.nombre}</strong>
-                    <div className="progress-bar-bg"><div className="progress-bar-fill" style={{ width: `${p.porcentaje}%` }} /></div>
+                    <div className="curso-text">
+                      <strong>{curso.nombre}</strong>
+                      <span className={`badge ${p.estado}`}>
+                        {p.completado ? "Certificado Disponible" : p.porcentaje > 0 ? "En curso" : "Pendiente"}
+                      </span>
+                    </div>
+                    <div className="curso-stats">
+                      <div className="progress-container">
+                        <div className="progress-label">
+                          <span>{p.porcentaje}% Completado</span>
+                          <span>{p.completadas}/{p.total} Lecciones</span>
+                        </div>
+                        <div className="progress-bar-bg">
+                          <div className="progress-bar-fill" style={{ width: `${p.porcentaje}%` }} />
+                        </div>
+                      </div>
+                      
+                      <div className="curso-actions">
+                        {p.completado && p.constanciaEmitida ? (
+                          <button className="btn-perfil-constancia" onClick={() => descargarConstancia(curso.id, curso.nombre)}>
+                            <FileText size={18} /> Descargar PDF
+                          </button>
+                        ) : (
+                          <button className="btn-perfil-continuar" onClick={() => navigate(`/curso/${curso.id}`)}>
+                            {p.porcentaje > 0 ? "Continuar" : "Iniciar"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
