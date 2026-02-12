@@ -28,7 +28,6 @@ const Perfil = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEditarPerfil, setShowEditarPerfil] = useState(false);
 
-  // 🕒 ESTADO PARA EL CONTADOR
   const [tiempoRestante, setTiempoRestante] = useState("");
 
   /* ========================================================
@@ -72,7 +71,6 @@ const Perfil = () => {
 
     calcularDiferencia();
     const interval = setInterval(calcularDiferencia, 1000);
-
     return () => clearInterval(interval);
   }, [isPremium, user]);
 
@@ -138,20 +136,15 @@ const Perfil = () => {
   };
 
   const eliminarCuenta = async () => {
-    const result = await confirmDialog(
-      "¿Eliminar cuenta?",
-      "Esta acción es permanente y perderás todo tu progreso.",
-      "warning"
-    );
-
+    const result = await confirmDialog("¿Eliminar cuenta?", "Esta acción es permanente.", "warning");
     if (result.isConfirmed) {
       try {
         await apiYesems.delete("/usuario/perfil/me");
-        notify("success", "Cuenta eliminada correctamente");
+        notify("success", "Cuenta eliminada");
         logout();
         navigate("/login");
       } catch (error) {
-        notify("error", "No se pudo eliminar la cuenta");
+        notify("error", "No se pudo eliminar");
       }
     }
   };
@@ -207,7 +200,7 @@ const Perfil = () => {
               return (
                 <div key={curso.id} className={`perfil-curso-card ${p.estado}`}>
                   <div className="curso-info">
-                    {/* SECCIÓN SUPERIOR: NOMBRE Y BADGE */}
+                    {/* PARTE SUPERIOR */}
                     <div className="curso-header">
                       <strong>{curso.nombre}</strong>
                       <span className={`badge ${p.estado}`}>
@@ -215,10 +208,10 @@ const Perfil = () => {
                       </span>
                     </div>
 
-                    {/* SECCIÓN INFERIOR: BARRA Y BOTONES */}
+                    {/* BARRA Y STATS */}
                     <div className="curso-stats">
                       <div className="progress-container">
-                        <div className="progress-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '0.85rem', color: '#6b7280', fontWeight: '600' }}>
+                        <div className="progress-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.85rem', color: '#6b7280', fontWeight: '700' }}>
                           <span>{p.porcentaje}% Completado</span>
                           <span>{p.completadas}/{p.total} Lecciones</span>
                         </div>
