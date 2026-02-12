@@ -269,3 +269,114 @@
         padding: 30px 20px;
     }
 }
+
+
+/* --- ESTILOS DEL CONTADOR PREMIUM --- */
+
+.status-container-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+
+/* Reutilizando tu lógica de status-pill para que encaje */
+
+.status-pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pill.premium {
+    background: #eef2ff;
+    /* Azul muy claro */
+    color: #00003f;
+    /* Tu Azul Profundo */
+    border: 1px solid #00003f;
+}
+
+.status-pill.free {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+
+/* El nuevo cronómetro visual */
+
+.premium-timer-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff9e6;
+    /* Fondo crema suave */
+    border: 1px solid #fcb424;
+    /* Tu Amarillo Ámbar */
+    color: #00003f;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.premium-timer-badge strong {
+    color: #fcb424;
+    /* El tiempo resalta en Ámbar */
+    font-family: 'Monaco', 'Consolas', monospace;
+    /* Fuente tipo reloj */
+    font-size: 1rem;
+}
+
+
+/* Animación sutil para el icono de reloj */
+
+.premium-timer-badge svg {
+    color: #fcb424;
+    animation: pulse-clock 2s infinite;
+}
+
+@keyframes pulse-clock {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Ajuste del botón upgrade para que no choque */
+
+.upgrade-btn {
+    background: #fcb424 !important;
+    color: #00003f !important;
+    border: none;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
+}
+
+.upgrade-btn:hover {
+    background: #e6a91e !important;
+    transform: translateY(-2px);
+}
