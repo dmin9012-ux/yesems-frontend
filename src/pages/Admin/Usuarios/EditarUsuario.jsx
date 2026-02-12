@@ -53,32 +53,24 @@ export default function EditarUsuario() {
   };
 
   /* ========================================================
-      ⚡ LÓGICA CORREGIDA PARA ACTIVAR PREMIUM
+      ⚡ LÓGICA CORREGIDA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
   ======================================================== */
   const handleActivarPremium = async () => {
     const result = await confirmDialog(
-      "Activar Suscripción Premium",
-      "¿Cuántas horas de acceso quieres otorgar a este usuario?",
+      "Activar Acceso Premium",
+      `¿Deseas otorgar 1 hora de acceso premium a ${usuario.nombre}?`,
       "question",
-      true 
+      false // 👈 FALSE: Ya no pide escribir el número de horas
     );
 
-    // Solo procedemos si el usuario confirmó y escribió algo
-    if (result.isConfirmed && result.value) {
-      const horasNum = parseInt(result.value, 10);
-
-      // Si no es un número válido, avisamos y no enviamos nada
-      if (isNaN(horasNum)) {
-        return notify("error", "Debes ingresar un número válido de horas.");
-      }
-
+    if (result.isConfirmed) {
       try {
         await apiYesems.post("/usuario/activar-premium-admin", {
-          usuarioId: id, // ID obtenido de useParams
-          horas: horasNum,
+          usuarioId: id,
+          horas: 1, // 👈 Valor fijo de 1 hora
           tipo: "prueba_hora"
         });
-        notify("success", `¡Suscripción de ${horasNum}h activada con éxito! ⚡`);
+        notify("success", "¡Acceso premium de 1 hora activado con éxito! ⚡");
       } catch (err) {
         console.error("Error al activar premium:", err.response?.data || err);
         notify("error", err.response?.data?.message || "Fallo al procesar la suscripción.");
@@ -153,11 +145,12 @@ export default function EditarUsuario() {
               </div>
             </div>
 
+            {/* SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN */}
             <div className="admin-premium-section">
               <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
-              <p>Otorga acceso premium manualmente a este usuario sin pasar por Mercado Pago.</p>
+              <p>Otorga acceso premium de 1 hora manualmente a este usuario.</p>
               <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
-                <Zap size={16} /> Activar Premium Ahora
+                <Zap size={16} /> Activar 1 Hora Premium
               </button>
             </div>
 

@@ -31,34 +31,30 @@ export default function ListarUsuarios() {
   }, []);
 
   /* ========================================================
-      ⚡ LÓGICA CORREGIDA PARA ACTIVAR PREMIUM DESDE TABLA
+      ⚡ LÓGICA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
   ======================================================== */
   const handleActivarPremium = async (u) => {
     const result = await confirmDialog(
       `¿Activar Premium para ${u.nombre}?`,
-      "Introduce el número de horas de suscripción (ej: 1, 24, 720):",
+      "Se otorgará 1 hora de acceso inmediato.",
       "question",
-      true 
+      false // 👈 Cambiado a false: Ya no pide escribir nada
     );
 
-    if (result.isConfirmed && result.value) {
-      const horasNum = parseInt(result.value, 10);
-
-      if (isNaN(horasNum)) {
-        return notify("error", "Ingresa un número de horas válido.");
-      }
-
+    if (result.isConfirmed) {
       try {
+        // Enviamos el objeto exacto que el controlador blindado espera
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: u._id,
-          horas: horasNum,
+          horas: 1, // Valor por defecto
           tipo: "prueba_hora"
         });
         
-        notify("success", `¡Premium activado por ${horasNum}h para ${u.nombre}! ⚡`);
-        cargarUsuarios(); 
+        notify("success", `¡Premium activado (1h) para ${u.nombre}! ⚡`);
+        cargarUsuarios(); // Refrescar para ver cambios
       } catch (err) {
-        console.error("Error activation:", err.response?.data || err);
+        console.error("Error activation:", err);
+        // Mostramos el mensaje de error que viene del backend si existe
         notify("error", err.response?.data?.message || "Error al activar la suscripción.");
       }
     }
@@ -138,7 +134,7 @@ export default function ListarUsuarios() {
                         <button 
                           className="btn-accion-premium"
                           onClick={() => handleActivarPremium(u)}
-                          title="Dar Premium Manual"
+                          title="Dar 1 Hora Premium"
                         >
                           <Zap size={16} />
                         </button>
