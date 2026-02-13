@@ -1,40 +1,37 @@
 /* ===============================
-   FONDO Y LAYOUT GENERAL
+    FONDO Y LAYOUT GENERAL
 =============================== */
 
-.verify-page,
-.verify-container {
+.verify-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Gradiente radial profundo YES EMS */
     background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
-    font-family: "Inter", "Segoe UI", sans-serif;
+    font-family: "Inter", sans-serif;
     padding: 20px;
 }
 
 
 /* ===============================
-   CARD DE VERIFICACIÓN
+    CARD DE VERIFICACIÓN
 =============================== */
 
 .verify-card {
     background-color: #ffffff;
     width: 100%;
-    max-width: 430px;
-    padding: 45px 35px;
+    max-width: 420px;
+    padding: 40px 30px;
     border-radius: 28px;
-    /* Bordes más curvos y modernos */
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
-    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInVerify 0.6s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInVerify {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(15px);
     }
     to {
         opacity: 1;
@@ -43,28 +40,34 @@
 }
 
 .verify-logo {
-    width: 130px;
-    margin-bottom: 15px;
+    width: 120px;
+    margin-bottom: 10px;
 }
 
-.verify-card h2 {
+.verify-title {
     color: #00003f;
-    font-size: 1.85rem;
+    font-size: 1.7rem;
     font-weight: 900;
     margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
 }
 
-.subtitle {
+.verify-subtitle {
     font-size: 14px;
     color: #64748b;
     margin-bottom: 30px;
     line-height: 1.5;
 }
 
+.email-highlight {
+    color: #00003f;
+    word-break: break-all;
+    /* Evita que correos largos rompan la card */
+}
+
 
 /* ===============================
-   INPUT DE CÓDIGO (ESTILO SECURITY)
+    INPUT DE CÓDIGO
 =============================== */
 
 .verify-form {
@@ -73,29 +76,14 @@
     gap: 20px;
 }
 
-.input-group-auth {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.input-group-auth .input-icon {
-    position: absolute;
-    left: 18px;
-    color: #94a3b8;
-    z-index: 10;
-}
-
-.verify-card input,
 .input-codigo-style {
     width: 100%;
     padding: 16px 16px 16px 45px;
-    /* Espacio para el icono */
-    font-size: 26px;
+    font-size: 24px;
+    /* Un poco más pequeño para evitar overflow en cel */
     font-weight: 800;
-    letter-spacing: 8px;
-    /* Espaciado estilo PIN para los 6 dígitos */
+    letter-spacing: 6px;
+    /* Ajustado para pantallas angostas */
     text-align: center;
     border-radius: 14px;
     border: 2px solid #e5e7eb;
@@ -105,69 +93,60 @@
     transition: all 0.3s ease;
 }
 
-.verify-card input:focus,
 .input-codigo-style:focus {
     border-color: #fcb424;
-    /* Resalte en ámbar al escribir */
     background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 10;
 }
 
 
 /* ===============================
-   CENTRADO DEL BOTÓN
+    BOTONES
 =============================== */
 
 .verify-actions {
-    display: flex;
-    justify-content: center;
-    /* ESTO CENTRA EL BOTÓN */
     width: 100%;
-    margin-top: 10px;
 }
 
-.btn-verify-submit,
-.verify-card button {
-    width: 85%;
-    /* Ancho estilizado para no ser tosco */
+.btn-verify-submit {
+    width: 100%;
+    /* Mobile First */
     padding: 16px;
     background-color: #fcb424;
-    /* Amarillo Ámbar YES EMS */
     color: #00003f;
-    /* Azul Profundo */
+    font-size: 1rem;
+    font-weight: 800;
     border: none;
     border-radius: 14px;
-    font-size: 16px;
-    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
 }
 
-.btn-verify-submit:hover:not(:disabled),
-.verify-card button:hover:not(:disabled) {
+@media (min-width: 768px) {
+    .btn-verify-submit {
+        width: 85%;
+        margin: 0 auto;
+    }
+}
+
+.btn-verify-submit:hover:not(:disabled) {
     background-color: #e6a91e;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+    transform: translateY(-2px);
 }
-
-.btn-verify-submit:disabled,
-.verify-card button:disabled {
-    background-color: #cbd5e1;
-    color: #94a3b8;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-}
-
-
-/* ===============================
-   FOOTER Y ENLACES
-=============================== */
 
 .verify-footer {
     margin-top: 30px;
@@ -175,9 +154,10 @@
     border-top: 1px solid #f1f5f9;
 }
 
-.link,
 .link-back-verify {
-    color: #00003f;
+    background: transparent;
+    border: none;
+    color: #64748b;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -185,29 +165,22 @@
     justify-content: center;
     gap: 8px;
     font-size: 14px;
-    transition: color 0.2s ease;
-}
-
-.link:hover,
-.link-back-verify:hover {
-    color: #fcb424;
-    text-decoration: none;
+    margin: 0 auto;
 }
 
 
-/* ===============================
-   RESPONSIVO
-=============================== */
+/* 📱 AJUSTES ESPECÍFICOS MÓVILES */
 
 @media (max-width: 480px) {
     .verify-card {
-        padding: 40px 25px;
+        padding: 30px 20px;
     }
-    .verify-card h2 {
-        font-size: 1.6rem;
+    .input-codigo-style {
+        font-size: 20px;
+        letter-spacing: 4px;
+        padding-left: 40px;
     }
-    .btn-verify-submit,
-    .verify-card button {
-        width: 100%;
+    .verify-title {
+        font-size: 1.4rem;
     }
 }

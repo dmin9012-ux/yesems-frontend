@@ -16,56 +16,62 @@ const TopBar = () => {
     navigate("/login");
   };
 
-  // Función para marcar botón activo
   const isActive = (path) => location.pathname === path ? "active" : "";
 
   return (
     <header className="topbar-user-main">
-      {/* SECCIÓN IZQUIERDA: LOGO + BADGE ESTILO ADMIN */}
       <div className="topbar-user-left">
         <div className="user-logo-box" onClick={() => navigate("/principal")}>
           <span className="logo-user-text">YESEMS</span>
           <span className="user-role-badge">
             <GraduationCap size={12} />
-            USUARIO
+            <span className="badge-text">USUARIO</span>
           </span>
         </div>
       </div>
 
-      {/* SECCIÓN DERECHA: NAVEGACIÓN PREMIUM */}
       <nav className="topbar-user-right">
         <button 
           className={`user-topbar-btn ${isActive("/principal")}`} 
           onClick={() => navigate("/principal")}
+          title="Inicio"
         >
-          <Home size={18} />
-          <span>Inicio</span>
+          <Home size={20} />
+          <span className="btn-text">Inicio</span>
         </button>
 
         {user && (
           <button 
             className={`user-topbar-btn ${isActive("/perfil")}`} 
             onClick={() => navigate("/perfil")}
+            title="Mi Perfil"
           >
-            <User size={18} />
-            <span>Mi Perfil</span>
+            <User size={20} />
+            <span className="btn-text">Mi Perfil</span>
           </button>
         )}
 
-        {/* Acceso al Panel si es Admin */}
         {user && user.rol === "admin" && (
-          <button className="user-topbar-btn admin-access-link" onClick={() => navigate("/admin")}>
-            <Shield size={18} />
-            <span>Admin</span>
+          <button 
+            className="user-topbar-btn admin-access-link" 
+            onClick={() => navigate("/admin")}
+            title="Admin"
+          >
+            <Shield size={20} />
+            <span className="btn-text">Admin</span>
           </button>
         )}
 
         <div className="divider-vertical-top"></div>
 
         {user && (
-          <button className="user-topbar-btn logout-user-btn" onClick={handleLogout}>
-            <LogOut size={18} />
-            <span>Salir</span>
+          <button 
+            className="user-topbar-btn logout-user-btn" 
+            onClick={handleLogout}
+            title="Salir"
+          >
+            <LogOut size={20} />
+            <span className="btn-text">Salir</span>
           </button>
         )}
       </nav>

@@ -2,20 +2,27 @@
 
 #root {
     width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
+    /* Eliminamos el max-width para que la plataforma 
+       pueda ocupar toda la pantalla en el panel de admin/cursos */
+    margin: 0;
+    padding: 0;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 
-/* ===================== LOGO (DEV / HOME) ===================== */
+/* ===================== LOGO ===================== */
 
 .logo {
-    height: 6em;
-    padding: 1.5em;
+    height: 5em;
+    padding: 1em;
     will-change: filter;
     transition: filter 300ms;
+    max-width: 100%;
+    /* Asegura que no rompa el contenedor */
+    object-fit: contain;
 }
 
 .logo:hover {
@@ -48,7 +55,9 @@
 /* ===================== UTILIDADES ===================== */
 
 .card {
-    padding: 2em;
+    padding: 1.5em;
+    width: 100%;
+    /* Importante para móviles */
 }
 
 .read-the-docs {
@@ -60,14 +69,16 @@
 
 @media (max-width: 768px) {
     #root {
-        padding: 0.5rem;
-        max-width: 100%;
+        padding: 0;
+        /* En móvil aprovechamos cada píxel */
     }
     .logo {
-        height: 4em;
-        padding: 0.8em;
+        height: 3.5em;
+        padding: 0.5em;
     }
     .card {
         padding: 1rem;
+        border-radius: 0;
+        /* Opcional: para que las tarjetas toquen los bordes */
     }
 }

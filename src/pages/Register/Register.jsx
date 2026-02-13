@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { User, Mail, Lock, UserPlus } from "lucide-react"; // Iconos consistentes
+import { User, Mail, Lock, UserPlus } from "lucide-react"; 
 import "./RegisterStyle.css";
 
 export default function Register() {
@@ -64,6 +64,7 @@ export default function Register() {
             <User className="input-icon" size={20} />
             <input
               type="text"
+              autoComplete="name"
               placeholder="Nombre completo"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
@@ -75,6 +76,8 @@ export default function Register() {
             <Mail className="input-icon" size={20} />
             <input
               type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +89,8 @@ export default function Register() {
             <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contraseña (mínimo 6 caracteres)"
+              autoComplete="new-password"
+              placeholder="Contraseña (mín. 6 caracteres)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -99,7 +103,6 @@ export default function Register() {
             />
           </div>
 
-          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="register-actions">
             <button className="btn-register-submit" type="submit" disabled={loading}>
               {loading ? (

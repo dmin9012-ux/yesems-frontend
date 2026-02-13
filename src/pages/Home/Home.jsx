@@ -9,7 +9,6 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-card">
-
         <img src={logo} alt="yesems logo" className="home-logo" />
 
         <h1 className="home-title">YES EMS</h1>
@@ -32,7 +31,6 @@ const Home = () => {
             Registrarse
           </button>
         </div>
-
       </div>
     </div>
   );

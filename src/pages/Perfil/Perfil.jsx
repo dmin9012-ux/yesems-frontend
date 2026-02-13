@@ -27,29 +27,24 @@ const Perfil = () => {
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEditarPerfil, setShowEditarPerfil] = useState(false);
-
   const [tiempoRestante, setTiempoRestante] = useState("");
 
-  /* ========================================================
-      🎉 DETECCIÓN DE RETORNO DE MERCADO PAGO
-  ======================================================== */
+  // Detección de retorno de Mercado Pago
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const status = queryParams.get("status");
 
     if (status === "approved") {
-      notify("success", "¡Pago procesado con éxito! Bienvenido al nivel Premium.");
+      notify("success", "¡Pago procesado con éxito!");
       actualizarDatosUsuario();
       navigate("/perfil", { replace: true });
     } else if (status === "failure") {
-      notify("error", "Hubo un problema con tu pago. Por favor, reintenta.");
+      notify("error", "Hubo un problema con tu pago.");
       navigate("/perfil", { replace: true });
     }
   }, [location, actualizarDatosUsuario, navigate]);
 
-  /* ========================================================
-      ⏱️ LÓGICA DEL CONTADOR PREMIUM
-  ======================================================== */
+  // Contador Premium
   useEffect(() => {
     if (!isPremium || !user?.suscripcion?.fechaFin) return;
 
@@ -65,7 +60,6 @@ const Perfil = () => {
 
       const minutos = Math.floor((diferencia / 1000 / 60) % 60);
       const segundos = Math.floor((diferencia / 1000) % 60);
-
       setTiempoRestante(`${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`);
     };
 
@@ -82,15 +76,11 @@ const Perfil = () => {
         setUsuario(perfilRes.data.usuario);
 
         const snap = await getDocs(collection(db, "cursos"));
-        const cursosFirebase = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
+        const cursosFirebase = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         setCursos(cursosFirebase);
 
         await recargarProgreso();
       } catch (error) {
-        console.error("Error cargando perfil:", error);
         if (error.response?.status === 401) {
           logout();
           navigate("/login");
@@ -131,7 +121,7 @@ const Perfil = () => {
       window.URL.revokeObjectURL(url);
       notify("success", "Descargando constancia...");
     } catch (error) {
-      notify("info", "La constancia se está procesando. Reintenta en unos minutos.");
+      notify("info", "La constancia se está procesando. Reintenta pronto.");
     }
   };
 
@@ -149,7 +139,7 @@ const Perfil = () => {
     }
   };
 
-  if (loading) return <div className="perfil-cargando"><div className="spinner"></div><p>Cargando tu progreso...</p></div>;
+  if (loading) return <div className="perfil-cargando"><div className="spinner"></div><p>Sincronizando perfil...</p></div>;
   if (!usuario) return null;
 
   return (
@@ -159,19 +149,19 @@ const Perfil = () => {
         <aside className="perfil-sidebar">
           <div className="perfil-avatar-container">
             <div className="perfil-avatar">{usuario.nombre?.charAt(0).toUpperCase()}</div>
-            {isPremium && <div className="premium-badge-icon" title="Usuario Premium"><Star size={16} fill="gold" /></div>}
+            {isPremium && <div className="premium-badge-icon"><Star size={16} fill="gold" /></div>}
           </div>
-          <h3>{usuario.nombre}</h3>
+          <h3 className="perfil-nombre">{usuario.nombre}</h3>
           
           <div className="status-container-perfil">
             <span className={`status-pill ${isPremium ? "premium" : "free"}`}>
-              {isPremium ? "Plan Premium" : "Plan Gratuito"}
+              {isPremium ? "Premium" : "Gratuito"}
             </span>
 
             {isPremium && tiempoRestante && (
               <div className="premium-timer-badge">
                 <Clock size={12} />
-                <span>Tiempo restante: <strong>{tiempoRestante}</strong></span>
+                <span>{tiempoRestante}</span>
               </div>
             )}
           </div>
@@ -180,57 +170,58 @@ const Perfil = () => {
           
           <nav className="perfil-nav">
             {!isPremium && <button className="upgrade-btn" onClick={() => navigate("/suscripcion")}><Star size={16} /> ¡Hazte Premium!</button>}
-            <button onClick={() => setShowEditarPerfil(true)}><Edit size={16} /> Editar Perfil</button>
-            <button onClick={() => setShowPasswordModal(true)}><Lock size={16} /> Cambiar Contraseña</button>
-            <button className="logout" onClick={() => { logout(); navigate("/login"); }}><LogOut size={16} /> Cerrar sesión</button>
-            <button className="danger" onClick={eliminarCuenta}><Trash2 size={16} /> Eliminar Cuenta</button>
+            
+            <div className="perfil-nav-grid">
+                <button className="nav-btn" onClick={() => setShowEditarPerfil(true)}><Edit size={16} /> <span>Perfil</span></button>
+                <button className="nav-btn" onClick={() => setShowPasswordModal(true)}><Lock size={16} /> <span>Seguridad</span></button>
+            </div>
+
+            <button className="nav-btn logout" onClick={() => { logout(); navigate("/login"); }}><LogOut size={16} /> Cerrar sesión</button>
+            <button className="nav-btn danger" onClick={eliminarCuenta}><Trash2 size={16} /> Eliminar Cuenta</button>
           </nav>
         </aside>
 
         <main className="perfil-main">
-          <div className="perfil-main-header">
+          <header className="perfil-main-header">
             <h2><BookOpen size={24} /> Mi Progreso Académico</h2>
-            <p>Aquí puedes ver tus lecciones completadas y descargar tus certificados.</p>
-          </div>
+            <p>Monitorea tu avance y descarga tus certificados.</p>
+          </header>
 
           <div className="cursos-list">
-            {cursos.length === 0 && <p className="no-data">No hay cursos disponibles actualmente.</p>}
             {cursos.map((curso) => {
               const p = calcularProgreso(curso);
               return (
                 <div key={curso.id} className={`perfil-curso-card ${p.estado}`}>
-                  <div className="curso-info">
-                    {/* PARTE SUPERIOR */}
-                    <div className="curso-header">
-                      <strong>{curso.nombre}</strong>
-                      <span className={`badge ${p.estado}`}>
-                        {p.completado ? "Certificado Disponible" : p.porcentaje > 0 ? "En curso" : "Pendiente"}
-                      </span>
+                  <div className="curso-card-content">
+                    <div className="curso-card-header">
+                      <div className="title-group">
+                        <strong>{curso.nombre}</strong>
+                        <span className={`badge ${p.estado}`}>
+                          {p.completado ? "Completado" : p.porcentaje > 0 ? "En curso" : "Pendiente"}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* BARRA Y STATS */}
-                    <div className="curso-stats">
-                      <div className="progress-container">
-                        <div className="progress-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.85rem', color: '#6b7280', fontWeight: '700' }}>
-                          <span>{p.porcentaje}% Completado</span>
-                          <span>{p.completadas}/{p.total} Lecciones</span>
-                        </div>
-                        <div className="progress-bar-bg">
-                          <div className="progress-bar-fill" style={{ width: `${p.porcentaje}%` }} />
-                        </div>
+                    <div className="progress-section">
+                      <div className="progress-labels">
+                        <span>{p.porcentaje}% Completado</span>
+                        <span>{p.completadas}/{p.total} Lecciones</span>
                       </div>
-                      
-                      <div className="curso-actions">
-                        {p.completado && p.constanciaEmitida ? (
-                          <button className="btn-perfil-constancia" onClick={() => descargarConstancia(curso.id, curso.nombre)}>
-                            <FileText size={18} /> Descargar PDF
-                          </button>
-                        ) : (
-                          <button className="btn-perfil-continuar" onClick={() => navigate(`/curso/${curso.id}`)}>
-                            {p.porcentaje > 0 ? "Continuar" : "Iniciar"}
-                          </button>
-                        )}
+                      <div className="progress-bar-bg">
+                        <div className="progress-bar-fill" style={{ width: `${p.porcentaje}%` }} />
                       </div>
+                    </div>
+
+                    <div className="curso-card-actions">
+                      {p.completado && p.constanciaEmitida ? (
+                        <button className="btn-perfil-constancia" onClick={() => descargarConstancia(curso.id, curso.nombre)}>
+                          <FileText size={18} /> Certificado PDF
+                        </button>
+                      ) : (
+                        <button className="btn-perfil-continuar" onClick={() => navigate(`/curso/${curso.id}`)}>
+                          {p.porcentaje > 0 ? "Continuar" : "Comenzar"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

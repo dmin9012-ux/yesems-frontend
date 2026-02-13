@@ -1,16 +1,16 @@
 /* ===============================
-   FONDO Y LAYOUT (Consistente con Login)
+   FONDO Y LAYOUT
 =============================== */
 
-.register-page,
-.register-container {
+.register-page {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background: radial-gradient(circle at center, #02025f 0%, #00003f 100%);
-    font-family: "Inter", "Segoe UI", sans-serif;
-    padding: 20px;
+    font-family: "Inter", sans-serif;
+    padding: 30px 20px;
+    /* Más padding vertical para scroll en móviles */
 }
 
 
@@ -20,24 +20,25 @@
 
 .register-card {
     background: #ffffff;
-    padding: 45px 35px;
+    padding: 40px 30px;
     border-radius: 28px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
     width: 100%;
     max-width: 440px;
-    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInRegister 0.6s ease-out;
 }
 
 .register-logo {
-    width: 130px;
-    margin-bottom: 15px;
+    width: 120px;
+    height: auto;
+    margin-bottom: 10px;
 }
 
 .register-card h2 {
-    margin: 10px 0 5px;
+    margin: 5px 0;
     color: #00003f;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 900;
     letter-spacing: -1px;
 }
@@ -45,12 +46,12 @@
 .subtitle {
     font-size: 14px;
     color: #64748b;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 
 /* ===============================
-   INPUTS CON ICONOS
+   INPUTS
 =============================== */
 
 .register-form {
@@ -63,62 +64,50 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .input-group-auth .input-icon {
     position: absolute;
     left: 14px;
     color: #94a3b8;
-    z-index: 10;
+    pointer-events: none;
 }
 
 .input-group-auth input {
     width: 100%;
-    padding: 14px 16px 14px 45px;
-    /* Espacio para el icono */
+    padding: 16px 16px 16px 45px;
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    outline: none;
-    font-size: 15px;
+    border-radius: 14px;
+    font-size: 16px;
+    /* Evita zoom en móviles */
     background-color: #f8fafc;
     transition: all 0.3s ease;
 }
 
 .input-group-auth input:focus {
-    border-color: #00003f;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
-}
-
-
-/* Estilo especial para foco en contraseña (Opcional) */
-
-.password-group input:focus {
+    outline: none;
     border-color: #fcb424;
+    background-color: #ffffff;
 }
 
 
 /* ===============================
-   CONTENEDOR DEL BOTÓN (CENTRADO)
+   BOTÓN REGISTRARME
 =============================== */
 
 .register-actions {
-    display: flex;
-    justify-content: center;
-    /* ESTO CENTRA EL BOTÓN */
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .btn-register-submit {
     background: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
-    /* Texto Azul Profundo */
     border: none;
-    padding: 16px 40px;
-    width: 85%;
-    /* Ancho estético, no total */
+    padding: 16px;
+    width: 100%;
+    /* Mobile First: 100% de ancho */
     border-radius: 14px;
     font-size: 16px;
     font-weight: 800;
@@ -128,49 +117,40 @@
     justify-content: center;
     gap: 10px;
     box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.btn-register-submit:hover:not(:disabled) {
-    background: #e6a91e;
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
-}
-
-.btn-register-submit:disabled {
-    background: #cbd5e1;
-    color: #94a3b8;
-    cursor: not-allowed;
-    box-shadow: none;
+    transition: all 0.3s ease;
 }
 
 
-/* ===============================
-   ELEMENTOS ADICIONALES
-=============================== */
+/* Estilo para Escritorio */
+
+@media (min-width: 768px) {
+    .btn-register-submit {
+        width: 85%;
+        margin: 0 auto;
+    }
+}
 
 .password-eye {
     position: absolute;
     right: 14px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-    z-index: 10;
+    opacity: 0.6;
 }
 
-.password-eye:hover {
-    opacity: 1;
-}
+
+/* ===============================
+   FOOTER
+=============================== */
 
 .register-footer {
-    margin-top: 30px;
+    margin-top: 25px;
     font-size: 14px;
-    color: #64748b;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     border-top: 1px solid #f1f5f9;
     padding-top: 20px;
 }
@@ -181,18 +161,25 @@
     cursor: pointer;
 }
 
-.link-login:hover {
-    color: #fcb424;
-    text-decoration: underline;
-}
-
-@keyframes fadeIn {
+@keyframes fadeInRegister {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(15px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+
+/* Ajuste para pantallas pequeñas (iPhone SE, etc.) */
+
+@media (max-width: 370px) {
+    .register-card {
+        padding: 25px 15px;
+    }
+    .register-card h2 {
+        font-size: 22px;
     }
 }

@@ -19,6 +19,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+
+/* Reset mejorado */
+
 * {
     box-sizing: border-box;
     text-decoration: none;
@@ -31,28 +34,33 @@ html,
 body,
 #root {
     width: 100%;
-    min-height: 100%;
+    /* Cambiado para manejar mejor el scroll en móviles */
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 
-/* 📱 Evita zoom automático en inputs */
+/* 📱 Mejoras para interacción táctil */
 
 input,
 select,
 textarea,
 button {
     font-size: 16px;
+    /* Evita zoom en iOS */
+    max-width: 100%;
+    /* Evita que se desborden */
 }
 
-
-/* Listas */
-
 ol {
-    margin-left: 2rem;
+    margin-left: 1.5rem;
 }
 
 
 /* ===================== FONDO ANIMADO ===================== */
+
+
+/* Mantenemos tu lógica de animación original */
 
 @keyframes hero-gradient-animation {
     0% {
@@ -89,13 +97,18 @@ ol {
 .flex-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
+
+
+/* wrap para que bajen en móviles si es necesario */
 
 .flex-row-center {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .flex-column {
@@ -127,27 +140,33 @@ ol {
 /* ===================== COMPONENTES BASE ===================== */
 
 .sombra {
-    box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .cuerpo-base {
     background-color: whitesmoke;
     border-radius: 15px;
     width: 95%;
-    min-height: 95%;
-    margin: auto;
-    box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+    max-width: 1200px;
+    /* Limite para pantallas muy grandes */
+    margin: 20px auto;
+    padding: 2rem;
+    min-height: 80vh;
 }
 
 
-/* Botones */
+/* Botones con mejor área táctil */
 
 .boton-n1,
 .boton-n2 {
     border-radius: 20rem;
-    padding: 0.7rem 3rem;
+    padding: 0.8rem 2.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .boton-n1 {
@@ -183,18 +202,22 @@ ol {
 /* ===================== 📱 MOBILE ===================== */
 
 @media (max-width: 768px) {
-    .flex-row {
-        flex-direction: column;
-    }
+    /* En lugar de forzar flex-row a column, usamos flex-wrap en la utilidad global */
     .cuerpo-base {
         width: 100%;
-        min-height: auto;
+        margin: 0;
         border-radius: 0;
-        padding: 1rem;
+        padding: 1.2rem;
+        min-height: 100vh;
     }
     .boton-n1,
     .boton-n2 {
         width: 100%;
-        padding: 0.8rem 1rem;
+        /* Botones de ancho completo en móvil son mejores */
+        margin-bottom: 10px;
+    }
+    /* Nueva utilidad para colapsar filas solo cuando sea necesario */
+    .mobile-column {
+        flex-direction: column !important;
     }
 }
