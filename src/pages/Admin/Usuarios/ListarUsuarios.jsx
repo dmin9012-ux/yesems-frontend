@@ -1,160 +1,453 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarios } from "../../../servicios/usuarioAdminService";
-import { notify, confirmDialog } from "../../../Util/toast"; 
-import apiYesems from "../../../api/apiYesems"; 
-import { Search, Edit3, Zap } from "lucide-react"; 
+import { notify, confirmDialog } from "../../../Util/toast";
+import apiYesems from "../../../api/apiYesems";
+
+import {
+  Search,
+  Edit3,
+  Zap,
+  ArrowLeft,
+  ShieldCheck,
+  User
+} from "lucide-react";
+
 import "./UsuariosStyle.css";
 
 export default function ListarUsuarios() {
-  const [usuarios, setUsuarios] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filtro, setFiltro] = useState(""); 
+
   const navigate = useNavigate();
 
-  const cargarUsuarios = async () => {
-    try {
-      setLoading(true);
-      const res = await obtenerUsuarios();
-      setUsuarios(res);
-    } catch (err) {
-      console.error("Error al obtener usuarios:", err);
-      notify("error", "Error al sincronizar la lista de usuarios.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState("");
 
-  useEffect(() => {
-    cargarUsuarios();
-  }, []);
+
 
   /* ========================================================
-      ⚡ LÓGICA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
+     CARGAR USUARIOS
   ======================================================== */
-  const handleActivarPremium = async (u) => {
-    const result = await confirmDialog(
-      `¿Activar Premium para ${u.nombre}?`,
-      "Se otorgará 1 hora de acceso inmediato.",
-      "question",
-      false // 👈 Cambiado a false: Ya no pide escribir nada
-    );
 
-    if (result.isConfirmed) {
-      try {
-        // Enviamos el objeto exacto que el controlador blindado espera
-        await apiYesems.post("/usuario/activar-premium-admin", {
-          usuarioId: u._id,
-          horas: 1, // Valor por defecto
-          tipo: "prueba_hora"
-        });
-        
-        notify("success", `¡Premium activado (1h) para ${u.nombre}! ⚡`);
-        cargarUsuarios(); // Refrescar para ver cambios
-      } catch (err) {
-        console.error("Error activation:", err);
-        // Mostramos el mensaje de error que viene del backend si existe
-        notify("error", err.response?.data?.message || "Error al activar la suscripción.");
-      }
+  const cargarUsuarios = async () => {
+
+    try {
+
+      setLoading(true);
+
+      const res = await obtenerUsuarios();
+
+      setUsuarios(res || []);
+
+    } catch (err) {
+
+      console.error(err);
+
+      notify(
+        "error",
+        "Error al sincronizar la lista de usuarios."
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
+
   };
 
-  const usuariosFiltrados = usuarios.filter(u => 
-    u.nombre.toLowerCase().includes(filtro.toLowerCase()) || 
-    u.email.toLowerCase().includes(filtro.toLowerCase())
-  );
 
-  if (loading) return (
-    <div className="admin-loading-container">
-      <div className="spinner"></div>
-      <p>Cargando base de datos de usuarios...</p>
-    </div>
-  );
+  useEffect(() => {
 
-  return (
-    <div className="admin-page-layout">
-      <TopBarAdmin />
-      <div className="usuarios-container">
-        
-        <header className="admin-page-header">
-          <div className="header-text">
-            <h1>Gestión de Usuarios</h1>
-            <p>Administra los roles y accesos de la plataforma.</p>
-          </div>
-          <button className="btn-volver" onClick={() => navigate("/admin")}>
-            ← Volver al Panel
-          </button>
-        </header>
+    cargarUsuarios();
 
-        <div className="table-controls">
-          <div className="search-box">
-            <Search size={18} />
-            <input 
-              type="text" 
-              placeholder="Buscar por nombre o correo..." 
-              value={filtro}
-              onChange={(e) => setFiltro(e.target.value)}
-            />
-          </div>
+  }, []);
+
+
+
+  /* ========================================================
+     ACTIVAR PREMIUM
+  ======================================================== */
+
+  const handleActivarPremium = async (usuario) => {
+
+    const result = await confirmDialog(
+      `¿Activar Premium para ${usuario.nombre}?`,
+      "Se otorgará 1 hora de acceso inmediato.",
+      "question",
+      false
+    );
+
+
+    if (!result.isConfirmed) return;
+
+
+    try {
+
+      await apiYesems.post(
+        "/usuario/activar-premium-admin",
+        {
+          usuarioId: usuario._id,
+          horas: 1,
+          tipo: "prueba_hora"
+        }
+      );
+
+
+      notify(
+        "success",
+        `Premium activado para ${usuario.nombre}`
+      );
+
+
+      cargarUsuarios();
+
+
+    } catch (err) {
+
+      notify(
+        "error",
+        err?.response?.data?.message ||
+        "Error al activar premium"
+      );
+
+    }
+
+  };
+
+
+
+  /* ========================================================
+     FILTRO MEMORIZADO
+  ======================================================== */
+
+  const usuariosFiltrados = useMemo(() => {
+
+    if (!filtro.trim()) return usuarios;
+
+    const texto = filtro.toLowerCase();
+
+    return usuarios.filter(u =>
+      u.nombre.toLowerCase().includes(texto) ||
+      u.email.toLowerCase().includes(texto)
+    );
+
+  }, [usuarios, filtro]);
+
+
+
+  /* ========================================================
+     LOADING
+  ======================================================== */
+
+  if (loading)
+    return (
+
+      <div className="admin-page-layout">
+
+        <TopBarAdmin />
+
+        <div className="admin-loading-container with-topbar">
+
+          <div className="spinner"></div>
+
+          <p>Cargando usuarios...</p>
+
         </div>
 
-        <div className="table-wrapper">
-          {usuariosFiltrados.length === 0 ? (
-            <div className="no-data">
-              <p>No se encontraron usuarios registrados.</p>
-            </div>
-          ) : (
+      </div>
+
+    );
+
+
+
+  /* ========================================================
+     RENDER
+  ======================================================== */
+
+  return (
+
+    <div className="admin-page-layout">
+
+      <TopBarAdmin />
+
+      <div className="admin-content-wrapper">
+
+
+
+        {/* HEADER */}
+
+        <header className="admin-page-header responsive">
+
+          <div>
+
+            <h1>Gestión de Usuarios</h1>
+
+            <p className="admin-subtitle">
+              Administra roles y accesos de la plataforma
+            </p>
+
+          </div>
+
+
+          <button
+            className="btn-volver"
+            onClick={() => navigate("/admin")}
+          >
+            <ArrowLeft size={16} />
+            Volver al Panel
+          </button>
+
+
+        </header>
+
+
+
+        {/* SEARCH */}
+
+        <div className="table-controls">
+
+          <div className="search-box">
+
+            <Search size={18} />
+
+            <input
+              type="text"
+              placeholder="Buscar usuario..."
+              value={filtro}
+              onChange={(e) =>
+                setFiltro(e.target.value)
+              }
+            />
+
+          </div>
+
+        </div>
+
+
+
+        {/* SIN DATOS */}
+
+        {usuariosFiltrados.length === 0 && (
+
+          <div className="usuario-edit-card">
+
+            <p>No se encontraron usuarios.</p>
+
+          </div>
+
+        )}
+
+
+
+        {/* ========================================================
+           TABLA DESKTOP
+        ======================================================== */}
+
+        {usuariosFiltrados.length > 0 && (
+
+          <div className="table-wrapper desktop-only">
+
             <table className="usuarios-table">
+
               <thead>
+
                 <tr>
-                  <th>Nombre</th>
+
+                  <th>Usuario</th>
+
                   <th>Email</th>
+
                   <th>Rol</th>
+
                   <th>Estado</th>
-                  <th className="text-center">Acciones</th>
+
+                  <th>Acciones</th>
+
                 </tr>
+
               </thead>
+
               <tbody>
-                {usuariosFiltrados.map((u) => (
+
+                {usuariosFiltrados.map(u => (
+
                   <tr key={u._id}>
-                    <td className="font-bold">{u.nombre}</td>
-                    <td>{u.email}</td>
+
                     <td>
-                      <span className={`badge-rol ${u.rol}`}>
-                        {u.rol === 'admin' ? '🛡️ Admin' : '👤 Usuario'}
+
+                      <strong>{u.nombre}</strong>
+
+                    </td>
+
+
+                    <td>
+
+                      {u.email}
+
+                    </td>
+
+
+                    <td>
+
+                      <span
+                        className={`badge-rol ${u.rol}`}
+                      >
+
+                        {u.rol === "admin"
+                          ? "Admin"
+                          : "Usuario"}
+
                       </span>
+
                     </td>
+
+
                     <td>
-                      <span className={`status-dot ${u.estado}`}></span>
+
+                      <span
+                        className={`status-dot ${u.estado}`}
+                      ></span>
+
                       {u.estado}
+
                     </td>
-                    <td className="text-center">
+
+
+                    <td>
+
                       <div className="action-buttons-cell">
-                        <button 
+
+
+                        <button
                           className="btn-accion-premium"
-                          onClick={() => handleActivarPremium(u)}
-                          title="Dar 1 Hora Premium"
+                          onClick={() =>
+                            handleActivarPremium(u)
+                          }
                         >
                           <Zap size={16} />
                         </button>
 
-                        <button 
+
+                        <button
                           className="btn-accion-edit"
-                          onClick={() => navigate(`/admin/usuarios/editar/${u._id}`)}
-                          title="Editar Usuario"
+                          onClick={() =>
+                            navigate(
+                              `/admin/usuarios/editar/${u._id}`
+                            )
+                          }
                         >
                           <Edit3 size={16} />
                         </button>
+
+
                       </div>
+
                     </td>
+
                   </tr>
+
                 ))}
+
               </tbody>
+
             </table>
-          )}
+
+          </div>
+
+        )}
+
+
+
+        {/* ========================================================
+           TARJETAS MOBILE
+        ======================================================== */}
+
+        <div className="mobile-only">
+
+          {usuariosFiltrados.map(u => (
+
+            <div
+              key={u._id}
+              className="usuario-edit-card"
+            >
+
+              <div className="premium-header">
+
+                {u.rol === "admin"
+                  ? <ShieldCheck size={18} />
+                  : <User size={18} />}
+
+                <strong>{u.nombre}</strong>
+
+              </div>
+
+
+              <p>{u.email}</p>
+
+
+              <p>
+
+                <span
+                  className={`badge-rol ${u.rol}`}
+                >
+                  {u.rol}
+                </span>
+
+              </p>
+
+
+              <p>
+
+                <span
+                  className={`status-dot ${u.estado}`}
+                ></span>
+
+                {u.estado}
+
+              </p>
+
+
+              <div className="form-actions-admin">
+
+                <button
+                  className="btn-accion-premium"
+                  onClick={() =>
+                    handleActivarPremium(u)
+                  }
+                >
+                  Premium
+                </button>
+
+
+                <button
+                  className="btn-accion-edit"
+                  onClick={() =>
+                    navigate(
+                      `/admin/usuarios/editar/${u._id}`
+                    )
+                  }
+                >
+                  Editar
+                </button>
+
+
+              </div>
+
+
+            </div>
+
+          ))}
+
         </div>
+
+
+
       </div>
+
     </div>
+
   );
+
 }
