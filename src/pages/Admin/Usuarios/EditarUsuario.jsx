@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
-import {
-  obtenerUsuarioPorId,
-  actualizarUsuario,
-} from "../../../servicios/usuarioAdminService";
+import { obtenerUsuarioPorId, actualizarUsuario } from "../../../servicios/usuarioAdminService";
 import apiYesems from "../../../api/apiYesems";
-import { notify, confirmDialog } from "../../../Util/toast";
-import { Zap, ShieldCheck, ArrowLeft } from "lucide-react";
-
+import { notify, confirmDialog } from "../../../Util/toast"; 
+import { Zap, ShieldCheck } from "lucide-react"; 
 import "./UsuariosStyle.css";
 
 export default function EditarUsuario() {
@@ -21,328 +17,154 @@ export default function EditarUsuario() {
     rol: "usuario",
     estado: "activo",
   });
-
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [premiumLoading, setPremiumLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-
-  /* ============================================================
-      CARGAR USUARIO
-  ============================================================ */
 
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
         setLoading(true);
-
         const res = await obtenerUsuarioPorId(id);
-
-        setUsuario({
-          nombre: res.nombre || "",
-          email: res.email || "",
-          rol: res.rol || "usuario",
-          estado: res.estado || "activo",
-        });
+        setUsuario(res);
       } catch (err) {
         console.error("Error al obtener usuario:", err);
-
         notify("error", "No se pudo cargar el perfil del usuario.");
-
         navigate("/admin/usuarios");
       } finally {
         setLoading(false);
       }
     };
-
     cargarUsuario();
   }, [id, navigate]);
 
-  /* ============================================================
-      HANDLE CHANGE
-  ============================================================ */
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setUsuario((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUsuario({ ...usuario, [e.target.name]: e.target.value });
   };
-
-  /* ============================================================
-      GUARDAR CAMBIOS
-  ============================================================ */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (saving) return;
-
     try {
-      setSaving(true);
-
       await actualizarUsuario(id, usuario);
-
-      notify("success", "Datos actualizados correctamente 👤");
-
+      notify("success", "Datos del usuario actualizados 👤");
       navigate("/admin/usuarios");
     } catch (err) {
-      console.error(err);
-
-      notify("error", "Error al guardar cambios.");
-    } finally {
-      setSaving(false);
+      console.error("Error al actualizar usuario:", err);
+      notify("error", "Error al guardar los cambios.");
     }
   };
 
-  /* ============================================================
-      ACTIVAR PREMIUM
-  ============================================================ */
-
+  /* ========================================================
+      ⚡ LÓGICA CORREGIDA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
+  ======================================================== */
   const handleActivarPremium = async () => {
-    if (premiumLoading) return;
-
     const result = await confirmDialog(
-      "Activar acceso premium",
-      `¿Deseas otorgar 1 hora premium a ${usuario.nombre}?`,
+      "Activar Acceso Premium",
+      `¿Deseas otorgar 1 hora de acceso premium a ${usuario.nombre}?`,
       "question",
-      false
+      false // 👈 FALSE: Ya no pide escribir el número de horas
     );
 
-    if (!result.isConfirmed) return;
-
-    try {
-      setPremiumLoading(true);
-
-      await apiYesems.post("/usuario/activar-premium-admin", {
-        usuarioId: id,
-        horas: 1,
-        tipo: "prueba_hora",
-      });
-
-      notify("success", "Acceso premium activado ⚡");
-    } catch (err) {
-      console.error(err);
-
-      notify(
-        "error",
-        err.response?.data?.message || "Error al activar premium."
-      );
-    } finally {
-      setPremiumLoading(false);
+    if (result.isConfirmed) {
+      try {
+        await apiYesems.post("/usuario/activar-premium-admin", {
+          usuarioId: id,
+          horas: 1, // 👈 Valor fijo de 1 hora
+          tipo: "prueba_hora"
+        });
+        notify("success", "¡Acceso premium de 1 hora activado con éxito! ⚡");
+      } catch (err) {
+        console.error("Error al activar premium:", err.response?.data || err);
+        notify("error", err.response?.data?.message || "Fallo al procesar la suscripción.");
+      }
     }
   };
 
-  /* ============================================================
-      ELIMINAR USUARIO
-  ============================================================ */
-
   const handleEliminar = async () => {
-    if (deleteLoading) return;
-
     const result = await confirmDialog(
-      "Eliminar usuario",
-      "Esta acción es permanente.",
+      "¿Eliminar este usuario?",
+      "Esta acción es irreversible y se perderá todo su progreso.",
       "warning"
     );
 
-    if (!result.isConfirmed) return;
-
-    try {
-      setDeleteLoading(true);
-
-      await apiYesems.delete(`/usuario/${id}`);
-
-      notify("success", "Usuario eliminado");
-
-      navigate("/admin/usuarios");
-    } catch (err) {
-      console.error(err);
-
-      notify("error", "Error al eliminar usuario.");
-    } finally {
-      setDeleteLoading(false);
+    if (result.isConfirmed) {
+      try {
+        await apiYesems.delete(`/usuario/${id}`);
+        notify("success", "Usuario eliminado permanentemente.");
+        navigate("/admin/usuarios");
+      } catch (err) {
+        console.error("Error al eliminar usuario:", err);
+        notify("error", "No se tienen permisos o el usuario no existe.");
+      }
     }
   };
 
-  /* ============================================================
-      LOADING SCREEN
-  ============================================================ */
-
-  if (loading) {
-    return (
-      <div className="admin-page-layout">
-        <TopBarAdmin />
-
-        <div className="admin-loading-container with-topbar">
-          <div className="spinner"></div>
-          <p>Cargando usuario...</p>
-        </div>
-      </div>
-    );
-  }
-
-  /* ============================================================
-      UI
-  ============================================================ */
+  if (loading) return (
+    <div className="admin-loading-container">
+      <div className="spinner"></div>
+      <p>Consultando base de datos...</p>
+    </div>
+  );
 
   return (
     <div className="admin-page-layout">
       <TopBarAdmin />
-
-      <div className="admin-content-wrapper">
-
-        {/* HEADER */}
-
-        <div className="admin-page-header responsive">
-          <div>
-            <h1>Editar Usuario</h1>
-            <p className="admin-subtitle">
-              Modifica datos y permisos del usuario
-            </p>
-          </div>
-
-          <button
-            className="btn-volver responsive"
-            onClick={() => navigate("/admin/usuarios")}
-          >
-            <ArrowLeft size={18} />
-            Volver
+      <div className="usuarios-container">
+        <header className="admin-page-header">
+          <h1>Editar Usuario</h1>
+          <button className="btn-volver" onClick={() => navigate("/admin/usuarios")}>
+            ← Volver a la lista
           </button>
-        </div>
+        </header>
 
-        {/* CARD */}
-
-        <div className="usuario-edit-card responsive">
-
-          <form
-            className="usuario-form responsive"
-            onSubmit={handleSubmit}
-          >
-
-            {/* NOMBRE */}
-
+        <div className="usuario-edit-card">
+          <form className="usuario-form" onSubmit={handleSubmit}>
             <div className="input-group-admin">
-              <label>Nombre completo</label>
-
-              <input
-                type="text"
-                name="nombre"
-                value={usuario.nombre}
-                onChange={handleChange}
-                required
-              />
+              <label>Nombre Completo</label>
+              <input type="text" name="nombre" value={usuario.nombre} onChange={handleChange} required />
             </div>
 
-            {/* EMAIL */}
-
             <div className="input-group-admin">
-              <label>Correo electrónico</label>
-
-              <input
-                type="email"
-                name="email"
-                value={usuario.email}
-                onChange={handleChange}
-                required
-              />
+              <label>Correo Electrónico</label>
+              <input type="email" name="email" value={usuario.email} onChange={handleChange} required />
             </div>
 
-            {/* GRID */}
-
-            <div className="grid-form-row responsive">
-
+            <div className="grid-form-row">
               <div className="input-group-admin">
-                <label>Rol</label>
-
-                <select
-                  name="rol"
-                  value={usuario.rol}
-                  onChange={handleChange}
-                >
+                <label>Rol de Acceso</label>
+                <select name="rol" value={usuario.rol} onChange={handleChange}>
                   <option value="usuario">Usuario</option>
                   <option value="admin">Administrador</option>
                 </select>
               </div>
 
               <div className="input-group-admin">
-                <label>Estado</label>
-
-                <select
-                  name="estado"
-                  value={usuario.estado}
-                  onChange={handleChange}
-                >
-                  <option value="activo">Activo</option>
-                  <option value="inactivo">Inactivo</option>
+                <label>Estado de Cuenta</label>
+                <select name="estado" value={usuario.estado} onChange={handleChange}>
+                  <option value="activo">Activo ✅</option>
+                  <option value="inactivo">Inactivo ❌</option>
                 </select>
               </div>
-
             </div>
 
-            {/* PREMIUM */}
-
-            <div className="admin-premium-section responsive">
-
-              <div className="premium-header">
-                <ShieldCheck size={20} />
-                <h3>Gestión Premium</h3>
-              </div>
-
-              <p>
-                Otorga acceso premium temporal manualmente.
-              </p>
-
-              <button
-                type="button"
-                className="btn-premium-direct responsive"
-                onClick={handleActivarPremium}
-                disabled={premiumLoading}
-              >
-                <Zap size={16} />
-
-                {premiumLoading
-                  ? "Activando..."
-                  : "Activar 1 hora premium"}
+            {/* SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN */}
+            <div className="admin-premium-section">
+              <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
+              <p>Otorga acceso premium de 1 hora manualmente a este usuario.</p>
+              <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
+                <Zap size={16} /> Activar 1 Hora Premium
               </button>
-
             </div>
 
-            {/* ACTIONS */}
-
-            <div className="form-actions-admin responsive">
-
-              <button
-                type="submit"
-                className="btn-guardar-admin responsive"
-                disabled={saving}
-              >
-                {saving
-                  ? "Guardando..."
-                  : "Guardar cambios"}
+            <div className="form-actions-admin">
+              <button type="submit" className="btn-guardar-admin">
+                💾 Guardar Cambios
               </button>
-
-              <button
-                type="button"
-                className="btn-eliminar-admin responsive"
-                onClick={handleEliminar}
-                disabled={deleteLoading}
-              >
-                {deleteLoading
-                  ? "Eliminando..."
-                  : "Eliminar usuario"}
+              <button type="button" className="btn-eliminar-admin" onClick={handleEliminar}>
+                ❌ Eliminar Usuario
               </button>
-
             </div>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
   );
 }

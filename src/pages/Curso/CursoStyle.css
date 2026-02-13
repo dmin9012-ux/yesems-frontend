@@ -1,6 +1,4 @@
-/* ===============================
-   CONTENEDOR GENERAL
-=============================== */
+/* Contenedor general con estructura de Dashboard */
 
 .curso-contenedor-sidebar {
     display: flex;
@@ -8,32 +6,12 @@
     background: #f8f9fa;
     font-family: 'Inter', sans-serif;
     padding-top: 70px;
-    position: relative;
+    /* Ajuste para el TopBar */
 }
 
 
 /* ===============================
-   BOTÓN HAMBURGUESA (SOLO MÓVIL)
-=============================== */
-
-.sidebar-toggle-btn {
-    display: none;
-    position: fixed;
-    top: 80px;
-    left: 15px;
-    z-index: 1200;
-    background: #00003f;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-}
-
-
-/* ===============================
-   SIDEBAR
+    ⬅️ SIDEBAR DEL CURSO (FIJO)
 =============================== */
 
 .sidebar {
@@ -47,26 +25,22 @@
     top: 70px;
     height: calc(100vh - 70px);
     overflow-y: auto;
-    z-index: 100;
+    z-index: 10;
 }
 
-
-/* HEADER SIDEBAR */
-
-.sidebar-header h3 {
+.sidebar h3 {
     color: #00003f;
     font-size: 1.4rem;
     font-weight: 800;
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #fcb424;
+    /* Línea Ámbar */
     text-align: center;
 }
 
 
-/* ===============================
-   NIVELES
-=============================== */
+/* Niveles en el Sidebar */
 
 .nivel-sidebar {
     margin-bottom: 20px;
@@ -76,6 +50,9 @@
     border: 1px solid #f0f0f0;
 }
 
+
+/* TITULO DE NIVEL EN NEGRO */
+
 .nivel-titulo {
     font-weight: 800;
     color: #000000;
@@ -83,15 +60,9 @@
     margin-bottom: 12px;
 }
 
-
-/* ===============================
-   LECCIONES
-=============================== */
-
 .lecciones-lista {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .leccion-item {
@@ -99,6 +70,9 @@
     border-radius: 10px;
     overflow: hidden;
 }
+
+
+/* TEXTO DE LECCIONES EN NEGRO */
 
 .leccion-link {
     display: flex;
@@ -117,24 +91,38 @@
     font-weight: 600;
 }
 
-.leccion-link:hover {
+
+/* ===============================
+    ESTADO ACTIVO (INDICADOR AMARILLO)
+=============================== */
+
+.leccion-item.active .leccion-link {
+    background: #fcb424;
+    /* Fondo Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+}
+
+.leccion-item.active .leccion-link .text {
+    color: #00003f;
+    font-weight: 800;
+}
+
+.leccion-link:hover:not(.active) {
     background: #e5e7eb;
 }
 
 
-/* COMPLETADA */
+/* Estado completado */
 
-.leccion-item.completada .leccion-link {
+.leccion-item.completada .leccion-link:not(.active) {
     color: #16a34a;
     font-weight: 700;
 }
 
-.leccion-item.completada .text {
+.leccion-item.completada .leccion-link:not(.active) .text {
     color: #16a34a;
 }
-
-
-/* BLOQUEADA */
 
 .leccion-bloqueada {
     display: flex;
@@ -149,7 +137,50 @@
 
 
 /* ===============================
-   BOTONES SIDEBAR
+    📦 CONTENIDO PRINCIPAL
+=============================== */
+
+.contenido-curso {
+    flex: 1;
+    padding: 60px;
+    max-width: 900px;
+}
+
+.curso-titulo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00003f;
+    margin-bottom: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #00003f;
+    color: #fcb424;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 30px;
+}
+
+.curso-info-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.curso-descripcion {
+    font-size: 1.1rem;
+    color: #4b5563;
+    line-height: 1.7;
+}
+
+
+/* ===============================
+    🔘 BOTONES Y ESTADOS
 =============================== */
 
 .btn-examen-sidebar {
@@ -167,6 +198,7 @@
 
 .btn-examen-sidebar:hover {
     background: #e6a91e;
+    transform: translateY(-2px);
 }
 
 .nivel-aprobado {
@@ -178,10 +210,6 @@
     padding: 8px;
     border-radius: 8px;
     text-align: center;
-}
-
-.sidebar-footer {
-    margin-top: auto;
 }
 
 .btn-regresar-sidebar {
@@ -203,103 +231,4 @@
 }
 
 
-/* ===============================
-   CONTENIDO PRINCIPAL
-=============================== */
-
-.contenido-curso {
-    flex: 1;
-    padding: 60px;
-    max-width: 900px;
-    margin: auto;
-}
-
-.contenido-header {
-    margin-bottom: 30px;
-}
-
-.curso-titulo {
-    font-size: 3rem;
-    font-weight: 900;
-    color: #00003f;
-    margin-bottom: 10px;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    background: #00003f;
-    color: #fcb424;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.curso-info-card {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
-}
-
-.curso-descripcion {
-    font-size: 1.1rem;
-    color: #4b5563;
-    line-height: 1.7;
-}
-
-
-/* ===============================
-   RESPONSIVE TABLET
-=============================== */
-
-@media (max-width: 1024px) {
-    .contenido-curso {
-        padding: 40px;
-    }
-}
-
-
-/* ===============================
-   RESPONSIVE MÓVIL
-=============================== */
-
-@media (max-width: 768px) {
-    .sidebar-toggle-btn {
-        display: block;
-    }
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        height: calc(100vh - 70px);
-        z-index: 1300;
-        transition: left 0.3s ease;
-        width: 280px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-    .sidebar.open {
-        left: 0;
-    }
-    .contenido-curso {
-        padding: 25px;
-    }
-    .curso-titulo {
-        font-size: 1.8rem;
-    }
-}
-
-
-/* ===============================
-   RESPONSIVE MÓVIL PEQUEÑO
-=============================== */
-
-@media (max-width: 480px) {
-    .contenido-curso {
-        padding: 20px;
-    }
-    .curso-titulo {
-        font-size: 1.5rem;
-    }
-}
+/* Spinner y otros se mantienen igual... */

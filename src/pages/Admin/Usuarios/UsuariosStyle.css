@@ -1,43 +1,24 @@
 /* ===================================================
-   YES EMS ADMIN PANEL — USUARIOS STYLE
-   Profesional • Responsive • SaaS UI
-   =================================================== */
-
-
-/* ===================================================
-   LAYOUT BASE
+   USUARIOS STYLE - YES EMS ADMIN PANEL
    =================================================== */
 
 .admin-page-layout {
     min-height: 100vh;
-    background: #f4f7fb;
+    background-color: #f4f7f6;
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
-
-
-/* wrapper que respeta TopBar fija */
-
-.admin-content-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 100px 20px 40px 20px;
-    animation: fadeInAdmin 0.4s ease;
-}
-
-
-/* compatibilidad antigua */
 
 .usuarios-container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 100px 20px 40px 20px;
-    animation: fadeInAdmin 0.4s ease;
+    padding: 70px 20px;
+    animation: fadeInAdmin 0.5s ease-out;
 }
 
 @keyframes fadeInAdmin {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -46,97 +27,77 @@
 }
 
 
-/* ===================================================
-   HEADER
-   =================================================== */
+/* ---------------------------------------------------
+   HEADER Y CONTROLES
+   --------------------------------------------------- */
 
 .admin-page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-}
-
-.admin-page-header.responsive {
-    flex-wrap: wrap;
-    gap: 15px;
+    margin-bottom: 35px;
 }
 
 .admin-page-header h1 {
     color: #00003f;
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 900;
     margin: 0;
+    letter-spacing: -1px;
 }
-
-.admin-subtitle {
-    font-size: 0.9rem;
-    color: #64748b;
-    margin-top: 4px;
-}
-
-
-/* ===================================================
-   BOTÓN VOLVER
-   =================================================== */
 
 .btn-volver {
-    background: white;
-    color: #334155;
-    border: 1px solid #e2e8f0;
-    padding: 10px 16px;
-    border-radius: 12px;
+    background: transparent;
+    color: #6b7280;
+    border: 1.5px solid #d1d5db;
+    padding: 8px 16px;
+    border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    transition: all 0.3s ease;
 }
 
 .btn-volver:hover {
     background: #00003f;
     color: white;
-    transform: translateY(-1px);
+    border-color: #00003f;
 }
 
-
-/* ===================================================
-   SEARCH BOX
-   =================================================== */
-
 .table-controls {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .search-box {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     background: white;
-    padding: 12px 16px;
+    padding: 12px 20px;
     border-radius: 14px;
-    border: 1px solid #e2e8f0;
-    max-width: 400px;
+    border: 1.5px solid #e5e7eb;
+    max-width: 450px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
 .search-box input {
     border: none;
     outline: none;
     width: 100%;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    color: #1f2937;
 }
 
 
-/* ===================================================
-   TABLA
-   =================================================== */
+/* ---------------------------------------------------
+   TABLA DE USUARIOS
+   --------------------------------------------------- */
 
 .table-wrapper {
     background: white;
-    border-radius: 18px;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .usuarios-table {
@@ -145,33 +106,33 @@
 }
 
 .usuarios-table th {
-    background: #00003f;
+    background-color: #00003f;
     color: white;
-    padding: 14px;
-    font-size: 0.8rem;
+    padding: 18px 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
     letter-spacing: 1px;
     text-align: left;
 }
 
 .usuarios-table td {
-    padding: 14px;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 0.9rem;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #4b5563;
+    font-size: 0.95rem;
 }
 
 .usuarios-table tr:hover td {
-    background: #f8fafc;
+    background-color: #f9fafb;
 }
 
 
-/* ===================================================
-   BADGES
-   =================================================== */
+/* Badges y Estados */
 
 .badge-rol {
     padding: 4px 10px;
     border-radius: 8px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 800;
 }
 
@@ -181,83 +142,68 @@
 }
 
 .badge-rol.usuario {
-    background: #f1f5f9;
-    color: #475569;
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 .status-dot {
+    display: inline-block;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    display: inline-block;
-    margin-right: 6px;
+    margin-right: 8px;
 }
 
 .status-dot.activo {
-    background: #10b981;
+    background-color: #10b981;
 }
 
 .status-dot.inactivo {
-    background: #ef4444;
+    background-color: #ef4444;
 }
 
 
-/* ===================================================
-   CARD EDITAR USUARIO
-   =================================================== */
+/* ---------------------------------------------------
+   FORMULARIO DE EDICIÓN
+   --------------------------------------------------- */
 
 .usuario-edit-card {
     background: white;
-    padding: 40px;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
+    padding: 45px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.05);
+    border: 1px solid #e5e7eb;
     max-width: 700px;
-    margin: auto;
+    margin: 0 auto;
 }
-
-.usuario-edit-card.responsive {
-    width: 100%;
-}
-
-
-/* ===================================================
-   FORM
-   =================================================== */
 
 .usuario-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
-
-.usuario-form.responsive {
-    width: 100%;
-}
-
-
-/* ===================================================
-   INPUT GROUP
-   =================================================== */
 
 .input-group-admin {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .input-group-admin label {
-    font-weight: 700;
-    font-size: 0.85rem;
+    font-weight: 800;
     color: #00003f;
+    font-size: 0.9rem;
+    padding-left: 4px;
 }
 
 .input-group-admin input,
 .input-group-admin select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    background: #f8fafc;
-    font-size: 0.95rem;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid #f3f4f6;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: all 0.3s ease;
 }
 
 .input-group-admin input:focus,
@@ -265,212 +211,154 @@
     outline: none;
     border-color: #fcb424;
     background: white;
+    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
 }
-
-
-/* ===================================================
-   GRID
-   =================================================== */
 
 .grid-form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.grid-form-row.responsive {
-    width: 100%;
+    gap: 20px;
 }
 
 
-/* ===================================================
-   PREMIUM SECTION
-   =================================================== */
+/* ---------------------------------------------------
+   GESTIÓN DE SUSCRIPCIÓN (NUEVO)
+   --------------------------------------------------- */
 
 .admin-premium-section {
-    background: #fff8e6;
-    border: 1px dashed #fcb424;
-    padding: 20px;
-    border-radius: 14px;
-}
-
-.admin-premium-section.responsive {
-    width: 100%;
-}
-
-.premium-header {
+    margin-top: 10px;
+    padding: 25px;
+    background: #fffbeb;
+    /* Fondo ámbar suave */
+    border: 2px dashed #fcb424;
+    border-radius: 18px;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .admin-premium-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #00003f;
+    font-size: 1.1rem;
+    font-weight: 800;
     margin: 0;
-    font-size: 1rem;
 }
 
 .admin-premium-section p {
-    font-size: 0.8rem;
-    color: #64748b;
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
 }
-
-
-/* botón premium */
 
 .btn-premium-direct {
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: #00003f;
-    color: #fcb424;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-premium-direct:hover {
-    background: #00005f;
-}
-
-.btn-premium-direct:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-
-/* ===================================================
-   ACTION BUTTONS
-   =================================================== */
-
-.form-actions-admin {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 10px;
-    margin-top: 10px;
-}
-
-.form-actions-admin.responsive {
-    flex-wrap: wrap;
-}
-
-.btn-guardar-admin {
-    background: #fcb424;
-    color: #00003f;
+    padding: 14px;
+    background-color: #00003f;
+    color: #fcb424;
     border: none;
-    padding: 12px 18px;
     border-radius: 12px;
     font-weight: 800;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.btn-guardar-admin:hover {
-    background: #e6a91e;
+.btn-premium-direct:hover {
+    background-color: #00005f;
+    transform: translateY(-2px);
+}
+
+
+/* ---------------------------------------------------
+   BOTONES DE ACCIÓN Y TABLA
+   --------------------------------------------------- */
+
+.action-buttons-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-accion-premium {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-accion-premium:hover {
+    background: #fbbf24;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.form-actions-admin {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-guardar-admin,
+.btn-accion-edit {
+    background-color: #fcb424;
+    color: #00003f;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-guardar-admin:hover,
+.btn-accion-edit:hover {
+    background-color: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
 }
 
 .btn-eliminar-admin {
-    background: #fee2e2;
+    background-color: #fee2e2;
     color: #dc2626;
     border: none;
-    padding: 12px 18px;
+    padding: 14px 24px;
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
 }
 
-.btn-eliminar-admin:hover {
-    background: #fecaca;
-}
 
-
-/* ===================================================
-   ACTION BUTTONS TABLE
-   =================================================== */
-
-.action-buttons-cell {
-    display: flex;
-    gap: 6px;
-}
-
-.btn-accion-edit {
-    background: #e0e7ff;
-    color: #00003f;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.btn-accion-premium {
-    background: #fef3c7;
-    border: none;
-    padding: 6px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-
-/* ===================================================
-   LOADING
-   =================================================== */
-
-.admin-loading-container {
-    height: 60vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.admin-loading-container.with-topbar {
-    padding-top: 80px;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #e2e8f0;
-    border-top: 4px solid #00003f;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-
-/* ===================================================
+/* ---------------------------------------------------
    RESPONSIVE
-   =================================================== */
+   --------------------------------------------------- */
 
 @media (max-width: 768px) {
-    .admin-content-wrapper,
-    .usuarios-container {
-        padding: 90px 16px 30px 16px;
+    .grid-form-row {
+        grid-template-columns: 1fr;
     }
     .admin-page-header {
         flex-direction: column;
         align-items: flex-start;
-    }
-    .grid-form-row {
-        grid-template-columns: 1fr;
-    }
-    .usuario-edit-card {
-        padding: 20px;
+        gap: 15px;
     }
     .form-actions-admin {
         flex-direction: column;
     }
-}
-
-
-/* móvil pequeño */
-
-@media (max-width: 480px) {
-    .admin-page-header h1 {
-        font-size: 1.5rem;
+    .usuario-edit-card {
+        padding: 30px 20px;
     }
 }
