@@ -1,33 +1,33 @@
-/* ===============================
-   CONTENEDOR PRINCIPAL (ESTILO ADMIN)
-=============================== */
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
 
 .topbar-user-main {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* Fondo Azul Profundo YES EMS idéntico al Admin */
     background-color: #00003f;
     color: white;
-    padding: 10px 0;
     height: 70px;
-    /* Altura estándar */
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 0 2rem;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
 }
 
 
-/* ===============================
-   LOGO Y BADGE ESTUDIANTE
-=============================== */
+/* =========================================
+   IZQUIERDA (LOGO)
+========================================= */
 
 .topbar-user-left {
-    margin-left: 2rem;
+    display: flex;
+    align-items: center;
 }
 
 .user-logo-box {
@@ -42,11 +42,11 @@
     font-weight: 900;
     color: #ffffff;
     letter-spacing: -0.5px;
+    white-space: nowrap;
 }
 
 .user-role-badge {
     background: #fcb424;
-    /* Ámbar YES EMS igual que Admin */
     color: #00003f;
     font-size: 10px;
     font-weight: 900;
@@ -56,36 +56,40 @@
     align-items: center;
     gap: 4px;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 
-/* ===============================
-   BOTONES DE NAVEGACIÓN
-=============================== */
+/* =========================================
+   NAV DESKTOP
+========================================= */
 
 .topbar-user-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-right: 2rem;
+}
+
+.desktop-nav {
+    display: flex;
 }
 
 .user-topbar-btn {
     text-decoration: none;
     color: #cbd5e1;
-    /* Gris azulado suave del Admin */
     font-weight: 600;
+    font-size: 0.9rem;
     background: transparent;
     border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 0.9rem;
     padding: 8px 14px;
     border-radius: 10px;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .user-topbar-btn:hover {
@@ -93,26 +97,22 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-
-/* Botón activo e indicador Admin */
-
 .user-topbar-btn.active,
 .admin-access-link:hover {
     color: #fcb424;
-    background: rgba(252, 180, 36, 0.1);
+    background: rgba(252, 180, 36, 0.12);
 }
 
 .divider-vertical-top {
     width: 1px;
     height: 24px;
     background: rgba(255, 255, 255, 0.15);
-    margin: 0 5px;
 }
 
 
-/* ===============================
-   BOTÓN CERRAR SESIÓN (ROJO)
-=============================== */
+/* =========================================
+   BOTÓN LOGOUT
+========================================= */
 
 .logout-user-btn {
     background-color: #dc2626;
@@ -127,21 +127,124 @@
 }
 
 
-/* ===============================
-   RESPONSIVO
-=============================== */
+/* =========================================
+   BOTÓN HAMBURGUESA
+========================================= */
+
+.hamburger-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+
+/* =========================================
+   OVERLAY OSCURO
+========================================= */
+
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 998;
+}
+
+
+/* =========================================
+   MENÚ MÓVIL
+========================================= */
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 280px;
+    height: 100vh;
+    background: #00003f;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    transition: right 0.3s ease;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu.open {
+    right: 0;
+}
+
+.mobile-menu-item {
+    background: none;
+    border: none;
+    color: white;
+    padding: 16px 24px;
+    font-size: 16px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.mobile-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-item.logout {
+    color: #ff6b6b;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+    .topbar-user-main {
+        padding: 0 1.2rem;
+    }
+    .logo-user-text {
+        font-size: 20px;
+    }
+}
+
+
+/* =========================================
+   MÓVIL
+========================================= */
 
 @media (max-width: 768px) {
     .topbar-user-main {
-        padding: 10px 1rem;
+        height: 60px;
+        padding: 0 1rem;
     }
-    .user-topbar-btn span {
+    .logo-user-text {
+        font-size: 18px;
+    }
+    .desktop-nav {
         display: none;
     }
-    .user-role-badge {
-        padding: 4px;
+    .hamburger-btn {
+        display: block;
     }
-    .user-role-badge span {
-        display: none;
+}
+
+
+/* =========================================
+   MÓVIL PEQUEÑO
+========================================= */
+
+@media (max-width: 480px) {
+    .logo-user-text {
+        font-size: 16px;
+    }
+    .topbar-user-main {
+        height: 55px;
     }
 }

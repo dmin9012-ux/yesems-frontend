@@ -1,7 +1,7 @@
 :root {
     --color-primario: #00003f;
     --color-acento: #fcb424;
-    --color-fondo: linear-gradient( 90deg, rgba(232, 255, 255, 1) 0%, rgba(217, 255, 235, 1) 50%, rgba(255, 255, 212, 1) 100%);
+    --color-fondo: linear-gradient(90deg, rgba(232, 255, 255, 1) 0%, rgba(217, 255, 235, 1) 50%, rgba(255, 255, 212, 1) 100%);
     --color-texto: #333333;
     --color-base: #199490;
     --color-base-2: rgb(32, 40, 45);
@@ -19,19 +19,62 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-* {
+
+/* ===================== RESET GLOBAL ===================== */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+* {
     text-decoration: none;
     margin: 0;
     padding: 0;
     border: 0;
 }
 
+
+/* 🔥 CRÍTICO PARA RESPONSIVE */
+
 html,
-body,
-#root {
+body {
     width: 100%;
     min-height: 100%;
+    overflow-x: hidden;
+    /* evita scroll horizontal */
+}
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+/* Evita que imágenes rompan layout */
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+/* Evita que textos largos rompan layout */
+
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 
@@ -124,6 +167,14 @@ ol {
 }
 
 
+/* 🔥 CRÍTICO PARA FLEX RESPONSIVE */
+
+.flex-row,
+.flex-column {
+    flex-wrap: wrap;
+}
+
+
 /* ===================== COMPONENTES BASE ===================== */
 
 .sombra {
@@ -137,6 +188,8 @@ ol {
     min-height: 95%;
     margin: auto;
     box-shadow: 0 6px 6px hsl(0deg 0% 0% / 0.3);
+    /* 🔥 CRÍTICO */
+    max-width: 100%;
 }
 
 
@@ -148,6 +201,8 @@ ol {
     padding: 0.7rem 3rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    /* 🔥 evita overflow */
+    max-width: 100%;
 }
 
 .boton-n1 {
@@ -196,5 +251,14 @@ ol {
     .boton-n2 {
         width: 100%;
         padding: 0.8rem 1rem;
+    }
+}
+
+
+/* ===================== 📱 EXTRA SMALL ===================== */
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
     }
 }

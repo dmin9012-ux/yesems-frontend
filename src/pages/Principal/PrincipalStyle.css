@@ -1,127 +1,139 @@
-/* Contenedor principal */
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
 
 .principal-container {
     min-height: 100vh;
     padding: 0;
-    /* Ajustado para que TopBar quede arriba */
     background: #f8f9fa;
-    /* Fondo gris muy claro para resaltar las cards */
     font-family: "Inter", "Segoe UI", sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Evita desbordamiento horizontal en móvil */
+    overflow-x: hidden;
 }
 
 .principal-content {
-    padding: 90px 20px;
+    padding: 90px 20px 40px 20px;
+    /* top extra por TopBar */
     width: 100%;
     max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-sizing: border-box;
 }
 
 
-/* Título principal */
+/* =========================================
+   TITULO Y SUBTITULO
+========================================= */
 
 .principal-title {
     font-size: 3rem;
     color: #00003f;
-    /* Tu Azul Profundo */
     margin-bottom: 10px;
     font-weight: 800;
     letter-spacing: -1px;
     text-align: center;
 }
 
-
-/* Subtítulo */
-
 .principal-subtitle {
     font-size: 1.2rem;
     color: #6b7280;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     max-width: 600px;
     line-height: 1.6;
     text-align: center;
 }
 
 
-/* Grid de cursos (Si lo manejas en Menu.jsx, estas clases te servirán) */
+/* =========================================
+   GRID DE CURSOS
+========================================= */
 
 .cursos-grid {
     display: grid;
+    /* Desktop */
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 35px;
     width: 100%;
     margin-top: 20px;
+    box-sizing: border-box;
 }
 
 
-/* Card individual mejorada */
+/* =========================================
+   CARD DE CURSO
+========================================= */
 
 .curso-card {
     background: #ffffff;
     border-radius: 24px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     border: 1px solid #f0f0f0;
+    /* evita que se rompa en móvil */
+    width: 100%;
 }
 
 .curso-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
     box-shadow: 0 20px 40px rgba(0, 0, 63, 0.12);
-    border-color: #e5e7eb;
 }
 
 
-/* Imagen de la card con zoom */
+/* =========================================
+   IMAGEN CARD
+========================================= */
 
 .curso-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.4s ease;
 }
 
 .curso-card:hover img {
-    transform: scale(1.08);
+    transform: scale(1.05);
 }
 
 
-/* Contenido de la card */
+/* =========================================
+   CONTENIDO CARD
+========================================= */
 
 .curso-card h3 {
-    font-size: 1.5rem;
-    margin: 20px 20px 10px;
+    font-size: 1.4rem;
+    margin: 18px 18px 8px;
     color: #00003f;
-    /* Azul para títulos de cursos */
     font-weight: 700;
 }
 
 .curso-card p {
     font-size: 0.95rem;
-    margin: 0 20px 20px;
+    margin: 0 18px 18px;
     color: #6b7280;
-    line-height: 1.6;
+    line-height: 1.5;
     flex-grow: 1;
 }
 
 
-/* Botones de acción (CTA) */
+/* =========================================
+   BOTON CARD
+========================================= */
 
 .card-actions {
-    padding: 0 20px 25px;
+    padding: 0 18px 20px;
 }
 
 .card-actions button {
     background: #fcb424;
-    /* Amarillo Ámbar */
     color: #00003f;
-    /* Azul Profundo para contraste */
     border: none;
     width: 100%;
     padding: 14px;
@@ -129,21 +141,21 @@
     cursor: pointer;
     font-weight: 800;
     font-size: 1rem;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.2);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .card-actions button:hover {
     background: #e6a91e;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
 }
 
 
-/* Spinner de carga unificado */
+/* =========================================
+   LOADER
+========================================= */
 
 .loader-container {
-    padding: 100px 0;
+    padding: 80px 0;
     text-align: center;
 }
 
@@ -164,16 +176,9 @@
 }
 
 
-/* Responsivo */
-
-@media (max-width: 768px) {
-    .principal-title {
-        font-size: 2.2rem;
-    }
-    .principal-subtitle {
-        font-size: 1.1rem;
-    }
-}
+/* =========================================
+   SUBSCRIPTION BANNER
+========================================= */
 
 .subscription-banner {
     background: linear-gradient(135deg, #6f7caa 0%, #4a557a 100%);
@@ -184,7 +189,9 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    gap: 15px;
 }
 
 .banner-button {
@@ -195,15 +202,85 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
 }
 
 .banner-button:hover {
     transform: scale(1.05);
 }
 
+
+/* =========================================
+   PREVIEW MODE
+========================================= */
+
 .preview-mode {
-    opacity: 0.7;
+    opacity: 0.6;
     pointer-events: none;
-    /* Bloquea clics en los cursos si no ha pagado */
+}
+
+
+/* =========================================
+   RESPONSIVE TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+    .principal-title {
+        font-size: 2.5rem;
+    }
+    .cursos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE MOVIL
+========================================= */
+
+@media (max-width: 768px) {
+    .principal-content {
+        padding: 80px 15px 30px 15px;
+    }
+    .principal-title {
+        font-size: 2rem;
+    }
+    .principal-subtitle {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    .cursos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .curso-card img {
+        height: 180px;
+    }
+    .subscription-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    .banner-button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE MOVIL PEQUEÑO
+========================================= */
+
+@media (max-width: 480px) {
+    .principal-title {
+        font-size: 1.6rem;
+    }
+    .curso-card img {
+        height: 160px;
+    }
+    .card-actions button {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
 }

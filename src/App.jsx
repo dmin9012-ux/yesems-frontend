@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 // Contextos
@@ -21,8 +21,7 @@ import Principal from "./pages/Principal/Principal";
 import Curso from "./pages/Curso/Curso";
 import Leccion from "./pages/Curso/Leccion";
 import Perfil from "./pages/Perfil/Perfil";
-// ✅ Nombre corregido para coincidir con el 'git mv' que hiciste
-import Suscripcion from "./pages/Suscripcion/SuscripcionFix"; 
+import Suscripcion from "./pages/Suscripcion/SuscripcionFix";
 
 // 📝 Examen
 import Examen from "./pages/Examen/Examen";
@@ -42,87 +41,146 @@ import DashboardReportes from "./pages/Admin/Reportes/DashboardReportes";
 // Rutas protegidas
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
-import SuscripcionRoute from "./components/SuscripcionRoute"; 
+import SuscripcionRoute from "./components/SuscripcionRoute";
 
 // Toasts
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
+
+  /* =============================
+     DETECTAR SI ES MÓVIL
+  ============================= */
+
+  const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+
+    const handleResize = () => {
+      setEsMovil(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+
+  }, []);
+
+
   return (
     <AuthProvider>
       <ProgresoProvider>
+
         <Routes>
+
           {/* ================= RUTAS PÚBLICAS ================= */}
+
           <Route path="/" element={<Home />} />
+
           <Route path="/login" element={<Login />} />
+
           <Route path="/register" element={<Register />} />
 
+
           {/* 🔐 RECUPERAR CONTRASEÑA */}
+
           <Route path="/forgot-password" element={<ForgotPassword />} />
+
           <Route path="/verify-code" element={<VerifyCode />} />
+
           <Route path="/reset-password" element={<ResetPassword />} />
 
+
           {/* ✔ VERIFICAR CORREO */}
+
           <Route
             path="/verificar-correo/:token"
             element={<VerificarCorreo />}
           />
 
-          {/* ================= RUTAS USUARIO (Logueado) ================= */}
+
+          {/* ================= RUTAS USUARIO ================= */}
+
           <Route element={<PrivateRoute />}>
+
             <Route path="/principal" element={<Principal />} />
+
             <Route path="/perfil" element={<Perfil />} />
+
             <Route path="/suscripcion" element={<Suscripcion />} />
 
-            {/* 🛡️ RUTAS PROTEGIDAS POR PAGO (Suscripción Activa) */}
+
+            {/* 🛡️ RUTAS CON SUSCRIPCIÓN */}
+
             <Route element={<SuscripcionRoute />}>
+
               <Route path="/curso/:id" element={<Curso />} />
+
               <Route
                 path="/curso/:id/nivel/:nivel/leccion/:num"
                 element={<Leccion />}
               />
+
               <Route
                 path="/curso/:id/nivel/:nivel/examen"
                 element={<Examen />}
               />
+
             </Route>
+
           </Route>
 
+
           {/* ================= RUTAS ADMIN ================= */}
+
           <Route element={<AdminRoute />}>
+
             <Route path="/admin" element={<AdminPanel />} />
+
             <Route path="/admin/cursos" element={<ListarCursos />} />
+
             <Route path="/admin/cursos/crear" element={<CrearCurso />} />
+
             <Route
               path="/admin/cursos/editar/:id"
               element={<EditarCurso />}
             />
+
             <Route
               path="/admin/cursos/eliminar/:id"
               element={<EliminarCurso />}
             />
+
             <Route path="/admin/usuarios" element={<ListarUsuarios />} />
+
             <Route
               path="/admin/usuarios/editar/:id"
               element={<EditarUsuario />}
             />
+
             <Route
               path="/admin/reportes"
               element={<DashboardReportes />}
             />
+
           </Route>
+
         </Routes>
 
-        {/* 🔔 Toasts globales */}
+
+        {/* 🔔 Toasts */}
+
         <ToastContainer
-          position={window.innerWidth < 768 ? "bottom-center" : "top-right"}
+          position={esMovil ? "bottom-center" : "top-right"}
           autoClose={3000}
           newestOnTop
           closeOnClick
           pauseOnHover
           draggable
         />
+
+
       </ProgresoProvider>
     </AuthProvider>
   );
