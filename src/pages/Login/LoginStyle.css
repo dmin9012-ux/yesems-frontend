@@ -1,5 +1,5 @@
 /* ===============================
-    FONDO Y LAYOUT GENERAL
+   FONDO Y LAYOUT GENERAL
 =============================== */
 
 .login-page {
@@ -14,29 +14,29 @@
 
 
 /* ===============================
-    CARD DE LOGIN
+   CARD DE LOGIN
 =============================== */
 
 .login-card {
     background: #ffffff;
     width: 100%;
     max-width: 420px;
-    padding: 40px 30px;
+    padding: 45px 35px;
     border-radius: 28px;
+    /* Bordes más curvos y modernos */
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     text-align: center;
-    animation: fadeInLogin 0.6s ease-out;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .login-logo {
-    width: 120px;
-    height: auto;
-    margin-bottom: 10px;
+    width: 130px;
+    margin-bottom: 15px;
 }
 
 .login-title {
-    margin: 5px 0;
-    font-size: 28px;
+    margin: 10px 0 5px;
+    font-size: 30px;
     font-weight: 900;
     color: #00003f;
     letter-spacing: -1px;
@@ -45,12 +45,12 @@
 .login-subtitle {
     font-size: 14px;
     color: #64748b;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 
 /* ===============================
-    FORMULARIO E INPUTS
+   INPUTS CON ICONOS
 =============================== */
 
 .login-form {
@@ -63,46 +63,52 @@
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
 }
 
 .input-group-auth .input-icon {
     position: absolute;
     left: 14px;
     color: #94a3b8;
-    pointer-events: none;
 }
 
 .input-group-auth input {
     width: 100%;
-    padding: 16px 16px 16px 45px;
-    border-radius: 14px;
+    padding: 14px 16px 14px 45px;
+    /* Espacio para el icono izquierdo */
+    border-radius: 12px;
     border: 2px solid #e2e8f0;
-    font-size: 16px;
-    /* Vital para evitar zoom en iOS */
+    font-size: 15px;
     background-color: #f8fafc;
     transition: all 0.3s ease;
 }
 
 .input-group-auth input:focus {
     outline: none;
-    border-color: #fcb424;
+    border-color: #00003f;
     background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
+    box-shadow: 0 0 0 4px rgba(0, 0, 63, 0.05);
 }
+
+
+/* Ojo de contraseña */
 
 .password-eye {
     position: absolute;
     right: 14px;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    opacity: 0.6;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.password-eye:hover {
+    opacity: 1;
 }
 
 
 /* ===============================
-    OPCIONES Y BOTÓN
+   OPCIONES Y LINKS
 =============================== */
 
 .login-options {
@@ -116,15 +122,38 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
+    transition: color 0.2s;
+}
+
+.link-forgot:hover,
+.link-register:hover {
+    color: #fcb424;
+    text-decoration: underline;
+}
+
+
+/* ===============================
+   CONTENEDOR DEL BOTÓN (CENTRADO)
+=============================== */
+
+.login-actions {
+    display: flex;
+    justify-content: center;
+    /* ESTO CENTRA EL BOTÓN */
+    width: 100%;
+    margin-top: 15px;
 }
 
 .btn-login-submit {
     background: #fcb424;
+    /* Amarillo Ámbar */
     color: #00003f;
+    /* Texto Azul Profundo */
     border: none;
-    padding: 16px;
-    width: 100%;
-    /* Prioridad móvil: ancho completo */
+    padding: 16px 40px;
+    /* Ancho cómodo pero centrado */
+    width: 80%;
+    /* No ocupa todo el ancho, se ve más elegante */
     border-radius: 14px;
     font-size: 16px;
     font-weight: 800;
@@ -134,16 +163,29 @@
     justify-content: center;
     gap: 10px;
     box-shadow: 0 8px 15px rgba(252, 180, 36, 0.25);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-login-submit:hover:not(:disabled) {
+    background: #e6a91e;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(252, 180, 36, 0.35);
+}
+
+.btn-login-submit:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 
 /* ===============================
-    FOOTER
+   FOOTER
 =============================== */
 
 .login-footer {
-    margin-top: 25px;
+    margin-top: 30px;
     font-size: 14px;
     color: #64748b;
     display: flex;
@@ -154,31 +196,12 @@
 }
 
 
-/* ===============================
-    📱 RESPONSIVO
-=============================== */
+/* Animación */
 
-@media (max-width: 480px) {
-    .login-card {
-        padding: 30px 20px;
-        border-radius: 20px;
-    }
-    .login-title {
-        font-size: 24px;
-    }
-}
-
-@media (min-width: 768px) {
-    .btn-login-submit {
-        width: 80%;
-        margin: 0 auto;
-    }
-}
-
-@keyframes fadeInLogin {
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;

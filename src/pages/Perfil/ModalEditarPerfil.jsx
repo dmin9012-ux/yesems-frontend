@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { User, Image, Lock, X } from "lucide-react";
 import { actualizarMiPerfil } from "../../servicios/usuarioService";
-import { notify } from "../../Util/toast";
+import { notify } from "../../Util/toast"; // 👈 Importamos la utilidad
 
 import "./ModalEditarPerfilStyle.css";
 
@@ -26,11 +26,16 @@ const ModalEditarPerfil = ({
 
     try {
       setLoading(true);
+
       const usuarioActualizado = await actualizarMiPerfil(nombre);
+
+      // 🔁 Actualiza estado en Perfil.jsx
       setUsuario(usuarioActualizado);
+      
       notify("success", "Perfil actualizado correctamente ✨");
       onClose();
     } catch (err) {
+      console.error(err);
       notify("error", "No se pudo actualizar el perfil");
     } finally {
       setLoading(false);
@@ -38,42 +43,42 @@ const ModalEditarPerfil = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target.className === 'modal-overlay' && onClose()}>
+    <div className="modal-overlay">
       <div className="modal-editar-card">
-        <button className="modal-close-btn" onClick={onClose} aria-label="Cerrar">
+        <button className="modal-close-btn" onClick={onClose}>
           <X size={20} />
         </button>
 
-        {/* 📑 TABS RESPONSIVAS */}
+        {/* 📑 TABS CON TU IDENTIDAD VISUAL */}
         <div className="modal-tabs">
           <button
-            className={`tab-item ${tab === "perfil" ? "active" : ""}`}
+            className={tab === "perfil" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("perfil")}
           >
-            <User size={18} /> <span>Perfil</span>
+            <User size={16} /> Perfil
           </button>
 
           <button
-            className={`tab-item ${tab === "foto" ? "active" : ""}`}
+            className={tab === "foto" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("foto")}
           >
-            <Image size={18} /> <span>Foto</span>
+            <Image size={16} /> Foto
           </button>
 
           <button
-            className={`tab-item ${tab === "seguridad" ? "active" : ""}`}
+            className={tab === "seguridad" ? "tab-item active" : "tab-item"}
             onClick={() => setTab("seguridad")}
           >
-            <Lock size={18} /> <span>Seguridad</span>
+            <Lock size={16} /> Seguridad
           </button>
         </div>
 
-        {/* 📦 CONTENIDO */}
+        {/* 📦 CONTENIDO DINÁMICO */}
         <div className="tab-body">
           {tab === "perfil" && (
             <div className="tab-pane">
               <h3>Información personal</h3>
-              <p className="tab-description">Actualiza tu nombre tal cual aparecerá en tus constancias.</p>
+              <p className="tab-description">Actualiza tu nombre de usuario para tus constancias.</p>
               
               <div className="input-field">
                 <label>Nombre Completo</label>
@@ -81,9 +86,8 @@ const ModalEditarPerfil = ({
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej: Juan Pérez"
+                  placeholder="Tu nombre"
                   disabled={loading}
-                  autoFocus
                 />
               </div>
 
@@ -99,7 +103,7 @@ const ModalEditarPerfil = ({
                 <Image size={32} />
               </div>
               <h3>Foto de perfil</h3>
-              <p>Esta función estará disponible próximamente para personalizar tu cuenta.</p>
+              <p>Esta función estará disponible en la próxima actualización.</p>
             </div>
           )}
 
@@ -109,7 +113,7 @@ const ModalEditarPerfil = ({
                 <Lock size={32} />
               </div>
               <h3>Seguridad</h3>
-              <p>Para proteger tu cuenta, te recomendamos cambiar tu contraseña periódicamente.</p>
+              <p>¿Deseas cambiar tu contraseña de acceso?</p>
               <button
                 className="btn-change-pass"
                 onClick={() => {
@@ -117,7 +121,7 @@ const ModalEditarPerfil = ({
                   onChangePassword();
                 }}
               >
-                Cambiar contraseña ahora
+                Ir a cambiar contraseña
               </button>
             </div>
           )}

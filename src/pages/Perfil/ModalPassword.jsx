@@ -17,6 +17,7 @@ const ModalPassword = ({ onClose }) => {
     setPasswordNueva("");
     setShowActual(false);
     setShowNueva(false);
+    setLoading(false);
     onClose();
   };
 
@@ -50,10 +51,10 @@ const ModalPassword = ({ onClose }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target.className === 'modal-overlay' && cerrarModal()}>
+    <div className="modal-overlay">
       <div className="modal-content-password">
-        <h3 className="modal-title">Seguridad</h3>
-        <p className="modal-subtitle">Cambia tu contraseña para proteger tu cuenta.</p>
+        <h3 className="modal-title">Cambiar contraseña</h3>
+        <p className="modal-subtitle">Asegúrate de usar una combinación segura.</p>
 
         <div className="modal-form">
           {/* PASSWORD ACTUAL */}
@@ -65,7 +66,6 @@ const ModalPassword = ({ onClose }) => {
               value={passwordActual}
               onChange={(e) => setPasswordActual(e.target.value)}
               disabled={loading}
-              autoComplete="current-password"
             />
             <img
               src={showActual ? ojoAbierto : ojoCerrado}
@@ -84,7 +84,6 @@ const ModalPassword = ({ onClose }) => {
               value={passwordNueva}
               onChange={(e) => setPasswordNueva(e.target.value)}
               disabled={loading}
-              autoComplete="new-password"
             />
             <img
               src={showNueva ? ojoAbierto : ojoCerrado}
@@ -101,7 +100,7 @@ const ModalPassword = ({ onClose }) => {
             onClick={cambiarPassword} 
             disabled={loading}
           >
-            {loading ? "Procesando..." : "Guardar"}
+            {loading ? "Actualizando..." : "Guardar cambios"}
           </button>
           <button 
             className="btn-modal-cancel" 

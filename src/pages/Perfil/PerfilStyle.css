@@ -1,3 +1,5 @@
+/* PerfilStyle.css */
+
 .perfil-page {
     display: flex;
     min-height: 100vh;
@@ -6,69 +8,55 @@
 }
 
 
-/* SIDEBAR */
+/* SIDEBAR: Ahora con más personalidad */
 
 .perfil-sidebar {
-    width: 320px;
+    width: 300px;
     background: #ffffff;
-    padding: 100px 25px 40px;
+    padding: 90px 25px;
     border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-}
-
-.perfil-avatar-container {
-    position: relative;
-    margin-bottom: 20px;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.02);
 }
 
 .perfil-avatar {
     width: 100px;
     height: 100px;
     border-radius: 30px;
+    /* Bordes redondeados modernos, no círculo perfecto */
     background: #00003f;
+    /* Tu Azul Profundo */
     color: #fcb424;
+    /* Inicial en Amarillo Ámbar */
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 42px;
     font-weight: 800;
-    box-shadow: 0 10px 20px rgba(0, 0, 63, 0.15);
+    margin-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 63, 0.2);
 }
 
-.premium-badge-icon {
-    position: absolute;
-    bottom: -5px;
-    right: -5px;
-    background: white;
-    padding: 5px;
-    border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.perfil-nombre {
+.perfil-sidebar h3 {
     color: #00003f;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 800;
-    margin-bottom: 8px;
-    text-align: center;
+    margin-bottom: 5px;
 }
 
 .perfil-email {
-    font-size: 0.85rem;
-    color: #64748b;
-    margin-bottom: 30px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
 }
 
 
-/* NAVEGACIÓN SIDEBAR */
+/* Botones del Sidebar */
 
 .perfil-nav {
     width: 100%;
@@ -77,36 +65,37 @@
     gap: 10px;
 }
 
-.perfil-nav-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.nav-btn {
+.perfil-sidebar button {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 15px;
+    width: 100%;
+    padding: 12px 18px;
     border: none;
     border-radius: 12px;
     background: transparent;
-    color: #475569;
+    color: #4b5563;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    text-align: left;
 }
 
-.nav-btn:hover {
-    background: #f1f5f9;
+.perfil-sidebar button:hover {
+    background: #f3f4f6;
     color: #00003f;
 }
 
-.nav-btn.danger {
+.perfil-sidebar button.logout {
+    margin-top: 20px;
+    color: #00003f;
+}
+
+.perfil-sidebar button.danger {
     color: #ef4444;
 }
 
-.nav-btn.danger:hover {
+.perfil-sidebar button.danger:hover {
     background: #fee2e2;
 }
 
@@ -115,95 +104,110 @@
 
 .perfil-main {
     flex: 1;
-    padding: 100px 40px 40px;
-    max-width: 900px;
+    padding: 60px;
 }
 
-.perfil-main-header {
-    margin-bottom: 40px;
-}
-
-.perfil-main-header h2 {
-    font-size: 2rem;
-    font-weight: 900;
+.perfil-main h2 {
     color: #00003f;
-    margin-bottom: 8px;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 40px;
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.perfil-main-header p {
-    color: #64748b;
-    font-size: 1.1rem;
+    gap: 15px;
 }
 
 
-/* CURSOS LIST */
+/* CARDS DE CURSOS EN PERFIL */
 
 .perfil-curso-card {
     background: white;
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 25px;
-    margin-bottom: 20px;
-    border: 1px solid #e2e8f0;
-    transition: transform 0.3s;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
 }
 
-.curso-card-header {
+.perfil-curso-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.05);
+}
+
+.curso-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.title-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.title-group strong {
-    font-size: 1.25rem;
+.curso-header strong {
+    font-size: 1.2rem;
     color: #00003f;
 }
 
-.progress-section {
-    margin-bottom: 20px;
+
+/* Badge de estado */
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
-.progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #64748b;
-    margin-bottom: 8px;
+.badge.completado {
+    background: #dcfce7;
+    color: #166534;
 }
+
+.badge.en-progreso {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.no-iniciado {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+
+/* BARRA DE PROGRESO PERSONALIZADA */
 
 .progress-bar-bg {
-    background: #e2e8f0;
+    background: #e5e7eb;
     height: 10px;
     border-radius: 10px;
+    margin: 15px 0;
     overflow: hidden;
 }
 
 .progress-bar-fill {
-    background: #fcb424;
     height: 100%;
-    transition: width 0.5s ease;
+    background: #fcb424;
+    /* Tu Amarillo Ámbar */
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
 }
 
 .completado .progress-bar-fill {
     background: #10b981;
+    /* Verde éxito para completados */
 }
+
+
+/* BOTONES DE ACCIÓN */
 
 .btn-perfil-continuar,
 .btn-perfil-constancia {
-    padding: 12px 25px;
+    margin-top: 15px;
+    padding: 12px 24px;
     border-radius: 12px;
     border: none;
     font-weight: 800;
     cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -211,7 +215,7 @@
 
 .btn-perfil-continuar {
     background: #00003f;
-    color: white;
+    color: #ffffff;
 }
 
 .btn-perfil-constancia {
@@ -219,8 +223,38 @@
     color: #00003f;
 }
 
+.btn-perfil-constancia:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
+}
 
-/* 📱 RESPONSIVO MÓVIL */
+
+/* Loader */
+
+.perfil-cargando {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #00003f;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fcb424;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 @media (max-width: 768px) {
     .perfil-page {
@@ -228,71 +262,121 @@
     }
     .perfil-sidebar {
         width: 100%;
-        height: auto;
-        padding: 90px 20px 30px;
-        position: relative;
         border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    .perfil-nav-grid {
-        flex-direction: row;
-    }
-    .perfil-nav-grid .nav-btn {
-        flex: 1;
-        justify-content: center;
-        font-size: 0.8rem;
-        background: #f8fafc;
+        border-bottom: 1px solid #ddd;
     }
     .perfil-main {
-        padding: 30px 15px;
-    }
-    .perfil-main-header h2 {
-        font-size: 1.6rem;
-    }
-    .curso-card-header {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .btn-perfil-continuar,
-    .btn-perfil-constancia {
-        width: 100%;
-        justify-content: center;
+        padding: 30px 20px;
     }
 }
 
 
-/* BADGES */
+/* --- ESTILOS DEL CONTADOR PREMIUM --- */
 
-.badge {
-    padding: 5px 12px;
+.status-container-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+
+/* Reutilizando tu lógica de status-pill para que encaje */
+
+.status-pill {
+    padding: 8px 16px;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    width: fit-content;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.badge.completado {
-    background: #dcfce7;
-    color: #15803d;
+.status-pill.premium {
+    background: #eef2ff;
+    /* Azul muy claro */
+    color: #00003f;
+    /* Tu Azul Profundo */
+    border: 1px solid #00003f;
 }
 
-.badge.en-progreso {
-    background: #fef3c7;
-    color: #b45309;
+.status-pill.free {
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 
-/* TIMER PREMIUM */
+/* El nuevo cronómetro visual */
 
 .premium-timer-badge {
-    background: #fffbeb;
-    border: 1px solid #fef3c7;
-    padding: 4px 12px;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #b45309;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
+    background: #fff9e6;
+    /* Fondo crema suave */
+    border: 1px solid #fcb424;
+    /* Tu Amarillo Ámbar */
+    color: #00003f;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.premium-timer-badge strong {
+    color: #fcb424;
+    /* El tiempo resalta en Ámbar */
+    font-family: 'Monaco', 'Consolas', monospace;
+    /* Fuente tipo reloj */
+    font-size: 1rem;
+}
+
+
+/* Animación sutil para el icono de reloj */
+
+.premium-timer-badge svg {
+    color: #fcb424;
+    animation: pulse-clock 2s infinite;
+}
+
+@keyframes pulse-clock {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Ajuste del botón upgrade para que no choque */
+
+.upgrade-btn {
+    background: #fcb424 !important;
+    color: #00003f !important;
+    border: none;
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
+}
+
+.upgrade-btn:hover {
+    background: #e6a91e !important;
+    transform: translateY(-2px);
 }

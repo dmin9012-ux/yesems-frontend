@@ -3,10 +3,10 @@
    =================================================== */
 
 .menu-wrapper {
-    margin-top: 0;
-    /* Ajustado para que empiece desde arriba en móviles */
-    padding: 2rem 1.5rem;
+    margin-top: 30px;
+    padding: 0rem 2rem;
     background: #f4f7fa;
+    /* Fondo limpio para resaltar las cards */
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
     display: flex;
@@ -14,160 +14,185 @@
     align-items: center;
 }
 
+
+/* Título con la elegancia del Azul Profundo */
+
 .menu-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 4rem;
     animation: fadeInDown 0.8s ease-out;
-    padding: 0 10px;
 }
 
 .menu-title {
-    font-size: 2.2rem;
-    /* Tamaño base más amigable */
+    font-size: 3rem;
     font-weight: 900;
     color: #00003f;
     margin-bottom: 10px;
-    letter-spacing: -1px;
-    line-height: 1.2;
+    letter-spacing: -1.5px;
 }
 
 .menu-subtitle {
     color: #6b7280;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 
-/* Grid optimizada: Cambiado minmax para que en móviles pequeños ocupe todo el ancho */
+/* Grid optimizada */
 
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
     width: 100%;
     max-width: 1200px;
 }
 
 
-/* CARD DE CURSO */
+/* CARD DE CURSO (Estilo Premium) */
 
 .menu-card {
     background: #ffffff;
-    border-radius: 20px;
-    /* Redondeado ligeramente menor para móviles */
+    border-radius: 28px;
+    padding: 0;
+    /* Quitamos el padding interno para que la imagen llegue al borde superior */
     text-align: left;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 63, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.04);
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
     border: 1px solid #e5e7eb;
+    animation: fadeInUp 0.6s forwards;
 }
 
 .menu-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 63, 0.1);
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.12);
     border-color: #fcb424;
+    /* Resalte en Ámbar */
 }
+
+
+/* Contenedor de Imagen */
 
 .card-image-container {
     width: 100%;
-    height: 160px;
+    height: 180px;
     overflow: hidden;
     background: #e5e7eb;
-    position: relative;
 }
 
 .card-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.6s ease;
 }
 
+.menu-card:hover .card-image-container img {
+    transform: scale(1.1);
+}
+
+
+/* Cuerpo de la Card */
+
 .card-content {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    padding: 25px;
 }
 
 .card-title {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: #00003f;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .card-description {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #64748b;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    flex-grow: 1;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
 
-/* Botón de acción (Asegurando consistencia) */
+/* BADGES Y ESTADOS */
 
-.btn-card-action {
+.card-badge-success {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #10b981;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.is-completed {
+    opacity: 0.9;
+    background-color: #f0fdf4;
+    border: 1.5px solid #10b981 !important;
+}
+
+
+/* Botón de acción fantasma que aparece en hover */
+
+.card-btn {
     width: 100%;
     padding: 12px;
     background: #f3f4f6;
     color: #00003f;
-    border: none;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
+    text-align: center;
     transition: all 0.3s;
 }
 
-.menu-card:hover .btn-card-action {
+.menu-card:hover .card-btn {
     background: #00003f;
     color: white;
 }
 
 
-/* Badge de completado */
+/* Animaciones */
 
-.card-badge-success {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: #10b981;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    z-index: 2;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
-/* ===================== 📱 RESPONSIVO ===================== */
+/* Responsivo */
 
 @media (max-width: 768px) {
-    .menu-wrapper {
-        padding: 1.5rem 1rem;
-    }
     .menu-title {
-        font-size: 1.75rem;
-        /* Ajuste para pantallas móviles */
-    }
-    .menu-header {
-        margin-bottom: 1.5rem;
+        font-size: 2.2rem;
     }
     .menu-grid {
-        grid-template-columns: 1fr;
-        /* Una sola columna en celulares */
         gap: 20px;
     }
-    .menu-card:hover {
-        transform: none;
-        /* Evitamos saltos en pantallas táctiles */
+    .card-image-container {
+        height: 150px;
     }
 }

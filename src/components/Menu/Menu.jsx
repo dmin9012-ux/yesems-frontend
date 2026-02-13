@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, CheckCircle } from "lucide-react"; 
+import { BookOpen, CheckCircle } from "lucide-react"; // Iconos para estados vacíos
 import "./MenuStyle.css";
 
 export default function Menu({
@@ -60,7 +60,7 @@ export default function Menu({
                   </div>
                 )}
                 {completado && (
-                  <div className="card-badge-success">
+                  <div className="card-badge">
                     <CheckCircle size={14} /> Completado
                   </div>
                 )}

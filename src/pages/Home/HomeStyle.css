@@ -4,20 +4,17 @@
     justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #00003f, #02025f);
-    font-family: "Inter", "Segoe UI", sans-serif;
-    padding: 20px;
-    /* Evita que la card toque los bordes del cel */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .home-card {
     background: #ffffff;
     padding: 50px 40px;
-    border-radius: 24px;
-    /* Un poco más redondeado se ve más moderno */
+    border-radius: 16px;
     text-align: center;
-    width: 100%;
+    width: 90%;
     max-width: 420px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.7s ease-in-out;
 }
 
@@ -33,51 +30,45 @@
 }
 
 .home-logo {
-    width: 140px;
-    /* Un poco más pequeño para dejar aire */
-    height: auto;
+    width: 160px;
     margin-bottom: 20px;
 }
 
 .home-title {
     color: #00003f;
     font-size: 2.4rem;
-    font-weight: 800;
     margin-bottom: 10px;
-    letter-spacing: -1px;
 }
 
 .home-subtitle {
     color: #6b7280;
-    font-size: 1.1rem;
-    margin-bottom: 35px;
-    line-height: 1.4;
+    font-size: 1rem;
+    margin-bottom: 30px;
 }
 
 .home-buttons {
     display: flex;
-    flex-direction: column;
-    /* Mobile-first: Botones apilados por defecto */
     gap: 15px;
-    width: 100%;
+    justify-content: center;
 }
 
 .btn-home {
-    width: 100%;
-    /* Que ocupen todo el ancho disponible */
-    padding: 16px;
+    padding: 14px 28px;
     font-size: 1rem;
-    border-radius: 12px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
-    font-weight: 700;
+    font-weight: bold;
     transition: all 0.3s ease;
 }
 
 .btn-home.primary {
     background-color: #fcb424;
     color: #00003f;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.2);
+}
+
+.btn-home.primary:hover {
+    background-color: #e6a91e;
 }
 
 .btn-home.secondary {
@@ -86,34 +77,16 @@
     border: 2px solid #00003f;
 }
 
-
-/* ===================================================
-   📱 RESPONSIVO Y AJUSTES DE ESCRITORIO
-   =================================================== */
-
-
-/* Para tablets y computadoras, volvemos los botones a fila */
-
-@media (min-width: 600px) {
-    .home-buttons {
-        flex-direction: row;
-    }
+.btn-home.secondary:hover {
+    background-color: #00003f;
+    color: #ffffff;
 }
 
 @media (max-width: 480px) {
     .home-card {
-        padding: 40px 20px;
-        border-radius: 20px;
+        padding: 40px 25px;
     }
     .home-title {
         font-size: 2rem;
-    }
-    .home-subtitle {
-        font-size: 0.95rem;
-        margin-bottom: 25px;
-    }
-    .btn-home {
-        padding: 14px;
-        /* Un poco menos de padding en cel muy chicos */
     }
 }

@@ -2,134 +2,155 @@
 
 .principal-container {
     min-height: 100vh;
+    padding: 0;
+    /* Ajustado para que TopBar quede arriba */
     background: #f8f9fa;
-    font-family: "Inter", sans-serif;
+    /* Fondo gris muy claro para resaltar las cards */
+    font-family: "Inter", "Segoe UI", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .principal-content {
-    padding: 100px 20px 40px;
-    /* Espacio para el TopBar */
+    padding: 90px 20px;
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 
-/* Título y Subtítulo */
-
-.principal-header-section {
-    text-align: center;
-    margin-bottom: 40px;
-}
+/* Título principal */
 
 .principal-title {
-    font-size: 2.8rem;
+    font-size: 3rem;
     color: #00003f;
-    font-weight: 800;
-    letter-spacing: -1.5px;
+    /* Tu Azul Profundo */
     margin-bottom: 10px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-align: center;
 }
+
+
+/* Subtítulo */
 
 .principal-subtitle {
-    font-size: 1.1rem;
-    color: #64748b;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.5;
+    font-size: 1.2rem;
+    color: #6b7280;
+    margin-bottom: 50px;
+    max-width: 600px;
+    line-height: 1.6;
+    text-align: center;
 }
 
 
-/* 📢 BANNER DE SUSCRIPCIÓN (El cambio más importante) */
+/* Grid de cursos (Si lo manejas en Menu.jsx, estas clases te servirán) */
 
-.subscription-banner {
-    background: linear-gradient(135deg, #00003f 0%, #000066 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 20px;
+.cursos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 35px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+/* Card individual mejorada */
+
+.curso-card {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    box-shadow: 0 10px 25px rgba(0, 0, 63, 0.2);
-    gap: 20px;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
 }
 
-.banner-text h2 {
+.curso-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 63, 0.12);
+    border-color: #e5e7eb;
+}
+
+
+/* Imagen de la card con zoom */
+
+.curso-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.curso-card:hover img {
+    transform: scale(1.08);
+}
+
+
+/* Contenido de la card */
+
+.curso-card h3 {
     font-size: 1.5rem;
-    margin-bottom: 8px;
-    color: #fcb424;
-    /* Ámbar para resaltar */
-}
-
-.banner-text p {
-    font-size: 1rem;
-    opacity: 0.9;
-}
-
-.banner-button {
-    background-color: #fcb424;
+    margin: 20px 20px 10px;
     color: #00003f;
+    /* Azul para títulos de cursos */
+    font-weight: 700;
+}
+
+.curso-card p {
+    font-size: 0.95rem;
+    margin: 0 20px 20px;
+    color: #6b7280;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+
+/* Botones de acción (CTA) */
+
+.card-actions {
+    padding: 0 20px 25px;
+}
+
+.card-actions button {
+    background: #fcb424;
+    /* Amarillo Ámbar */
+    color: #00003f;
+    /* Azul Profundo para contraste */
     border: none;
-    padding: 14px 28px;
+    width: 100%;
+    padding: 14px;
     border-radius: 12px;
+    cursor: pointer;
     font-weight: 800;
     font-size: 1rem;
-    cursor: pointer;
-    white-space: nowrap;
-    /* Evita que el texto del botón se parta */
+    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.2);
     transition: all 0.3s ease;
 }
 
-
-/* 📱 RESPONSIVO MÓVIL */
-
-@media (max-width: 768px) {
-    .principal-content {
-        padding-top: 80px;
-    }
-    .principal-title {
-        font-size: 2rem;
-    }
-    .principal-subtitle {
-        font-size: 1rem;
-    }
-    .subscription-banner {
-        flex-direction: column;
-        /* Apilamos texto y botón */
-        text-align: center;
-        padding: 25px;
-    }
-    .banner-button {
-        width: 100%;
-        /* Botón ancho completo en móvil */
-    }
-    .banner-text h2 {
-        font-size: 1.3rem;
-    }
+.card-actions button:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
 }
 
 
-/* Modo Previa (Bloqueo visual) */
-
-.preview-mode {
-    filter: grayscale(0.5);
-    opacity: 0.8;
-}
-
-
-/* Spinner */
+/* Spinner de carga unificado */
 
 .loader-container {
+    padding: 100px 0;
     text-align: center;
-    padding: 60px 0;
 }
 
 .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #e2e8f0;
+    width: 45px;
+    height: 45px;
+    border: 4px solid #f3f3f3;
     border-top: 4px solid #fcb424;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -140,4 +161,49 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+
+/* Responsivo */
+
+@media (max-width: 768px) {
+    .principal-title {
+        font-size: 2.2rem;
+    }
+    .principal-subtitle {
+        font-size: 1.1rem;
+    }
+}
+
+.subscription-banner {
+    background: linear-gradient(135deg, #6f7caa 0%, #4a557a 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.banner-button {
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.banner-button:hover {
+    transform: scale(1.05);
+}
+
+.preview-mode {
+    opacity: 0.7;
+    pointer-events: none;
+    /* Bloquea clics en los cursos si no ha pagado */
 }

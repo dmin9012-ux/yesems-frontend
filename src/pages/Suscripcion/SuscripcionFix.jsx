@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom"; // 👈 Añadimos useLocation
 import { useAuth } from "../../context/AuthContext";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Usamos tus toasts
-import { ShieldCheck, Star, Clock, CheckCircle2, ArrowLeft } from "lucide-react";
 import "./SuscripcionStyle.css";
 
 const Suscripcion = () => {
   const navigate = useNavigate();
-  const location = useLocation(); 
-  const { isPremium, loading, actualizarDatosUsuario } = useAuth(); 
+  const location = useLocation(); // 👈 Para leer los parámetros que envía Mercado Pago al volver
+  const { isPremium, loading, actualizarDatosUsuario } = useAuth(); // 👈 Traemos la función de actualizar
   const [cargandoPago, setCargandoPago] = useState(false);
 
+  /* ============================================================
+      🔄 VERIFICACIÓN AUTOMÁTICA AL VOLVER DE MERCADO PAGO
+  ============================================================ */
   useEffect(() => {
+    // Si en la URL detectamos que el pago fue exitoso
     const queryParams = new URLSearchParams(location.search);
     const status = queryParams.get("status");
 
     if (status === "approved" || isPremium) {
       const sincronizar = async () => {
-        await actualizarDatosUsuario(); 
-        notify("success", "¡Suscripción activada con éxito! 🎉");
-        navigate("/principal"); 
+        await actualizarDatosUsuario(); // Forzamos al Front a pedir los datos nuevos al Back
+        navigate("/principal"); // Nos lo llevamos a ver sus cursos
       };
       sincronizar();
     }
@@ -37,56 +38,39 @@ const Suscripcion = () => {
       if (res.data && res.data.init_point) {
         window.location.href = res.data.init_point;
       } else {
-        notify("error", "No se pudo generar el enlace de pago.");
+        alert("No se pudo generar el enlace de pago. Intenta más tarde.");
       }
     } catch (error) {
-      notify("error", "Error al conectar con el servidor de pagos.");
+      console.error("Error al iniciar suscripción:", error);
+      alert("Hubo un error al conectar con el servidor de pagos.");
     } finally {
       setCargandoPago(false);
     }
   };
 
-  if (loading) return (
-    <div className="suscripcion-loading">
-        <div className="spinner"></div>
-        <p>Verificando estado...</p>
-    </div>
-  );
+  if (loading) return <div className="loading">Cargando...</div>;
 
   return (
-    <div className="suscripcion-page">
+    <div className="suscripcion-container">
       <div className="suscripcion-card">
-        <div className="premium-icon-header">
-            <Star size={40} fill="#fcb424" color="#fcb424" />
-        </div>
-        
-        <h1>Acceso Premium</h1>
+        <h1>Acceso Premium 🔒</h1>
         <p className="description">
-          Lleva tu aprendizaje al siguiente nivel con acceso total a <strong>YESEMS</strong>.
+          Obtén acceso ilimitado a todos los cursos, exámenes y reportes de la plataforma YESems.
         </p>
 
-        <div className="plan-box">
-          <div className="plan-header">
-             <div className="plan-tag">RECOMENDADO</div>
-             <h2>Plan de Prueba</h2>
-             <div className="plan-price">
-                <span className="currency">$</span>
-                <span className="amount">10.00</span>
-                <span className="period">/ MXN</span>
-             </div>
-          </div>
-          
-          <ul className="plan-features">
-            <li><CheckCircle2 size={18} color="#10b981" /> <span>Acceso total por 1 hora</span></li>
-            <li><CheckCircle2 size={18} color="#10b981" /> <span>Exámenes desbloqueados</span></li>
-            <li><CheckCircle2 size={18} color="#10b981" /> <span>Certificados oficiales</span></li>
-            <li><CheckCircle2 size={18} color="#10b981" /> <span>Contenido sin publicidad</span></li>
+        <div className="plan-detalles">
+          <h2>Plan de Prueba</h2>
+          <p className="precio">$10.00 MXN</p>
+          <ul>
+            <li>✅ Acceso total por 1 hora</li>
+            <li>✅ Exámenes desbloqueados</li>
+            <li>✅ Certificado de finalización</li>
           </ul>
         </div>
 
         <div className="suscripcion-actions">
           <button 
-            className="btn-pay-now" 
+            className="btn-primario" 
             onClick={manejarSuscripcion}
             disabled={cargandoPago}
           >
@@ -94,18 +78,17 @@ const Suscripcion = () => {
           </button>
 
           <button 
-            className="btn-go-back" 
+            className="btn-secundario" 
             onClick={() => navigate("/principal")}
             disabled={cargandoPago}
           >
-            <ArrowLeft size={16} /> Volver
+            Volver
           </button>
         </div>
         
-        <div className="secure-payment-footer">
-          <ShieldCheck size={16} />
-          <span>Pago seguro mediante Mercado Pago</span>
-        </div>
+        <p className="footer-note">
+          Pago seguro procesado por Mercado Pago.
+        </p>
       </div>
     </div>
   );

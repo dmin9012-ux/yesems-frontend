@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import apiYesems from "../../api/apiYesems";
 import { notify } from "../../Util/toast"; 
 import logo from "../../assets/logo-yesems.png";
-import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; 
+import { KeyRound, CheckCircle2, ArrowLeft } from "lucide-react"; // Iconos consistentes
 import "./VerifyCodeStyle.css";
 
 export default function VerifyCode() {
@@ -53,19 +53,17 @@ export default function VerifyCode() {
         <header className="verify-header">
           <img src={logo} alt="yesems logo" className="verify-logo" />
           <h2 className="verify-title">Verificar código</h2>
-          <p className="verify-subtitle">
-            Ingresa los 6 dígitos enviados a: <br />
+          <p className="subtitle">
+            Ingresa el código de 6 dígitos enviado a: <br />
             <strong className="email-highlight">{email}</strong>
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="verify-form">
-          <div className="input-group-auth">
+          <div className="input-group-auth verify-input-box">
             <KeyRound className="input-icon" size={20} />
             <input
               type="text"
-              inputMode="numeric" /* 📱 Fuerza teclado numérico */
-              pattern="[0-9]*"    /* 📱 Mejor compatibilidad iOS */
               placeholder="000000"
               className="input-codigo-style"
               value={codigo}
@@ -74,10 +72,10 @@ export default function VerifyCode() {
               }
               maxLength={6}
               required
-              autoFocus
             />
           </div>
 
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="verify-actions">
             <button 
               type="submit" 
@@ -85,11 +83,11 @@ export default function VerifyCode() {
               disabled={loading || codigo.length !== 6}
             >
               {loading ? (
-                <div className="spinner-mini"></div>
+                <span className="loader-btn"></span>
               ) : (
                 <>
                   <CheckCircle2 size={18} />
-                  <span>Verificar</span>
+                  <span>Verificar código</span>
                 </>
               )}
             </button>

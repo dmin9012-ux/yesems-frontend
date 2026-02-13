@@ -5,7 +5,7 @@ import { notify } from "../../Util/toast";
 import logo from "../../assets/logo-yesems.png";
 import ojoAbierto from "../../assets/ojoabierto.png";
 import ojoCerrado from "../../assets/ojocerrado.png";
-import { LogIn, Mail, Lock } from "lucide-react"; 
+import { LogIn, Mail, Lock } from "lucide-react"; // Iconos para mejorar la UI
 import "./LoginStyle.css";
 
 export default function Login() {
@@ -17,6 +17,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Verificación de entorno (opcional)
+    console.log("API URL:", import.meta.env.VITE_API_URL);
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,6 +29,7 @@ export default function Login() {
     try {
       const res = await login({ email, password });
 
+      // ❌ Error de login (Credenciales incorrectas)
       if (!res || res.ok === false) {
         notify("error", res?.message || "Credenciales incorrectas");
         setLoading(false);
@@ -32,14 +38,17 @@ export default function Login() {
 
       const usuario = res.usuario;
 
+      // ⚠️ Usuario no verificado
       if (usuario && usuario.verificado === false) {
         notify("warning", "Debes verificar tu correo antes de iniciar sesión.");
         setLoading(false);
         return;
       }
 
+      // ✅ Login Exitoso
       notify("success", `¡Bienvenido, ${usuario.nombre}!`);
 
+      // 🚀 Redirección por rol
       if (usuario && usuario.rol === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -66,12 +75,11 @@ export default function Login() {
         </header>
 
         <form onSubmit={handleLogin} className="login-form">
+          {/* GRUPO EMAIL */}
           <div className="input-group-auth">
             <Mail className="input-icon" size={20} />
             <input
               type="email"
-              inputMode="email"
-              autoComplete="email"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -79,11 +87,11 @@ export default function Login() {
             />
           </div>
 
-          <div className="input-group-auth">
+          {/* GRUPO PASSWORD */}
+          <div className="input-group-auth password-group">
             <Lock className="input-icon" size={20} />
             <input
               type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -106,6 +114,7 @@ export default function Login() {
             </span>
           </div>
 
+          {/* CONTENEDOR PARA CENTRAR EL BOTÓN */}
           <div className="login-actions">
             <button type="submit" className="btn-login-submit" disabled={loading}>
               {loading ? (

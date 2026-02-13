@@ -1,14 +1,17 @@
+/* Contenedor general con estructura de Dashboard */
+
 .curso-contenedor-sidebar {
     display: flex;
     min-height: 100vh;
     background: #f8f9fa;
     font-family: 'Inter', sans-serif;
     padding-top: 70px;
+    /* Ajuste para el TopBar */
 }
 
 
 /* ===============================
-    ⬅️ SIDEBAR DEL CURSO
+    ⬅️ SIDEBAR DEL CURSO (FIJO)
 =============================== */
 
 .sidebar {
@@ -22,23 +25,22 @@
     top: 70px;
     height: calc(100vh - 70px);
     overflow-y: auto;
-    z-index: 1001;
-    /* Encima del TopBar si es necesario */
-    transition: transform 0.3s ease;
+    z-index: 10;
 }
 
 .sidebar h3 {
     color: #00003f;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 800;
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #fcb424;
+    /* Línea Ámbar */
     text-align: center;
 }
 
 
-/* ... (Los estilos de niveles y lecciones se mantienen igual) */
+/* Niveles en el Sidebar */
 
 .nivel-sidebar {
     margin-bottom: 20px;
@@ -48,22 +50,89 @@
     border: 1px solid #f0f0f0;
 }
 
+
+/* TITULO DE NIVEL EN NEGRO */
+
 .nivel-titulo {
     font-weight: 800;
-    color: #000;
+    color: #000000;
     font-size: 0.95rem;
     margin-bottom: 12px;
 }
+
+.lecciones-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.leccion-item {
+    margin-bottom: 6px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+/* TEXTO DE LECCIONES EN NEGRO */
 
 .leccion-link {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #000;
+    text-decoration: none;
+    color: #000000;
     font-size: 0.9rem;
     padding: 8px 10px;
     border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.leccion-link .text {
+    color: #000000;
     font-weight: 600;
+}
+
+
+/* ===============================
+    ESTADO ACTIVO (INDICADOR AMARILLO)
+=============================== */
+
+.leccion-item.active .leccion-link {
+    background: #fcb424;
+    /* Fondo Amarillo Ámbar */
+    color: #00003f;
+    /* Texto Azul Profundo */
+}
+
+.leccion-item.active .leccion-link .text {
+    color: #00003f;
+    font-weight: 800;
+}
+
+.leccion-link:hover:not(.active) {
+    background: #e5e7eb;
+}
+
+
+/* Estado completado */
+
+.leccion-item.completada .leccion-link:not(.active) {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.leccion-item.completada .leccion-link:not(.active) .text {
+    color: #16a34a;
+}
+
+.leccion-bloqueada {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 
@@ -73,106 +142,93 @@
 
 .contenido-curso {
     flex: 1;
-    padding: 40px 60px;
-    max-width: 1000px;
-    margin: 0 auto;
+    padding: 60px;
+    max-width: 900px;
 }
 
 .curso-titulo {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 900;
     color: #00003f;
-    line-height: 1.1;
     margin-bottom: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #00003f;
+    color: #fcb424;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 30px;
+}
+
+.curso-info-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.curso-descripcion {
+    font-size: 1.1rem;
+    color: #4b5563;
+    line-height: 1.7;
 }
 
 
 /* ===============================
-    📱 MÓVIL (ESTILOS CRÍTICOS)
+    🔘 BOTONES Y ESTADOS
 =============================== */
 
-
-/* Botón flotante para móviles */
-
-.toggle-sidebar-btn {
-    display: none;
-    /* Oculto en escritorio */
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 2000;
+.btn-examen-sidebar {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
     background: #fcb424;
     color: #00003f;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 50px;
     font-weight: 800;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    align-items: center;
-    gap: 10px;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-@media (max-width: 992px) {
-    .toggle-sidebar-btn {
-        display: flex;
-    }
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100vh;
-        width: 280px;
-        transform: translateX(-100%);
-        /* Escondido a la izquierda */
-        padding-top: 80px;
-    }
-    .sidebar.open {
-        transform: translateX(0);
-        /* Se desliza al abrir */
-    }
-    .sidebar-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 31, 0.5);
-        z-index: 1000;
-        backdrop-filter: blur(2px);
-    }
-    .contenido-curso {
-        padding: 30px 20px;
-    }
-    .curso-titulo {
-        font-size: 1.8rem;
-    }
-    .curso-info-card {
-        padding: 20px;
-    }
+.btn-examen-sidebar:hover {
+    background: #e6a91e;
+    transform: translateY(-2px);
 }
 
-
-/* Spinner y Ayuda */
-
-.indicaciones-ayuda {
-    background: #eef2ff;
-    padding: 20px;
-    border-radius: 16px;
-    border-left: 5px solid #00003f;
+.nivel-aprobado {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #16a34a;
+    background: #dcfce7;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
 }
 
-.indicaciones-ayuda h4 {
-    margin-bottom: 10px;
+.btn-regresar-sidebar {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-regresar-sidebar:hover {
+    background: #e5e7eb;
     color: #00003f;
 }
 
-.indicaciones-ayuda ul {
-    padding-left: 20px;
-}
 
-.indicaciones-ayuda li {
-    margin-bottom: 8px;
-    color: #4b5563;
-    font-size: 0.95rem;
-}
+/* Spinner y otros se mantienen igual... */

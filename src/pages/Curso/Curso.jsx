@@ -1,13 +1,12 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { Menu as MenuIcon, X } from "lucide-react"; // Importamos iconos para el toggle
 
 import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { ProgresoContext } from "../../context/ProgresoContext";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast";
+import { notify } from "../../Util/toast"; // 👈 Tu utilidad de Toasts
 
 import "./CursoStyle.css";
 
@@ -18,7 +17,6 @@ export default function Curso() {
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [accesos, setAccesos] = useState({});
-  const [sidebarAbierto, setSidebarAbierto] = useState(false); // 📱 Estado para móvil
 
   const {
     progresoGlobal,
@@ -28,27 +26,32 @@ export default function Curso() {
     loading: progresoLoading,
   } = useContext(ProgresoContext);
 
-  // ... (Efectos y funciones se mantienen exactamente igual hasta el return)
-
   useEffect(() => {
     const cargarDatosCurso = async () => {
       setCargando(true);
       try {
         const ref = doc(db, "cursos", id);
         const snap = await getDoc(ref);
+
         if (!snap.exists()) {
           notify("error", "Curso no encontrado");
           navigate("/principal");
           return;
         }
+
         setCurso({ id: snap.id, ...snap.data() });
-        if (progresoCursos.length === 0) await recargarProgreso();
+
+        if (progresoCursos.length === 0) {
+          await recargarProgreso();
+        }
       } catch (error) {
+        console.error("❌ Error cargando curso:", error);
         notify("error", "Error al conectar con la base de datos");
       } finally {
         setCargando(false);
       }
     };
+
     cargarDatosCurso();
   }, [id, navigate, recargarProgreso, progresoCursos.length]);
 
@@ -56,12 +59,18 @@ export default function Curso() {
     const nuevosAccesos = {};
     const promesas = niveles.map(async (nivel) => {
       const num = Number(nivel.numero);
-      if (num === 1) { nuevosAccesos[num] = true; return; }
+      if (num === 1) {
+        nuevosAccesos[num] = true;
+        return;
+      }
       try {
         const res = await apiYesems.get(`/examen/${id}/nivel/${num}/puede-acceder`);
         nuevosAccesos[num] = res.data.puedeAcceder;
-      } catch (error) { nuevosAccesos[num] = false; }
+      } catch (error) {
+        nuevosAccesos[num] = false;
+      }
     });
+
     await Promise.all(promesas);
     setAccesos(nuevosAccesos);
   }, [id]);
@@ -93,17 +102,8 @@ export default function Curso() {
     <>
       <TopBar />
 
-      {/* 📱 Botón flotante para abrir el índice en móviles */}
-      <button 
-        className="toggle-sidebar-btn" 
-        onClick={() => setSidebarAbierto(!sidebarAbierto)}
-      >
-        {sidebarAbierto ? <X size={24} /> : <MenuIcon size={24} />}
-        <span>{sidebarAbierto ? "Cerrar Índice" : "Ver Índice"}</span>
-      </button>
-
-      <div className={`curso-contenedor-sidebar ${sidebarAbierto ? "sidebar-mobile-open" : ""}`}>
-        <aside className={`sidebar ${sidebarAbierto ? "open" : ""}`}>
+      <div className="curso-contenedor-sidebar">
+        <aside className="sidebar">
           <div className="sidebar-header">
             <h3>{curso.nombre}</h3>
           </div>
@@ -132,11 +132,7 @@ export default function Curso() {
                         return (
                           <li key={lid} className={`leccion-item ${estaCompletada ? "completada" : ""}`}>
                             {nivelDesbloqueado ? (
-                              <Link 
-                                to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`} 
-                                className="leccion-link"
-                                onClick={() => setSidebarAbierto(false)} // Cierra al navegar
-                              >
+                              <Link to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`} className="leccion-link">
                                 <span className="icon">{estaCompletada ? "✅" : "📖"}</span>
                                 <span className="text">{lecc.titulo || `Lección ${index + 1}`}</span>
                               </Link>
@@ -177,14 +173,12 @@ export default function Curso() {
                 </button>
               </div>
             )}
+
             <button className="btn-regresar-sidebar" onClick={() => navigate("/principal")}>
               ⬅ Volver a Mis Cursos
             </button>
           </div>
         </aside>
-
-        {/* 📱 Overlay para cerrar el sidebar al tocar fuera en móviles */}
-        {sidebarAbierto && <div className="sidebar-overlay" onClick={() => setSidebarAbierto(false)}></div>}
 
         <main className="contenido-curso">
           <header className="contenido-header">
