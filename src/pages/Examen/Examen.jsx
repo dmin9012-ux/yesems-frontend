@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ExamenStyle.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { obtenerExamenNivel, enviarExamenNivel } from "../../api/apiYesems";
-import { notifySuccess, notifyError } from "../../utils/notify";
+import { notify } from "../../Util/toast";
 
 const Examen = () => {
 
@@ -14,6 +14,7 @@ const Examen = () => {
     const [loading, setLoading] = useState(true);
     const [enviando, setEnviando] = useState(false);
     const [resultado, setResultado] = useState(null);
+
 
     /* ========================================
        CARGAR EXAMEN
@@ -33,7 +34,6 @@ const Examen = () => {
                     throw new Error("No hay preguntas disponibles");
                 }
 
-                // Shuffle preguntas
                 const preguntasMezcladas = [...data.preguntas].sort(
                     () => Math.random() - 0.5
                 );
@@ -42,7 +42,7 @@ const Examen = () => {
 
             } catch (error) {
 
-                notifyError("No puedes acceder a este examen");
+                notify("error", "No puedes acceder a este examen");
                 navigate("/principal");
 
             } finally {
@@ -80,7 +80,7 @@ const Examen = () => {
 
         if (Object.keys(respuestas).length !== preguntas.length) {
 
-            notifyError("Responde todas las preguntas");
+            notify("error", "Responde todas las preguntas");
             return;
 
         }
@@ -99,17 +99,17 @@ const Examen = () => {
 
             if (resultado.aprobado) {
 
-                notifySuccess("¡Examen aprobado!");
+                notify("success", "¡Examen aprobado!");
 
             } else {
 
-                notifyError("No aprobaste. Intenta nuevamente.");
+                notify("error", "No aprobaste. Intenta nuevamente.");
 
             }
 
         } catch (error) {
 
-            notifyError("Error al enviar examen");
+            notify("error", "Error al enviar examen");
 
         } finally {
 
@@ -208,9 +208,7 @@ const Examen = () => {
                     >
 
                         <div className="pregunta-title">
-
                             {index + 1}. {pregunta.pregunta}
-
                         </div>
 
                         <div className="opciones-container">
