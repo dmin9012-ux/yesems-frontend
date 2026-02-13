@@ -1,266 +1,526 @@
-import React, { useEffect, useState } from "react";
-import "./ExamenStyle.css";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { obtenerExamenNivel, enviarExamenNivel } from "../../api/apiYesems";
+import {
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  ArrowRight,
+  RotateCcw,
+  ClipboardCheck,
+  Send
+} from "lucide-react";
+
+import TopBar from "../../components/TopBar/TopBar";
+import apiYesems from "../../api/apiYesems";
+import {
+  enviarExamenNivel,
+  puedeAccederNivel
+} from "../../servicios/examenService";
+
+import { ProgresoContext } from "../../context/ProgresoContext";
+
+/* ✅ IMPORT CORRECTO — ASEGÚRATE QUE EXISTA src/Util/toast.js */
 import { notify } from "../../Util/toast";
 
-const Examen = () => {
-
-    const { cursoId, nivelId } = useParams();
-    const navigate = useNavigate();
-
-    const [preguntas, setPreguntas] = useState([]);
-    const [respuestas, setRespuestas] = useState({});
-    const [loading, setLoading] = useState(true);
-    const [enviando, setEnviando] = useState(false);
-    const [resultado, setResultado] = useState(null);
+import "./ExamenStyle.css";
 
 
-    /* ========================================
-       CARGAR EXAMEN
-    ======================================== */
+/* ======================================================
+   SHUFFLE PROFESIONAL
+====================================================== */
+const shuffleArray = (array) => {
+  const copia = [...array];
 
-    useEffect(() => {
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
 
-        const cargarExamen = async () => {
-
-            try {
-
-                setLoading(true);
-
-                const data = await obtenerExamenNivel(cursoId, nivelId);
-
-                if (!data || !data.preguntas) {
-                    throw new Error("No hay preguntas disponibles");
-                }
-
-                const preguntasMezcladas = [...data.preguntas].sort(
-                    () => Math.random() - 0.5
-                );
-
-                setPreguntas(preguntasMezcladas);
-
-            } catch (error) {
-
-                notify("error", "No puedes acceder a este examen");
-                navigate("/principal");
-
-            } finally {
-
-                setLoading(false);
-
-            }
-
-        };
-
-        cargarExamen();
-
-    }, [cursoId, nivelId, navigate]);
+  return copia;
+};
 
 
-    /* ========================================
-       SELECCIONAR RESPUESTA
-    ======================================== */
+/* ======================================================
+   COMPONENTE
+====================================================== */
+export default function Examen() {
 
-    const seleccionarRespuesta = (preguntaId, opcionIndex) => {
+  const { id, nivel } = useParams();
 
-        setRespuestas((prev) => ({
-            ...prev,
-            [preguntaId]: opcionIndex
-        }));
+  const cursoId = id;
+  const nivelNumero = Number(nivel);
 
-    };
+  const navigate = useNavigate();
 
-
-    /* ========================================
-       ENVIAR EXAMEN
-    ======================================== */
-
-    const finalizarExamen = async () => {
-
-        if (Object.keys(respuestas).length !== preguntas.length) {
-
-            notify("error", "Responde todas las preguntas");
-            return;
-
-        }
-
-        try {
-
-            setEnviando(true);
-
-            const resultado = await enviarExamenNivel(
-                cursoId,
-                nivelId,
-                respuestas
-            );
-
-            setResultado(resultado);
-
-            if (resultado.aprobado) {
-
-                notify("success", "¡Examen aprobado!");
-
-            } else {
-
-                notify("error", "No aprobaste. Intenta nuevamente.");
-
-            }
-
-        } catch (error) {
-
-            notify("error", "Error al enviar examen");
-
-        } finally {
-
-            setEnviando(false);
-
-        }
-
-    };
+  const {
+    recargarProgreso,
+    actualizarNivelesAprobados
+  } = useContext(ProgresoContext);
 
 
-    /* ========================================
-       LOADING
-    ======================================== */
+  /* ======================================================
+     STATES
+  ====================================================== */
 
-    if (loading) {
+  const [examen, setExamen] = useState({ preguntas: [] });
 
-        return (
-            <div className="examen-layout">
-                <div className="examen-loading">
-                    Cargando examen...
-                </div>
-            </div>
+  const [respuestas, setRespuestas] = useState({});
+
+  const [resultado, setResultado] = useState(null);
+
+  const [cargando, setCargando] = useState(true);
+
+  const [enviando, setEnviando] = useState(false);
+
+  const [error, setError] = useState("");
+
+  const [bloqueado, setBloqueado] = useState(false);
+
+
+  /* ======================================================
+     CARGAR EXAMEN
+  ====================================================== */
+
+  const cargarExamen = async () => {
+
+    try {
+
+      setCargando(true);
+      setError("");
+      setBloqueado(false);
+      setResultado(null);
+      setRespuestas({});
+
+
+      /* VALIDAR ACCESO */
+      const acceso = await puedeAccederNivel({
+        cursoId,
+        nivel: nivelNumero
+      });
+
+      if (!acceso?.ok || acceso.puedeAcceder !== true) {
+
+        setBloqueado(true);
+
+        setError(
+          acceso?.reason ||
+          "No tienes acceso a este nivel aún."
         );
+
+        return;
+      }
+
+
+      /* OBTENER EXAMEN */
+      const res = await apiYesems.get(
+        `/examen/${cursoId}/nivel/${nivelNumero}`
+      );
+
+
+      if (!res?.data?.ok || !res.data.preguntas?.length) {
+
+        setError("No se encontraron preguntas.");
+        return;
+
+      }
+
+
+      /* SHUFFLE */
+      setExamen({
+        ...res.data,
+        preguntas: shuffleArray(res.data.preguntas)
+      });
+
+    }
+    catch (err) {
+
+      console.error(err);
+
+      setError("Error al conectar con el servidor.");
+
+      notify("error", "Error al cargar la evaluación.");
+
+    }
+    finally {
+
+      setCargando(false);
 
     }
 
+  };
 
-    /* ========================================
-       RESULTADO
-    ======================================== */
 
-    if (resultado) {
+  useEffect(() => {
 
-        return (
+    cargarExamen();
 
-            <div className="examen-layout">
+  }, [cursoId, nivelNumero]);
 
-                <div className="examen-content">
 
-                    <div className="resultado-box">
+  /* ======================================================
+     SELECCIONAR RESPUESTA
+  ====================================================== */
 
-                        <h2>
-                            {resultado.aprobado
-                                ? "🎉 Examen aprobado"
-                                : "❌ Examen no aprobado"}
-                        </h2>
+  const seleccionarRespuesta = (preguntaId, opcionIndex) => {
 
-                        <p>
-                            Puntaje: {resultado.correctas} / {resultado.total}
-                        </p>
+    setRespuestas(prev => ({
+      ...prev,
+      [preguntaId]: opcionIndex
+    }));
 
-                        <button
-                            className="btn-finish-exam"
-                            onClick={() => navigate(`/curso/${cursoId}`)}
-                        >
-                            Volver al curso
-                        </button>
+  };
 
-                    </div>
 
-                </div>
+  /* ======================================================
+     ENVIAR EXAMEN
+  ====================================================== */
 
-            </div>
+  const enviarExamen = async () => {
 
-        );
+    const respuestasArray =
+      examen.preguntas.map(p => ({
+        preguntaId: p.id,
+        respuesta: respuestas[p.id]
+      }));
 
+
+    /* VALIDAR */
+    if (respuestasArray.some(r => r.respuesta === undefined)) {
+
+      notify(
+        "warning",
+        "Responde todas las preguntas antes de finalizar."
+      );
+
+      return;
     }
 
 
-    /* ========================================
-       UI PRINCIPAL
-    ======================================== */
+    try {
 
+      setEnviando(true);
+
+
+      const res = await enviarExamenNivel({
+
+        cursoId,
+        nivel: nivelNumero,
+        respuestas: respuestasArray
+
+      });
+
+
+      setResultado(res);
+
+
+      if (res.aprobado) {
+
+        notify(
+          "success",
+          `¡Aprobado con ${res.porcentaje}%!`
+        );
+
+        actualizarNivelesAprobados(
+          cursoId,
+          nivelNumero
+        );
+
+      }
+      else {
+
+        notify(
+          "error",
+          `Puntaje insuficiente (${res.porcentaje}%).`
+        );
+
+      }
+
+
+      await recargarProgreso();
+
+    }
+    catch (err) {
+
+      console.error(err);
+
+      notify(
+        "error",
+        "Error al enviar el examen."
+      );
+
+    }
+    finally {
+
+      setEnviando(false);
+
+    }
+
+  };
+
+
+  /* ======================================================
+     LOADING
+  ====================================================== */
+
+  if (cargando)
     return (
 
-        <div className="examen-layout">
+      <div className="examen-loading-full">
 
-            <div className="examen-content">
+        <div className="spinner-yes"></div>
 
-                <div className="header-info">
+        <p>Preparando evaluación...</p>
 
-                    <h1>Examen Nivel {nivelId}</h1>
-
-                    <p>
-                        Responde todas las preguntas correctamente para avanzar
-                    </p>
-
-                </div>
-
-
-                {preguntas.map((pregunta, index) => (
-
-                    <div
-                        key={pregunta.id}
-                        className="pregunta-card-student"
-                    >
-
-                        <div className="pregunta-title">
-                            {index + 1}. {pregunta.pregunta}
-                        </div>
-
-                        <div className="opciones-container">
-
-                            {pregunta.opciones.map((opcion, opcionIndex) => (
-
-                                <div
-                                    key={opcionIndex}
-                                    className={`opcion-choice ${
-                                        respuestas[pregunta.id] === opcionIndex
-                                            ? "selected"
-                                            : ""
-                                    }`}
-                                    onClick={() =>
-                                        seleccionarRespuesta(
-                                            pregunta.id,
-                                            opcionIndex
-                                        )
-                                    }
-                                >
-                                    {opcion}
-                                </div>
-
-                            ))}
-
-                        </div>
-
-                    </div>
-
-                ))}
-
-
-                <div className="examen-footer-action">
-
-                    <button
-                        className="btn-finish-exam"
-                        onClick={finalizarExamen}
-                        disabled={enviando}
-                    >
-                        {enviando
-                            ? "Enviando..."
-                            : "Finalizar examen"}
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
+      </div>
 
     );
 
-};
 
-export default Examen;
+  /* ======================================================
+     BLOQUEADO
+  ====================================================== */
+
+  if (bloqueado)
+    return (
+
+      <div className="examen-screen-msg">
+
+        <TopBar />
+
+        <div className="msg-card locked">
+
+          <AlertCircle size={60} />
+
+          <h2>Acceso restringido</h2>
+
+          <p>{error}</p>
+
+          <button
+            className="btn-yes primary"
+            onClick={() =>
+              navigate(`/curso/${cursoId}`)
+            }
+          >
+            Volver
+          </button>
+
+        </div>
+
+      </div>
+
+    );
+
+
+  /* ======================================================
+     RESULTADO
+  ====================================================== */
+
+  if (resultado)
+    return (
+
+      <div className="examen-screen-msg">
+
+        <TopBar />
+
+        <div
+          className={`msg-card result ${
+            resultado.aprobado
+              ? "success"
+              : "fail"
+          }`}
+        >
+
+          {
+            resultado.aprobado
+              ? <CheckCircle size={80} />
+              : <XCircle size={80} />
+          }
+
+          <h1>
+            {
+              resultado.aprobado
+                ? "¡Excelente!"
+                : "No aprobado"
+            }
+          </h1>
+
+          <div className="score-badge">
+            {resultado.porcentaje}%
+          </div>
+
+          <div className="result-actions">
+
+            {
+              resultado.aprobado
+                ? (
+
+                  <button
+                    className="btn-yes success"
+                    onClick={() =>
+                      navigate(
+                        resultado.cursoFinalizado
+                          ? "/perfil"
+                          : `/curso/${cursoId}`
+                      )
+                    }
+                  >
+
+                    Continuar
+                    <ArrowRight size={18} />
+
+                  </button>
+
+                )
+                : (
+
+                  <button
+                    className="btn-yes retry"
+                    onClick={cargarExamen}
+                  >
+
+                    <RotateCcw size={18} />
+                    Intentar de nuevo
+
+                  </button>
+
+                )
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    );
+
+
+  /* ======================================================
+     UI PRINCIPAL
+  ====================================================== */
+
+  return (
+
+    <div className="examen-layout">
+
+      <TopBar />
+
+      <div className="examen-content">
+
+        <header className="examen-header-main">
+
+          <div className="header-info">
+
+            <ClipboardCheck size={32} />
+
+            <div>
+
+              <h1>
+                Evaluación Nivel {nivelNumero}
+              </h1>
+
+              <p>
+                Selecciona la respuesta correcta.
+              </p>
+
+            </div>
+
+          </div>
+
+        </header>
+
+
+        <div className="preguntas-list">
+
+          {
+            examen.preguntas.map(
+              (pregunta, idx) => (
+
+                <div
+                  key={pregunta.id}
+                  className="pregunta-card-student"
+                >
+
+                  <div className="pregunta-header">
+
+                    <span className="q-number">
+                      {idx + 1}
+                    </span>
+
+                    <h3>
+                      {pregunta.pregunta}
+                    </h3>
+
+                  </div>
+
+
+                  <div className="opciones-grid-student">
+
+                    {
+                      pregunta.opciones.map(
+                        (opcion, i) => (
+
+                          <div
+                            key={i}
+                            className={`opcion-choice ${
+                              respuestas[pregunta.id] === i
+                                ? "selected"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              seleccionarRespuesta(
+                                pregunta.id,
+                                i
+                              )
+                            }
+                          >
+
+                            {opcion}
+
+                          </div>
+
+                        )
+                      )
+                    }
+
+                  </div>
+
+                </div>
+
+              )
+            )
+          }
+
+        </div>
+
+
+        <footer className="examen-footer-action">
+
+          <button
+            className="btn-finish-exam"
+            onClick={enviarExamen}
+            disabled={enviando}
+          >
+
+            {
+              enviando
+                ? "Enviando..."
+                : (
+                  <>
+                    <Send size={18} />
+                    Finalizar evaluación
+                  </>
+                )
+            }
+
+          </button>
+
+        </footer>
+
+      </div>
+
+    </div>
+
+  );
+
+}
