@@ -1,3 +1,7 @@
+/* ===========================================================
+    📝 EXAMENSTYLE.CSS - DISEÑO DE EVALUACIÓN OPTIMIZADO
+   =========================================================== */
+
 .examen-layout {
     min-height: 100vh;
     background: #f1f5f9;
@@ -11,12 +15,78 @@
     padding: 0 20px;
 }
 
-.examen-loading {
+
+/* ===============================
+    🔄 ESTADOS DE CARGA Y MENSAJES
+=============================== */
+
+.examen-loading-full,
+.examen-screen-msg {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     text-align: center;
-    margin-top: 150px;
-    font-size: 20px;
-    font-weight: 600;
+    background: #f1f5f9;
 }
+
+.spinner-yes {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e2e8f0;
+    border-top: 5px solid #fcb424;
+    /* Color Ámbar */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Tarjetas de Mensaje (Bloqueo y Resultado) */
+
+.msg-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 450px;
+    width: 100%;
+}
+
+.msg-card.locked {
+    border-top: 6px solid #ef4444;
+}
+
+.msg-card.result.success {
+    border-top: 6px solid #16a34a;
+}
+
+.msg-card.result.fail {
+    border-top: 6px solid #ef4444;
+}
+
+.score-badge {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #00003f;
+    margin: 20px 0;
+}
+
+
+/* ===============================
+    📝 ELEMENTOS DEL EXAMEN
+=============================== */
 
 .header-info {
     background: white;
@@ -29,11 +99,7 @@
 .header-info h1 {
     margin: 0;
     color: #00003f;
-}
-
-.header-info p {
-    margin-top: 10px;
-    color: #64748b;
+    font-weight: 800;
 }
 
 .pregunta-card-student {
@@ -44,73 +110,92 @@
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
-.pregunta-title {
-    font-weight: 600;
+.pregunta-header {
+    display: flex;
+    gap: 15px;
     margin-bottom: 20px;
+    align-items: flex-start;
 }
 
-.opciones-container {
+.q-number {
+    background: #fcb424;
+    color: #00003f;
+    min-width: 30px;
+    height: 30px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: 800;
 }
 
 .opcion-choice {
     padding: 15px;
-    border-radius: 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
     border: 2px solid #e2e8f0;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
 .opcion-choice:hover {
-    border-color: #00003f;
+    border-color: #fcb424;
+    background: #fffdf7;
 }
 
 .opcion-choice.selected {
     background: #00003f;
     color: white;
     border-color: #00003f;
-}
-
-.examen-footer-action {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 40px;
-    padding-bottom: 120px;
-}
-
-.btn-finish-exam {
-    background: #00003f;
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    font-size: 16px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.2s;
-    width: 80%;
-}
-
-.btn-finish-exam:hover {
-    background: #000066;
-}
-
-.resultado-box {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 63, 0.2);
 }
 
 
 /* ===============================
-   RESPONSIVE
+    🔘 BOTONES
+=============================== */
+
+.btn-finish-exam,
+.btn-yes {
+    background: #00003f;
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-yes.success {
+    background: #16a34a;
+}
+
+.btn-yes.retry {
+    background: #fcb424;
+    color: #00003f;
+}
+
+.btn-finish-exam:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===============================
+    📱 RESPONSIVE (Móvil)
 =============================== */
 
 @media (max-width: 768px) {
+    .examen-layout {
+        padding-top: 70px;
+    }
     .examen-content {
         margin: 20px auto;
         padding: 0 15px;
@@ -119,24 +204,16 @@
         padding: 20px;
         border-radius: 16px;
     }
-    .header-info {
-        padding: 20px;
-        border-radius: 18px;
-    }
     .header-info h1 {
         font-size: 1.4rem;
     }
     .opcion-choice {
-        padding: 14px;
+        padding: 16px;
     }
-}
-
-@media (max-width: 600px) {
     .btn-finish-exam {
         width: 100%;
     }
     .examen-footer-action {
-        padding-left: 15px;
-        padding-right: 15px;
+        padding: 0 15px 100px 15px;
     }
 }
