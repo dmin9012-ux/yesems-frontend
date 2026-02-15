@@ -48,7 +48,7 @@ const Perfil = () => {
   }, [location, actualizarDatosUsuario, navigate]);
 
   /* ========================================================
-      ⏱️ LÓGICA DEL CONTADOR PREMIUM (ACTUALIZADO A 7 DÍAS)
+      ⏱️ LÓGICA DEL CONTADOR PREMIUM (DINÁMICO 7 DÍAS)
   ======================================================== */
   useEffect(() => {
     if (!isPremium || !user?.suscripcion?.fechaFin) return;
@@ -63,17 +63,16 @@ const Perfil = () => {
         return;
       }
 
-      // Cálculo de unidades
       const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
       const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
       const minutos = Math.floor((diferencia / 1000 / 60) % 60);
       const segundos = Math.floor((diferencia / 1000) % 60);
 
-      // Formato dinámico según el tiempo que queda
+      // Si quedan más de 24 horas, mostramos Días, Horas y Minutos
       if (dias > 0) {
         setTiempoRestante(`${dias}d ${horas}h ${minutos}m`);
       } else {
-        // Si queda menos de un día, mostramos el segundero activo
+        // Si queda menos de un día, mostramos el cronómetro activo
         setTiempoRestante(`${horas}h ${minutos}m ${segundos}s`);
       }
     };
@@ -182,8 +181,8 @@ const Perfil = () => {
 
             {isPremium && tiempoRestante && (
               <div className="premium-timer-badge">
-                <Clock size={12} />
-                <span>Tiempo restante: <strong>{tiempoRestante}</strong></span>
+                <span><Clock size={14} /> Tiempo restante</span>
+                <strong>{tiempoRestante}</strong>
               </div>
             )}
           </div>
