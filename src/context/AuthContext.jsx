@@ -26,14 +26,21 @@ export const AuthProvider = ({ children }) => {
     cargarSesion();
   }, []);
 
+  /* ========================================================
+      ⚡ REFRESCAR DATOS (Crucial para el Plan Semanal)
+  ======================================================== */
   const actualizarDatosUsuario = async () => {
     try {
-      const perfilActualizado = await obtenerMiPerfil();
-      if (perfilActualizado) {
-        // ✅ Guardamos en localStorage y actualizamos el estado global
-        localStorage.setItem("user", JSON.stringify(perfilActualizado));
-        setUser({...perfilActualizado}); // Spread para forzar re-render
-        return perfilActualizado;
+      const res = await obtenerMiPerfil();
+      // Verificamos si la respuesta trae el usuario (ajustado a la estructura de tu backend)
+      const datosNuevos = res.usuario || res; 
+      
+      if (datosNuevos) {
+        // Actualizamos localStorage con la nueva fecha de 168h
+        localStorage.setItem("user", JSON.stringify(datosNuevos));
+        // Actualizamos estado global para que el contador de Perfil.jsx se reinicie
+        setUser({ ...datosNuevos }); 
+        return datosNuevos;
       }
     } catch (error) {
       console.error("Error al refrescar perfil:", error);
@@ -59,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   /* ========================================================
-      🛡️ LÓGICA DE VALIDACIÓN PREMIUM (TIEMPO REAL)
+      🛡️ VALIDACIÓN PREMIUM (Compara fechaFin con ahora)
   ======================================================== */
   const checkPremiumStatus = () => {
     if (!user || !user.suscripcion || user.suscripcion.estado !== "active") {
@@ -69,7 +76,6 @@ export const AuthProvider = ({ children }) => {
     const fechaFin = new Date(user.suscripcion.fechaFin);
     const ahora = new Date();
 
-    // Si la hora actual es menor a la fecha de fin, sigue siendo Premium
     return ahora < fechaFin;
   };
 
@@ -80,14 +86,13 @@ export const AuthProvider = ({ children }) => {
         loading,
         isAuthenticated: !!user,
         isAdmin: user && user.rol === "admin",
-        // isPremium se recalcula en cada renderizado
         isPremium: checkPremiumStatus(), 
         login,
         logout,
         actualizarDatosUsuario,
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
