@@ -6,7 +6,7 @@ import { db } from "../../firebase/firebaseConfig";
 import TopBar from "../../components/TopBar/TopBar";
 import { ProgresoContext } from "../../context/ProgresoContext";
 import apiYesems from "../../api/apiYesems";
-import { notify } from "../../Util/toast"; // 👈 Tu utilidad de Toasts
+import { notify } from "../../Util/toast";
 
 import "./CursoStyle.css";
 
@@ -17,6 +17,8 @@ export default function Curso() {
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [accesos, setAccesos] = useState({});
+  // 📱 Estado para controlar el menú en móvil
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   const {
     progresoGlobal,
@@ -98,12 +100,28 @@ export default function Curso() {
   const progresoActual = progresoCursos.find((p) => p.cursoId === id);
   const cursoFinalizado = progresoActual?.completado === true;
 
+  // Función para cerrar el menú al hacer clic en una lección (solo móvil)
+  const manejarClickLeccion = () => {
+    if (window.innerWidth <= 768) {
+      setMenuAbierto(false);
+    }
+  };
+
   return (
     <>
       <TopBar />
 
+      {/* 📱 Botón Flotante para Móvil */}
+      <button 
+        className={`mobile-menu-toggle ${menuAbierto ? 'open' : ''}`}
+        onClick={() => setMenuAbierto(!menuAbierto)}
+        aria-label="Abrir menú de lecciones"
+      >
+        {menuAbierto ? "✕" : "📚 Ver Lecciones"}
+      </button>
+
       <div className="curso-contenedor-sidebar">
-        <aside className="sidebar">
+        <aside className={`sidebar ${menuAbierto ? "active" : ""}`}>
           <div className="sidebar-header">
             <h3>{curso.nombre}</h3>
           </div>
@@ -132,7 +150,11 @@ export default function Curso() {
                         return (
                           <li key={lid} className={`leccion-item ${estaCompletada ? "completada" : ""}`}>
                             {nivelDesbloqueado ? (
-                              <Link to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`} className="leccion-link">
+                              <Link 
+                                to={`/curso/${id}/nivel/${nivelNumero}/leccion/${index + 1}`} 
+                                className="leccion-link"
+                                onClick={manejarClickLeccion}
+                              >
                                 <span className="icon">{estaCompletada ? "✅" : "📖"}</span>
                                 <span className="text">{lecc.titulo || `Lección ${index + 1}`}</span>
                               </Link>
@@ -179,6 +201,9 @@ export default function Curso() {
             </button>
           </div>
         </aside>
+
+        {/* Capa oscura para cerrar menú al tocar fuera (Mobile only) */}
+        {menuAbierto && <div className="sidebar-overlay" onClick={() => setMenuAbierto(false)}></div>}
 
         <main className="contenido-curso">
           <header className="contenido-header">

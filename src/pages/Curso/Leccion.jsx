@@ -8,8 +8,7 @@ import { validarLeccion } from "../../servicios/progresoService";
 import { ProgresoContext } from "../../context/ProgresoContext";
 import { notify } from "../../Util/toast"; 
 
-// 1. Importamos iconos para los materiales
-import { FileText, Download, ExternalLink, Paperclip } from "lucide-react";
+import { FileText, Download, ExternalLink, Paperclip, Menu, X } from "lucide-react";
 
 import "./LeccionStyle.css";
 
@@ -25,8 +24,9 @@ export default function Leccion() {
   const [esUltimaLeccion, setEsUltimaLeccion] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [cargando, setCargando] = useState(true);
-
-  // Estado para el modal o vista previa del PDF (Opcional)
+  
+  // 📱 Estado para el menú lateral en móvil
+  const [menuAbierto, setMenuAbierto] = useState(false);
   const [previewPDF, setPreviewPDF] = useState(null);
 
   const {
@@ -71,7 +71,7 @@ export default function Leccion() {
           titulo: leccionData.titulo,
           videoURL: leccionData.videoURL || "",
           contenidoHTML: leccionData.contenidoHTML || "",
-          materiales: leccionData.materiales || [], // Aseguramos que existan
+          materiales: leccionData.materiales || [],
           nivelTitulo: nivelData.titulo,
         });
 
@@ -145,9 +145,22 @@ export default function Leccion() {
   return (
     <>
       <TopBar />
+      
+      {/* 📱 Botón Flotante para el Índice en Móvil */}
+      <button 
+        className={`mobile-index-toggle ${menuAbierto ? 'open' : ''}`}
+        onClick={() => setMenuAbierto(!menuAbierto)}
+      >
+        {menuAbierto ? <X size={20} /> : <Menu size={20} />}
+        <span>{menuAbierto ? "Cerrar" : "Índice"}</span>
+      </button>
+
       <div className="leccion-contenedor-sidebar">
-        {/* SIDEBAR (Sin cambios) */}
-        <aside className="sidebar">
+        
+        {/* Capa oscura para cerrar el menú al tocar fuera */}
+        {menuAbierto && <div className="sidebar-overlay" onClick={() => setMenuAbierto(false)}></div>}
+
+        <aside className={`sidebar ${menuAbierto ? "active" : ""}`}>
           <div className="sidebar-header">
             <h3>{curso.nombre}</h3>
           </div>
@@ -167,7 +180,11 @@ export default function Leccion() {
                       return (
                         <li key={lid} className={`leccion-item ${esActual ? "active " : ""}${completada ? "completada" : ""}`}>
                           {desbloqueado ? (
-                            <Link to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`} className="leccion-link">
+                            <Link 
+                              to={`/curso/${id}/nivel/${nNum}/leccion/${idx + 1}`} 
+                              className="leccion-link"
+                              onClick={() => setMenuAbierto(false)} // Cerrar al navegar
+                            >
                               <span className="icon">{completada ? "✅" : "📖"}</span>
                               <span className="text">{lecc.titulo || `Lección ${idx + 1}`}</span>
                             </Link>
@@ -212,7 +229,7 @@ export default function Leccion() {
             <div className="contenido-html-rich" dangerouslySetInnerHTML={{ __html: leccionActual.contenidoHTML }} />
           )}
 
-          {/* --- NUEVA SECCIÓN: MATERIALES Y PDF EMBEBIDO --- */}
+          {/* RECURSOS */}
           {leccionActual.materiales && leccionActual.materiales.length > 0 && (
             <div className="seccion-recursos">
               <h3 className="recursos-titulo"><Paperclip size={20} /> Recursos de la lección</h3>
@@ -239,16 +256,9 @@ export default function Leccion() {
                         <Download size={16} /> Descargar
                       </a>
                     </div>
-                    
-                    {/* Visualización Embebida (Aparece al dar clic en Ver en línea) */}
                     {previewPDF === mat.urlPreview && (
                       <div className="pdf-embed-container">
-                        <iframe 
-                          src={mat.urlPreview} 
-                          width="100%" 
-                          height="500px" 
-                          title="Vista previa PDF"
-                        ></iframe>
+                        <iframe src={mat.urlPreview} width="100%" height="500px" title="Vista previa PDF"></iframe>
                       </div>
                     )}
                   </div>
@@ -256,7 +266,6 @@ export default function Leccion() {
               </div>
             </div>
           )}
-          {/* --- FIN SECCIÓN MATERIALES --- */}
 
           <div className="navegacion-footer">
             <button onClick={() => navigate(-1)} className="btn-secundario">

@@ -1,3 +1,8 @@
+/* ===========================================================
+    🎨 CURSOSTYLE.CSS - ESTRUCTURA GENERAL Y RESPONSIVA
+   =========================================================== */
+
+
 /* Contenedor general con estructura de Dashboard */
 
 .curso-contenedor-sidebar {
@@ -11,7 +16,7 @@
 
 
 /* ===============================
-    ⬅️ SIDEBAR DEL CURSO (FIJO)
+    ⬅️ SIDEBAR DEL CURSO (ESCRITORIO)
 =============================== */
 
 .sidebar {
@@ -50,9 +55,6 @@
     border: 1px solid #f0f0f0;
 }
 
-
-/* TITULO DE NIVEL EN NEGRO */
-
 .nivel-titulo {
     font-weight: 800;
     color: #000000;
@@ -70,9 +72,6 @@
     border-radius: 10px;
     overflow: hidden;
 }
-
-
-/* TEXTO DE LECCIONES EN NEGRO */
 
 .leccion-link {
     display: flex;
@@ -93,14 +92,13 @@
 
 
 /* ===============================
-    ESTADO ACTIVO (INDICADOR AMARILLO)
+    🟡 ESTADOS (ACTIVO, HOVER, COMPLETO)
 =============================== */
 
 .leccion-item.active .leccion-link {
     background: #fcb424;
     /* Fondo Amarillo Ámbar */
     color: #00003f;
-    /* Texto Azul Profundo */
 }
 
 .leccion-item.active .leccion-link .text {
@@ -111,9 +109,6 @@
 .leccion-link:hover:not(.active) {
     background: #e5e7eb;
 }
-
-
-/* Estado completado */
 
 .leccion-item.completada .leccion-link:not(.active) {
     color: #16a34a;
@@ -137,13 +132,15 @@
 
 
 /* ===============================
-    📦 CONTENIDO PRINCIPAL
+    📦 CONTENIDO PRINCIPAL (ESCRITORIO)
 =============================== */
 
 .contenido-curso {
     flex: 1;
     padding: 60px;
-    max-width: 900px;
+    max-width: 1000px;
+    /* Aumentado un poco para mejor respiro */
+    margin: 0 auto;
 }
 
 .curso-titulo {
@@ -180,7 +177,7 @@
 
 
 /* ===============================
-    🔘 BOTONES Y ESTADOS
+    🔘 BOTONES Y UTILIDADES
 =============================== */
 
 .btn-examen-sidebar {
@@ -225,10 +222,96 @@
     transition: all 0.3s;
 }
 
-.btn-regresar-sidebar:hover {
-    background: #e5e7eb;
-    color: #00003f;
+
+/* ===========================================================
+    📱 MODO MÓVIL (MEDIA QUERIES)
+   =========================================================== */
+
+@media (max-width: 768px) {
+    .curso-contenedor-sidebar {
+        flex-direction: column;
+        /* Apila Sidebar y Contenido */
+        padding-top: 60px;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 20px;
+        order: 2;
+        /* El menú de lecciones aparece debajo del contenido */
+    }
+    .contenido-curso {
+        width: 100%;
+        padding: 20px;
+        order: 1;
+        /* El contenido de la clase arriba */
+    }
+    .curso-titulo {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    .status-badge {
+        display: block;
+        margin: 0 auto 20px auto;
+        width: fit-content;
+    }
+    .curso-info-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+    .nivel-sidebar {
+        padding: 10px;
+    }
 }
 
 
-/* Spinner y otros se mantienen igual... */
+/* Botón de menú solo visible en móvil */
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 15px 25px;
+    background: #fcb424;
+    color: #00003f;
+    border: none;
+    border-radius: 50px;
+    font-weight: 800;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+    /* Sidebar como "Drawer" lateral en móvil si está activo */
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        /* Escondido */
+        transition: left 0.3s ease;
+        top: 0;
+        height: 100vh;
+        z-index: 1001;
+    }
+    .sidebar.active {
+        left: 0;
+        /* Aparece */
+    }
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+}

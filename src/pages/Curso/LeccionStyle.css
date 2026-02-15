@@ -1,6 +1,9 @@
-/* ===============================
-    CONTENEDOR GENERAL
-================================ */
+/* ===========================================================
+    🎨 LECCIONSTYLE.CSS - DISEÑO DE LECCIONES RESPONSIVO
+   =========================================================== */
+
+
+/* CONTENEDOR GENERAL */
 
 .leccion-contenedor-sidebar {
     display: flex;
@@ -11,7 +14,7 @@
 
 
 /* ===============================
-    SIDEBAR (MENÚ DE LECCIONES FIJO)
+    SIDEBAR (MENÚ DE LECCIONES)
 =============================== */
 
 .sidebar {
@@ -56,11 +59,6 @@
     padding-left: 0;
 }
 
-.nivel-sidebar li {
-    margin-bottom: 6px;
-}
-
-.nivel-sidebar li a,
 .leccion-link {
     display: flex;
     align-items: center;
@@ -73,40 +71,22 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nivel-sidebar li a:hover {
+.leccion-link:hover {
     background: #f1f5f9;
     color: #00003f;
     transform: translateX(5px);
 }
 
 
-/* ===============================
-    LECCIÓN ACTUAL (INDICADOR AMARILLO)
-=============================== */
+/* LECCIÓN ACTUAL Y ESTADOS */
 
-.nivel-sidebar li.active a,
 .leccion-item.active .leccion-link {
     background: #fcb424;
-    /* Fondo Amarillo Ámbar */
     color: #00003f;
-    /* Texto Azul Profundo */
     font-weight: 800;
     box-shadow: 0 4px 15px rgba(252, 180, 36, 0.3);
 }
 
-
-/* Icono específico para la lección activa */
-
-.leccion-item.active .leccion-link .icon {
-    color: #00003f;
-}
-
-
-/* ===============================
-    LECCIÓN COMPLETADA Y BLOQUEADA
-=============================== */
-
-.nivel-sidebar li.completada a,
 .leccion-item.completada .leccion-link {
     color: #16a34a;
     font-weight: 700;
@@ -124,11 +104,10 @@
 
 
 /* ===============================
-    CONTENIDO PRINCIPAL
+    📦 CONTENIDO PRINCIPAL
 =============================== */
 
-.contenido-leccion,
-.contenido {
+.contenido-leccion {
     flex: 1;
     padding: 75px;
     max-width: 1000px;
@@ -146,8 +125,7 @@
 
 /* VIDEO RESPONSIVE */
 
-.video-wrapper,
-.video-container {
+.video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
     height: 0;
@@ -158,8 +136,7 @@
     background: #000;
 }
 
-.video-wrapper iframe,
-.video-container iframe {
+.video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -168,11 +145,7 @@
     border: none;
 }
 
-
-/* CONTENIDO HTML */
-
-.contenido-html-rich,
-.contenido-html {
+.contenido-html-rich {
     background: white;
     padding: 45px;
     border-radius: 24px;
@@ -186,209 +159,127 @@
 
 /* NAVEGACIÓN FOOTER */
 
-.navegacion-footer,
-.navegacion-lecciones {
+.navegacion-footer {
     display: flex;
     justify-content: space-between;
+    gap: 15px;
     margin-top: 50px;
     padding-top: 30px;
     border-top: 2px solid #e5e7eb;
 }
 
 .btn-primario,
-.btn-secundario,
-.btn-nav {
+.btn-secundario {
     padding: 16px 30px;
     border-radius: 14px;
-    border: none;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .btn-primario {
     background: #fcb424;
     color: #00003f;
-    box-shadow: 0 4px 15px rgba(252, 180, 36, 0.3);
+    border: none;
 }
 
 .btn-secundario {
     background: #00003f;
     color: white;
+    border: none;
 }
 
 
-/* RESPONSIVO */
+/* ===========================================================
+    📱 ADAPTACIÓN MÓVIL (MEDIA QUERIES)
+   =========================================================== */
+
+
+/* Botón flotante de Índice */
+
+.mobile-index-toggle {
+    display: none;
+    position: fixed;
+    bottom: 25px;
+    left: 20px;
+    z-index: 1100;
+    padding: 12px 20px;
+    background: #00003f;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    align-items: center;
+    gap: 8px;
+}
 
 @media (max-width: 1024px) {
+    .mobile-index-toggle {
+        display: flex;
+    }
     .leccion-contenedor-sidebar {
         flex-direction: column;
     }
     .sidebar {
+        position: fixed;
+        left: -100%;
+        /* Oculto lateralmente */
+        top: 0;
+        width: 300px;
+        height: 100vh;
+        z-index: 1050;
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-top: 40px;
+    }
+    .sidebar.active {
+        left: 0;
+        /* Desliza hacia adentro */
+    }
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid #e5e7eb;
+        height: 100%;
+        background: rgba(0, 0, 63, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 1040;
+    }
+    .contenido-leccion {
+        padding: 40px 20px;
+        width: 100%;
+    }
+    .leccion-titulo {
+        font-size: 26px;
+        text-align: center;
+    }
+    .contenido-html-rich {
+        padding: 25px;
+        font-size: 16px;
+    }
+    .navegacion-footer {
+        flex-direction: column-reverse;
+    }
+    .btn-primario,
+    .btn-secundario {
+        width: 100%;
+        text-align: center;
     }
 }
-
-
-/* ===============================
-    SECCIÓN DE RECURSOS (PDF)
-=============================== */
-
-.seccion-recursos {
-    margin-top: 40px;
-    background: #ffffff;
-    padding: 35px;
-    border-radius: 24px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
-}
-
-.recursos-titulo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #00003f;
-    margin-bottom: 25px;
-}
-
-.grid-materiales {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-}
-
-.material-card-estudiante {
-    border: 1.5px solid #f1f5f9;
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 18px;
-    transition: all 0.3s ease;
-}
-
-.material-card-estudiante:hover {
-    border-color: #fcb424;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-}
-
-.material-info {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
-}
-
-.icon-pdf {
-    color: #ef4444;
-    /* Rojo PDF */
-    background: white;
-    padding: 8px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.material-nombre {
-    font-weight: 800;
-    color: #00003f;
-    font-size: 1rem;
-    margin: 0;
-}
-
-.material-tipo {
-    font-size: 0.8rem;
-    color: #64748b;
-    font-weight: 600;
-    margin: 0;
-}
-
-
-/* BOTONES DE ACCIÓN */
-
-.material-acciones {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.btn-preview,
-.btn-download {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border-radius: 12px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-preview {
-    background: #00003f;
-    color: white;
-}
-
-.btn-preview:hover {
-    background: #000066;
-    box-shadow: 0 4px 12px rgba(0, 0, 63, 0.2);
-}
-
-.btn-download {
-    background: #fcb424;
-    color: #00003f;
-}
-
-.btn-download:hover {
-    background: #e6a91e;
-    box-shadow: 0 4px 12px rgba(252, 180, 36, 0.3);
-}
-
-
-/* CONTENEDOR DE VISUALIZACIÓN PDF */
-
-.pdf-embed-container {
-    margin-top: 20px;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 2px solid #00003f;
-    background: #000;
-    animation: slideDown 0.4s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        max-height: 0;
-    }
-    to {
-        opacity: 1;
-        max-height: 800px;
-    }
-}
-
-.pdf-embed-container iframe {
-    display: block;
-    background: white;
-}
-
-
-/* RESPONSIVO */
 
 @media (max-width: 600px) {
+    .video-wrapper {
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
     .material-acciones {
         flex-direction: column;
     }
     .btn-preview,
     .btn-download {
         width: 100%;
+        text-align: center;
         justify-content: center;
     }
 }
