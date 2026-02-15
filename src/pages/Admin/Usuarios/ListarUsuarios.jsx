@@ -30,31 +30,26 @@ export default function ListarUsuarios() {
     cargarUsuarios();
   }, []);
 
-  /* ========================================================
-      ⚡ LÓGICA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
-  ======================================================== */
   const handleActivarPremium = async (u) => {
     const result = await confirmDialog(
       `¿Activar Premium para ${u.nombre}?`,
       "Se otorgará 1 hora de acceso inmediato.",
       "question",
-      false // 👈 Cambiado a false: Ya no pide escribir nada
+      false 
     );
 
     if (result.isConfirmed) {
       try {
-        // Enviamos el objeto exacto que el controlador blindado espera
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: u._id,
-          horas: 1, // Valor por defecto
+          horas: 1, 
           tipo: "prueba_hora"
         });
         
         notify("success", `¡Premium activado (1h) para ${u.nombre}! ⚡`);
-        cargarUsuarios(); // Refrescar para ver cambios
+        cargarUsuarios(); 
       } catch (err) {
         console.error("Error activation:", err);
-        // Mostramos el mensaje de error que viene del backend si existe
         notify("error", err.response?.data?.message || "Error al activar la suscripción.");
       }
     }
@@ -118,18 +113,19 @@ export default function ListarUsuarios() {
               <tbody>
                 {usuariosFiltrados.map((u) => (
                   <tr key={u._id}>
-                    <td className="font-bold">{u.nombre}</td>
-                    <td>{u.email}</td>
-                    <td>
+                    {/* Agregamos data-label para el modo responsivo */}
+                    <td data-label="Nombre" className="font-bold">{u.nombre}</td>
+                    <td data-label="Email">{u.email}</td>
+                    <td data-label="Rol">
                       <span className={`badge-rol ${u.rol}`}>
                         {u.rol === 'admin' ? '🛡️ Admin' : '👤 Usuario'}
                       </span>
                     </td>
-                    <td>
+                    <td data-label="Estado">
                       <span className={`status-dot ${u.estado}`}></span>
                       {u.estado}
                     </td>
-                    <td className="text-center">
+                    <td data-label="Acciones" className="text-center">
                       <div className="action-buttons-cell">
                         <button 
                           className="btn-accion-premium"

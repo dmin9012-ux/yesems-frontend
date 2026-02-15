@@ -1,5 +1,5 @@
 /* ===================================================
-   USUARIOS STYLE - YES EMS ADMIN PANEL
+    USUARIOS STYLE - YES EMS ADMIN PANEL
    =================================================== */
 
 .admin-page-layout {
@@ -28,7 +28,7 @@
 
 
 /* ---------------------------------------------------
-   HEADER Y CONTROLES
+    HEADER Y CONTROLES
    --------------------------------------------------- */
 
 .admin-page-header {
@@ -55,16 +55,15 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-volver:hover {
     background: #00003f;
     color: white;
     border-color: #00003f;
-}
-
-.table-controls {
-    margin-bottom: 25px;
 }
 
 .search-box {
@@ -77,6 +76,7 @@
     border: 1.5px solid #e5e7eb;
     max-width: 450px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    margin-bottom: 25px;
 }
 
 .search-box input {
@@ -89,7 +89,7 @@
 
 
 /* ---------------------------------------------------
-   TABLA DE USUARIOS
+    TABLA DE USUARIOS (ESCRITORIO)
    --------------------------------------------------- */
 
 .table-wrapper {
@@ -127,7 +127,7 @@
 }
 
 
-/* Badges y Estados */
+/* Badges */
 
 .badge-rol {
     padding: 4px 10px;
@@ -164,7 +164,7 @@
 
 
 /* ---------------------------------------------------
-   FORMULARIO DE EDICIÓN
+    FORMULARIO DE EDICIÓN
    --------------------------------------------------- */
 
 .usuario-edit-card {
@@ -177,10 +177,10 @@
     margin: 0 auto;
 }
 
-.usuario-form {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+.grid-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .input-group-admin {
@@ -193,7 +193,6 @@
     font-weight: 800;
     color: #00003f;
     font-size: 0.9rem;
-    padding-left: 4px;
 }
 
 .input-group-admin input,
@@ -203,162 +202,79 @@
     border: 2px solid #f3f4f6;
     font-size: 1rem;
     background: #f9fafb;
-    transition: all 0.3s ease;
-}
-
-.input-group-admin input:focus,
-.input-group-admin select:focus {
-    outline: none;
-    border-color: #fcb424;
-    background: white;
-    box-shadow: 0 0 0 4px rgba(252, 180, 36, 0.1);
-}
-
-.grid-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
 }
 
 
 /* ---------------------------------------------------
-   GESTIÓN DE SUSCRIPCIÓN (NUEVO)
-   --------------------------------------------------- */
-
-.admin-premium-section {
-    margin-top: 10px;
-    padding: 25px;
-    background: #fffbeb;
-    /* Fondo ámbar suave */
-    border: 2px dashed #fcb424;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.admin-premium-section h3 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #00003f;
-    font-size: 1.1rem;
-    font-weight: 800;
-    margin: 0;
-}
-
-.admin-premium-section p {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.btn-premium-direct {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px;
-    background-color: #00003f;
-    color: #fcb424;
-    border: none;
-    border-radius: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-premium-direct:hover {
-    background-color: #00005f;
-    transform: translateY(-2px);
-}
-
-
-/* ---------------------------------------------------
-   BOTONES DE ACCIÓN Y TABLA
-   --------------------------------------------------- */
-
-.action-buttons-cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.btn-accion-premium {
-    background: #fef3c7;
-    color: #d97706;
-    border: 1px solid #fbbf24;
-    padding: 8px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-accion-premium:hover {
-    background: #fbbf24;
-    color: #fff;
-    transform: scale(1.1);
-}
-
-.form-actions-admin {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.btn-guardar-admin,
-.btn-accion-edit {
-    background-color: #fcb424;
-    color: #00003f;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn-guardar-admin:hover,
-.btn-accion-edit:hover {
-    background-color: #e6a91e;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(252, 180, 36, 0.3);
-}
-
-.btn-eliminar-admin {
-    background-color: #fee2e2;
-    color: #dc2626;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-
-/* ---------------------------------------------------
-   RESPONSIVE
+    📱 RESPONSIVE - EL CAMBIO MÁGICO
    --------------------------------------------------- */
 
 @media (max-width: 768px) {
+    .admin-page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        text-align: center;
+    }
+    .admin-page-header h1 {
+        font-size: 1.8rem;
+    }
+    .search-box {
+        max-width: 100%;
+    }
     .grid-form-row {
         grid-template-columns: 1fr;
     }
-    .admin-page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+    /* Transformación de Tabla a Cartas */
+    .usuarios-table,
+    .usuarios-table thead,
+    .usuarios-table tbody,
+    .usuarios-table th,
+    .usuarios-table td,
+    .usuarios-table tr {
+        display: block;
+    }
+    .usuarios-table thead {
+        display: none;
+    }
+    /* Escondemos cabecera */
+    .usuarios-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 10px;
+        background: #fff;
+    }
+    .usuarios-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 10px 15px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .usuarios-table td:last-child {
+        border-bottom: none;
+    }
+    /* Insertamos los títulos de las columnas con pseudo-elementos */
+    .usuarios-table td::before {
+        content: attr(data-label);
+        font-weight: 800;
+        color: #00003f;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        flex: 1;
+        text-align: left;
+    }
+    .action-buttons-cell {
+        justify-content: flex-end;
+        width: 100%;
     }
     .form-actions-admin {
         flex-direction: column;
     }
-    .usuario-edit-card {
-        padding: 30px 20px;
+    .btn-guardar-admin,
+    .btn-eliminar-admin {
+        width: 100%;
     }
 }

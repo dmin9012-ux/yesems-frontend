@@ -4,7 +4,7 @@ import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarioPorId, actualizarUsuario } from "../../../servicios/usuarioAdminService";
 import apiYesems from "../../../api/apiYesems";
 import { notify, confirmDialog } from "../../../Util/toast"; 
-import { Zap, ShieldCheck } from "lucide-react"; 
+import { Zap, ShieldCheck, Save, Trash2, ArrowLeft } from "lucide-react"; 
 import "./UsuariosStyle.css";
 
 export default function EditarUsuario() {
@@ -52,22 +52,19 @@ export default function EditarUsuario() {
     }
   };
 
-  /* ========================================================
-      ⚡ LÓGICA CORREGIDA: ACTIVACIÓN AUTOMÁTICA DE 1 HORA
-  ======================================================== */
   const handleActivarPremium = async () => {
     const result = await confirmDialog(
       "Activar Acceso Premium",
       `¿Deseas otorgar 1 hora de acceso premium a ${usuario.nombre}?`,
       "question",
-      false // 👈 FALSE: Ya no pide escribir el número de horas
+      false 
     );
 
     if (result.isConfirmed) {
       try {
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: id,
-          horas: 1, // 👈 Valor fijo de 1 hora
+          horas: 1, 
           tipo: "prueba_hora"
         });
         notify("success", "¡Acceso premium de 1 hora activado con éxito! ⚡");
@@ -109,9 +106,12 @@ export default function EditarUsuario() {
       <TopBarAdmin />
       <div className="usuarios-container">
         <header className="admin-page-header">
-          <h1>Editar Usuario</h1>
+          <div className="header-text">
+             <h1>Editar Usuario</h1>
+             <p>Modifica los datos y permisos de <strong>{usuario.nombre}</strong></p>
+          </div>
           <button className="btn-volver" onClick={() => navigate("/admin/usuarios")}>
-            ← Volver a la lista
+            <ArrowLeft size={18} /> Volver
           </button>
         </header>
 
@@ -119,20 +119,20 @@ export default function EditarUsuario() {
           <form className="usuario-form" onSubmit={handleSubmit}>
             <div className="input-group-admin">
               <label>Nombre Completo</label>
-              <input type="text" name="nombre" value={usuario.nombre} onChange={handleChange} required />
+              <input type="text" name="nombre" value={usuario.nombre} onChange={handleChange} required placeholder="Ej. Juan Pérez" />
             </div>
 
             <div className="input-group-admin">
               <label>Correo Electrónico</label>
-              <input type="email" name="email" value={usuario.email} onChange={handleChange} required />
+              <input type="email" name="email" value={usuario.email} onChange={handleChange} required placeholder="correo@ejemplo.com" />
             </div>
 
             <div className="grid-form-row">
               <div className="input-group-admin">
                 <label>Rol de Acceso</label>
                 <select name="rol" value={usuario.rol} onChange={handleChange}>
-                  <option value="usuario">Usuario</option>
-                  <option value="admin">Administrador</option>
+                  <option value="usuario">👤 Usuario</option>
+                  <option value="admin">🛡️ Administrador</option>
                 </select>
               </div>
 
@@ -148,7 +148,7 @@ export default function EditarUsuario() {
             {/* SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN */}
             <div className="admin-premium-section">
               <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
-              <p>Otorga acceso premium de 1 hora manualmente a este usuario.</p>
+              <p>Otorga acceso premium de 1 hora manualmente. Esta acción es inmediata.</p>
               <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
                 <Zap size={16} /> Activar 1 Hora Premium
               </button>
@@ -156,10 +156,10 @@ export default function EditarUsuario() {
 
             <div className="form-actions-admin">
               <button type="submit" className="btn-guardar-admin">
-                💾 Guardar Cambios
+                <Save size={18} /> Guardar Cambios
               </button>
               <button type="button" className="btn-eliminar-admin" onClick={handleEliminar}>
-                ❌ Eliminar Usuario
+                <Trash2 size={18} /> Eliminar Usuario
               </button>
             </div>
           </form>
