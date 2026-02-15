@@ -6,7 +6,7 @@ import { Zap, ShieldCheck, CheckCircle2, ArrowLeft } from "lucide-react";
 import "./SuscripcionStyle.css";
 
 // 🖼️ Importamos tu imagen local
-import logoMP from "../../assets/Mercado_pago.png";
+import logoMP from "../../assets/Mercado_Pago.png";
 
 const Suscripcion = () => {
   const navigate = useNavigate();
