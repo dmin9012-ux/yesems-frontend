@@ -4,7 +4,7 @@ import TopBarAdmin from "../../../components/TopBarAdmin/TopBarAdmin";
 import { obtenerUsuarios } from "../../../servicios/usuarioAdminService";
 import { notify, confirmDialog } from "../../../Util/toast"; 
 import apiYesems from "../../../api/apiYesems"; 
-import { Search, Edit3, Zap } from "lucide-react"; 
+import { Search, Edit3, Zap, ShieldCheck } from "lucide-react"; // Añadimos ShieldCheck por estética
 import "./UsuariosStyle.css";
 
 export default function ListarUsuarios() {
@@ -30,23 +30,27 @@ export default function ListarUsuarios() {
     cargarUsuarios();
   }, []);
 
+  /* ========================================================
+      ⚡ LÓGICA: ACTIVACIÓN AUTOMÁTICA DE 7 DÍAS (PLAN SEMANAL)
+  ======================================================== */
   const handleActivarPremium = async (u) => {
     const result = await confirmDialog(
-      `¿Activar Premium para ${u.nombre}?`,
-      "Se otorgará 1 hora de acceso inmediato.",
+      `¿Activar Plan Semanal para ${u.nombre}?`,
+      "Se otorgarán 7 días (168 horas) de acceso total inmediato.",
       "question",
       false 
     );
 
     if (result.isConfirmed) {
       try {
+        // Enviamos 168 horas y el tipo 'semanal' para que coincida con el Back
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: u._id,
-          horas: 1, 
-          tipo: "prueba_hora"
+          horas: 168, 
+          tipo: "semanal"
         });
         
-        notify("success", `¡Premium activado (1h) para ${u.nombre}! ⚡`);
+        notify("success", `¡Plan Semanal activado para ${u.nombre}! 🛡️`);
         cargarUsuarios(); 
       } catch (err) {
         console.error("Error activation:", err);
@@ -75,7 +79,7 @@ export default function ListarUsuarios() {
         <header className="admin-page-header">
           <div className="header-text">
             <h1>Gestión de Usuarios</h1>
-            <p>Administra los roles y accesos de la plataforma.</p>
+            <p>Administra los roles y accesos del Plan Semanal.</p>
           </div>
           <button className="btn-volver" onClick={() => navigate("/admin")}>
             ← Volver al Panel
@@ -113,7 +117,6 @@ export default function ListarUsuarios() {
               <tbody>
                 {usuariosFiltrados.map((u) => (
                   <tr key={u._id}>
-                    {/* Agregamos data-label para el modo responsivo */}
                     <td data-label="Nombre" className="font-bold">{u.nombre}</td>
                     <td data-label="Email">{u.email}</td>
                     <td data-label="Rol">
@@ -130,7 +133,7 @@ export default function ListarUsuarios() {
                         <button 
                           className="btn-accion-premium"
                           onClick={() => handleActivarPremium(u)}
-                          title="Dar 1 Hora Premium"
+                          title="Activar Plan Semanal (7 días)"
                         >
                           <Zap size={16} />
                         </button>

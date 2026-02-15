@@ -52,22 +52,26 @@ export default function EditarUsuario() {
     }
   };
 
+  /* ========================================================
+      ⚡ LÓGICA: ACTIVACIÓN DE PLAN SEMANAL (168 HORAS)
+  ======================================================== */
   const handleActivarPremium = async () => {
     const result = await confirmDialog(
-      "Activar Acceso Premium",
-      `¿Deseas otorgar 1 hora de acceso premium a ${usuario.nombre}?`,
+      "Activar Plan Semanal",
+      `¿Deseas otorgar 7 días (168 horas) de acceso premium a ${usuario.nombre}?`,
       "question",
       false 
     );
 
     if (result.isConfirmed) {
       try {
+        // Ajustado para enviar 168 horas y tipo 'semanal'
         await apiYesems.post("/usuario/activar-premium-admin", {
           usuarioId: id,
-          horas: 1, 
-          tipo: "prueba_hora"
+          horas: 168, 
+          tipo: "semanal"
         });
-        notify("success", "¡Acceso premium de 1 hora activado con éxito! ⚡");
+        notify("success", "¡Plan semanal (7 días) activado con éxito! 🛡️");
       } catch (err) {
         console.error("Error al activar premium:", err.response?.data || err);
         notify("error", err.response?.data?.message || "Fallo al procesar la suscripción.");
@@ -145,12 +149,12 @@ export default function EditarUsuario() {
               </div>
             </div>
 
-            {/* SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN */}
+            {/* SECCIÓN DE GESTIÓN DE SUSCRIPCIÓN ACTUALIZADA */}
             <div className="admin-premium-section">
               <h3><ShieldCheck size={20} /> Gestión de Suscripción</h3>
-              <p>Otorga acceso premium de 1 hora manualmente. Esta acción es inmediata.</p>
+              <p>Otorga acceso premium de <strong>7 días</strong> manualmente. Esta acción es inmediata y habilita todas las funciones.</p>
               <button type="button" className="btn-premium-direct" onClick={handleActivarPremium}>
-                <Zap size={16} /> Activar 1 Hora Premium
+                <Zap size={16} /> Activar Plan Semanal (7 días)
               </button>
             </div>
 
