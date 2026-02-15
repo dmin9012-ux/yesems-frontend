@@ -273,13 +273,64 @@
 
 /* --- ESTILOS DEL CONTADOR PREMIUM --- */
 
-.status-container-perfil {
+
+/* El nuevo cronómetro visual - Optimizado para 7 días */
+
+.premium-timer-badge {
     display: flex;
     flex-direction: column;
+    /* Cambiado a columna para que el título y el tiempo respiren */
     align-items: center;
-    gap: 12px;
-    margin-bottom: 25px;
-    width: 100%;
+    justify-content: center;
+    gap: 4px;
+    background: #fff9e6;
+    border: 1px solid #fcb424;
+    color: #00003f;
+    padding: 10px 16px;
+    /* Más espacio interno */
+    border-radius: 14px;
+    font-size: 0.75rem;
+    /* Etiqueta pequeña */
+    font-weight: 600;
+    text-align: center;
+    width: 90%;
+    /* Que ocupe casi todo el ancho del sidebar */
+    animation: fadeIn 0.5s ease-out;
+}
+
+.premium-timer-badge strong {
+    color: #00003f;
+    /* Texto oscuro para legibilidad */
+    background: #fcb424;
+    /* Fondo ámbar para el tiempo */
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 1.1rem;
+    /* Tiempo más grande */
+    display: inline-block;
+    margin-top: 2px;
+}
+
+
+/* Ajuste para que el icono no estorbe */
+
+.premium-timer-badge span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* Responsivo: En móvil el sidebar se vuelve horizontal, ajustamos el badge */
+
+@media (max-width: 768px) {
+    .premium-timer-badge {
+        width: auto;
+        flex-direction: row;
+        gap: 10px;
+        padding: 8px 20px;
+    }
 }
 
 

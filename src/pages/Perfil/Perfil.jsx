@@ -48,7 +48,7 @@ const Perfil = () => {
   }, [location, actualizarDatosUsuario, navigate]);
 
   /* ========================================================
-      ⏱️ LÓGICA DEL CONTADOR PREMIUM
+      ⏱️ LÓGICA DEL CONTADOR PREMIUM (ACTUALIZADO A 7 DÍAS)
   ======================================================== */
   useEffect(() => {
     if (!isPremium || !user?.suscripcion?.fechaFin) return;
@@ -63,10 +63,19 @@ const Perfil = () => {
         return;
       }
 
+      // Cálculo de unidades
+      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
       const minutos = Math.floor((diferencia / 1000 / 60) % 60);
       const segundos = Math.floor((diferencia / 1000) % 60);
 
-      setTiempoRestante(`${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`);
+      // Formato dinámico según el tiempo que queda
+      if (dias > 0) {
+        setTiempoRestante(`${dias}d ${horas}h ${minutos}m`);
+      } else {
+        // Si queda menos de un día, mostramos el segundero activo
+        setTiempoRestante(`${horas}h ${minutos}m ${segundos}s`);
+      }
     };
 
     calcularDiferencia();
@@ -74,6 +83,9 @@ const Perfil = () => {
     return () => clearInterval(interval);
   }, [isPremium, user]);
 
+  /* ========================================================
+      🚀 CARGA DE DATOS
+  ======================================================== */
   useEffect(() => {
     const cargarDatosIniciales = async () => {
       setLoading(true);
@@ -200,7 +212,6 @@ const Perfil = () => {
               return (
                 <div key={curso.id} className={`perfil-curso-card ${p.estado}`}>
                   <div className="curso-info">
-                    {/* PARTE SUPERIOR */}
                     <div className="curso-header">
                       <strong>{curso.nombre}</strong>
                       <span className={`badge ${p.estado}`}>
@@ -208,7 +219,6 @@ const Perfil = () => {
                       </span>
                     </div>
 
-                    {/* BARRA Y STATS */}
                     <div className="curso-stats">
                       <div className="progress-container">
                         <div className="progress-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.85rem', color: '#6b7280', fontWeight: '700' }}>
