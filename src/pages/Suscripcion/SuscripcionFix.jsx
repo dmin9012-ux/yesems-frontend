@@ -6,7 +6,7 @@ import { Zap, ShieldCheck, CheckCircle2, ArrowLeft } from "lucide-react";
 import "./SuscripcionStyle.css";
 
 // 🖼️ Importamos tu imagen local
-import logoMP from "../../assets/mercadopago.png";
+import logoMP from "../../assets/Mercado_pago.png";
 
 const Suscripcion = () => {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ const Suscripcion = () => {
         
         <div className="footer-secure">
           {/* ✅ Usamos la variable logoMP importada arriba */}
-          <img src={logoMP} alt="Mercado Pago" width="24" />
+          <img src={logoMP} alt="Mercado Pago" width="65" />
           <p>Pago seguro y cifrado vía Mercado Pago.</p>
         </div>
       </div>
