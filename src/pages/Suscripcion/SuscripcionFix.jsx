@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import apiYesems from "../../api/apiYesems";
-import { Zap, ShieldCheck, CheckCircle2, ArrowLeft } from "lucide-react"; // Añadimos iconos modernos
+import { Zap, ShieldCheck, CheckCircle2, ArrowLeft } from "lucide-react";
 import "./SuscripcionStyle.css";
+
+// 🖼️ Importamos tu imagen local
+import logoMP from "../../assets/mercadopago.png";
 
 const Suscripcion = () => {
   const navigate = useNavigate();
@@ -18,7 +21,6 @@ const Suscripcion = () => {
     const queryParams = new URLSearchParams(location.search);
     const status = queryParams.get("status");
 
-    // Si el pago fue aprobado, sincronizamos y redirigimos
     if (status === "approved" || isPremium) {
       const sincronizar = async () => {
         await actualizarDatosUsuario();
@@ -31,8 +33,6 @@ const Suscripcion = () => {
   const manejarSuscripcion = async () => {
     setCargandoPago(true);
     try {
-      // El backend ya ignora estos valores y usa los de $100/semanal por seguridad,
-      // pero los enviamos correctamente para mantener la consistencia.
       const res = await apiYesems.post("/pago/crear-preferencia", {
         plan: "semanal",
         precio: 100 
@@ -104,7 +104,8 @@ const Suscripcion = () => {
         </div>
         
         <div className="footer-secure">
-          <img src="https://img.icons8.com/color/48/000000/mercadopago.png" alt="Mercado Pago" width="24" />
+          {/* ✅ Usamos la variable logoMP importada arriba */}
+          <img src={logoMP} alt="Mercado Pago" width="24" />
           <p>Pago seguro y cifrado vía Mercado Pago.</p>
         </div>
       </div>
